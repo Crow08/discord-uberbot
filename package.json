@@ -5,6 +5,10 @@
 	"main": "main.js",
 	"author": "Crow08",
 	"license": "MIT",
+    "scripts": {
+        "build": "npm install",
+        "run": "node ./main.js"
+    },
 	"dependencies": {
 		"discord.js": "^11.4.2",
 		"node-persist": "^3.0.4"
