@@ -7,7 +7,7 @@
 	"license": "MIT",
     "scripts": {
         "build": "npm install",
-        "run": "node ./main.js"
+        "start": "node ./main.js"
     },
 	"dependencies": {
 		"discord.js": "^11.4.2",
