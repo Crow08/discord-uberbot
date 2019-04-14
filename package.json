@@ -1,0 +1,12 @@
+{
+	"name": "uber-bot",
+	"version": "0.0.1",
+	"description": "Uber Discord Bot",
+	"main": "main.js",
+	"author": "Crow08",
+	"license": "MIT",
+	"dependencies": {
+		"discord.js": "^11.4.2",
+		"node-persist": "^3.0.4"
+	}
+}
