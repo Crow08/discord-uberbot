@@ -1,30 +1,41 @@
-var auth = require('./auth.json');
-const storage = require('node-persist');
-const request = require('request');
-var Discord = require('discord.js');
-var client = new Discord.Client();
+/* global require */
+const auth = require("./auth.json");
+const storage = require("node-persist");
+const request = require("request");
+const Discord = require("discord.js");
+const client = new Discord.Client();
 client.music = require("./music.js");
 
 client.music.start(client, {
-  youtubeKey: auth.youtube_key,
-  anyoneCanSkip: true,
-  ownerOverMember: true,
-  ownerID: "Crow08#0285",
-  cooldown: {
-    enabled: false
+  "youtubeKey": auth.youtube_key,
+  "anyoneCanSkip": true,
+  "ownerOverMember": true,
+  "ownerID": "Crow08#0285",
+  "cooldown": {
+    "enabled": false
   },
-  insertMusic: false,
-  botPrefix: "#",
-  defaultPrefix: "#",
-  bitRate: "128000",
-  defVolume: 50,
-  maxQueueSize: 0
+  "botPrefix": "#",
+  "defaultPrefix": "#",
+  "bitRate": "128000",
+  "defVolume": 50,
+  "maxQueueSize": 0
 });
 
-client.on('ready', function (evt) {
-  console.log('Connected');
+storage.init({
+  "dir": "data",
+  "stringify": JSON.stringify,
+  "parse": JSON.parse,
+  "encoding": "utf8",
+  "logging": false,
+  "ttl": false,
+  "expiredInterval": 2 * 60 * 1000, // Every 2 minutes the process will clean-up the expired cache.
+  "forgiveParseErrors": false
 });
-/*client.on('message', async (message) => {
+
+client.login(auth.token);
+
+/*
+client.on('message', async (message) => {
   if (message.content.substring(0, 1) == '#') {
     var args = message.content.substring(1).split(' ', 2);
     var cmd = args[0];
@@ -53,7 +64,7 @@ client.on('ready', function (evt) {
         break;
       case 'play':
         getVoiceConnection(message.guild.id, message.member.voiceChannel, message.channel).then(voiceConnection => {
-          voiceConnection.playStream( 
+          voiceConnection.playStream (
             //hyperdirect('https://api.soundcloud.com/tracks/' + '175808524' + '/stream?client_id=' + auth.sc_client_id),
             request('https://api.soundcloud.com/tracks/' + '175808524' + '/stream?client_id=' + auth.sc_client_id),
             //ytdl("https://www.youtube.com/watch?v=hsXeFqj5p7Q", { filter: 'audioonly'}),
@@ -64,10 +75,9 @@ client.on('ready', function (evt) {
         }).catch((error) => {
           console.log(error);
         });
-
     }
   }
-});*/
+});
 
 function getVoiceConnection(serverId, voiceChannel, textChannel){
   return new Promise((resolve, reject) => {
@@ -81,24 +91,12 @@ function getVoiceConnection(serverId, voiceChannel, textChannel){
             console.log(error);
           });
       } else {
-        textChannel.send('Error: Unable to join your voice channel!')
-        reject('Error: Unable to join your voice channel!');
+        textChannel.send("Error: Unable to join your voice channel!")
+        reject("Error: Unable to join your voice channel!");
       }
     } else {
       resolve(voiceConnection);
     }
   });
 }
-
-storage.init({
-	dir: 'data',
-	stringify: JSON.stringify,
-	parse: JSON.parse,
-	encoding: 'utf8',
-	logging: false,  
-	ttl: false,
-	expiredInterval: 2 * 60 * 1000, // every 2 minutes the process will clean-up the expired cache
-    forgiveParseErrors: false
-});
-
-client.login(auth.token);
+*/

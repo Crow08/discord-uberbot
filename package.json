@@ -21,7 +21,6 @@
               "ffmpeg-binaries": "^4.0.0",
               "libsodium-wrappers": "^0.7.3",
               "nan": "^2.13.2",
-              "node-opus": "^0.2.7",
               "node-persist": "^3.0.4",
               "opusscript": "^0.0.6",
               "request": "^2.88.0",
