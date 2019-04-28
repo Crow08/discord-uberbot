@@ -1,27 +1,39 @@
 /* global require */
-const auth = require("./auth.json");
-const storage = require("node-persist");
-const request = require("request");
+const settings = require("./settings.json");
 const Discord = require("discord.js");
-const client = new Discord.Client();
-client.music = require("./music.js");
+const MusicClient = require("./MusicClient.js");
 
-client.music.start(client, {
-  "youtubeKey": auth.youtube_key,
-  "anyoneCanSkip": true,
-  "ownerOverMember": true,
-  "ownerID": "Crow08#0285",
-  "cooldown": {
-    "enabled": false
-  },
-  "botPrefix": "#",
-  "defaultPrefix": "#",
-  "bitRate": "128000",
-  "defVolume": 50,
-  "maxQueueSize": 0
+const baseClient = new Discord.Client();
+const musicClient = new MusicClient(baseClient, {
+  "bitRate": settings.bitRate,
+  "defVolume": settings.defVolume,
+  "scClientId": settings.scClientId,
+  "spotifyClientId": settings.spotifyClientId,
+  "spotifyClientSecret": settings.spotifyClientSecret
 });
 
-storage.init({
+baseClient.login(settings.token);
+
+baseClient.on("message", (msg) => {
+  if (msg.author.bot && !settings.botTalk) {
+    return;
+  }
+  msg.content.split("\n").forEach((element) => {
+    const message = element.trim();
+    if (message.startsWith(settings.botPrefix) && msg.channel.type === "text") {
+      const cmd = message.substr(settings.botPrefix.length).split(" ", 1)[0];
+      const payload = message.substr(cmd.length + settings.botPrefix.length + 1);
+      musicClient.execute(cmd, payload, msg);
+    }
+  });
+});
+
+baseClient.on("ready", () => {
+  console.log("------- UberBot is fully charged! -------\n>");
+});
+
+/*
+Storage.init({
   "dir": "data",
   "stringify": JSON.stringify,
   "parse": JSON.parse,
@@ -32,9 +44,6 @@ storage.init({
   "forgiveParseErrors": false
 });
 
-client.login(auth.token);
-
-/*
 client.on('message', async (message) => {
   if (message.content.substring(0, 1) == '#') {
     var args = message.content.substring(1).split(' ', 2);
