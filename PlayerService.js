@@ -30,6 +30,7 @@ class PlayerService {
       this.audioDispatcher.end("ignore");
     }
     this.voiceService.playStream(song, msg).then((dispatcher) => {
+      this.queueService.addSongToHistory(song);
       this.audioDispatcher = dispatcher;
       this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
       this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
@@ -90,6 +91,17 @@ class PlayerService {
     }
     this.chatService.simpleNote(msg.channel, "Skipping song!", this.chatService.msgType.MUSIC);
     this.audioDispatcher.end("skip");
+  }
+
+  seek(position, msg) {
+    if (this.audioDispatcher) {
+      this.audioDispatcher.end("ignore");
+    }
+    this.voiceService.playStream(this.queueService.getHistorySong(0), msg, position).then((dispatcher) => {
+      this.audioDispatcher = dispatcher;
+      this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
+      this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
+    });
   }
 }
 module.exports = PlayerService;

@@ -9,19 +9,19 @@ class VoiceService {
     this.spotifyService = spotifyService;
   }
 
-  playStream(song, msg) {
+  playStream(song, msg, seek) {
     return new Promise((resolve, reject) => {
       switch (song.src) {
       case song.srcType.YT:
         this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
           this.youtubeService.getStream(song.url),
-          {"bitrate": this.bitRate, "volume": this.volume / 100}
+          {"bitrate": this.bitRate, "volume": this.volume / 100, "passes": 2, "seek": seek ? seek : 0}
         )));
         break;
       case song.srcType.SC:
         this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
           this.soundCloudService.getStream(song.url),
-          {"bitrate": this.bitRate, "volume": this.volume / 100}
+          {"bitrate": this.bitRate, "volume": this.volume / 100, "passes": 2, "seek": seek ? seek : 0}
         )));
         break;
       case song.srcType.SP:

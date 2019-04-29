@@ -8,15 +8,19 @@ class QueueService {
 
   getNextSong() {
     const song = this.queue.shift();
-    this.history.push(song);
+    this.history.unshift(song);
     while (this.history.length > this.historyLength) {
-      this.history.shift();
+      this.history.pop();
     }
     return song;
   }
 
+  addSongToHistory(song) {
+    this.history.unshift(song);
+  }
+
   getHistorySong(i) {
-    const index = (this.history.length - i) < 0 ? 0 : (this.history.length - i);
+    const index = (this.history.length - i) < i ? this.history.length - i : i;
     return this.history[index];
   }
 

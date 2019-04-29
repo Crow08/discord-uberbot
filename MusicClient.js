@@ -16,6 +16,7 @@ const RemovePLCommand = require("./cmd/Command_PL_Remove");
 const TestCommand = require("./cmd/Command_Test");
 const SearchCommand = require("./cmd/Command_Search");
 const SearchService = require("./SearchService");
+const SeekCommand = require("./cmd/Command_Seek");
 const ShowQueueCommand = require("./cmd/Command_ShowQueue");
 const SkipCommand = require("./cmd/Command_Skip");
 const SoundCloudService = require("./SoundCloudService");
@@ -82,6 +83,9 @@ class MusicClient {
 
     const searchCommand = new SearchCommand();
     this.commands[searchCommand.name] = searchCommand;
+
+    const seekCommand = new SeekCommand(this.playerService, this.chatService);
+    this.commands[seekCommand.name] = seekCommand;
 
     const showQueueCommand = new ShowQueueCommand(this.chatService, this.queueService, this.discord);
     this.commands[showQueueCommand.name] = showQueueCommand;

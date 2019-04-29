@@ -16,7 +16,7 @@ class HelpCommand extends Command {
     let helpText = "```prolog\n+---------------------------Commands-------------------------+\n";
     let count = 0;
     for (const key in this.commands) {
-      if (Object.prototype.hasOwnProperty.call(this.commands, key)) {  
+      if (Object.prototype.hasOwnProperty.call(this.commands, key)) {
         const name = this.commands[key].name;
         const usage = this.commands[key].usage;
         const help = this.commands[key].help;
