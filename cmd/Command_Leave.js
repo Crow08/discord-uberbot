@@ -5,6 +5,7 @@ class LeaveCommand extends Command {
     super("leave");
     super.help = "leave the current voice channel.";
     super.usage = "<prefix>leave";
+    super.alias = ["leave"];
     this.voiceService = voiceService;
   }
 

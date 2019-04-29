@@ -8,6 +8,10 @@ class ChatService {
       "FAIL": "fail"
     };
   }
+  
+  basicNote(channel, text) {
+      return channel.send(`${text}`);  
+  }
 
   simpleNote(channel, text, type) {
     switch (type) {
@@ -22,6 +26,12 @@ class ChatService {
     default:
       return channel.send(text);
     }
+  }
+
+  //richEmbed-Wiki -> https://anidiots.guide/first-bot/using-embeds-in-messages
+  //Previewer -> https://leovoel.github.io/embed-visualizer/
+  richNote(channel, embed){
+    return channel.send(embed);
   }
 }
 

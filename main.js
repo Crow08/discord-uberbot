@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 const MusicClient = require("./MusicClient.js");
 
 const baseClient = new Discord.Client();
-const musicClient = new MusicClient(baseClient, {
+const musicClient = new MusicClient(baseClient, Discord, {
   "bitRate": settings.bitRate,
   "defVolume": settings.defVolume,
   "scClientId": settings.scClientId,

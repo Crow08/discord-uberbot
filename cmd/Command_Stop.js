@@ -3,8 +3,9 @@ const Command = require("./Command.js");
 class StopCommand extends Command {
   constructor(playerService) {
     super("stop");
-    super.help = "Stop current playback.";
+    super.help = "stop current playback.";
     super.usage = "<prefix>stop";
+    super.alias = ["stop"];
     this.playerService = playerService;
   }
 

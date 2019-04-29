@@ -5,6 +5,7 @@ class ClearCommand extends Command {
     super("clear");
     super.help = "delete all songs from current queue.";
     super.usage = "<prefix>clear";
+    super.alias = ["clear"];
     this.chatService = chatService;
     this.queueService = queueService;
   }

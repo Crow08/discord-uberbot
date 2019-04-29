@@ -5,6 +5,7 @@ class PauseCommand extends Command {
     super("pause");
     super.help = "pause current playback.";
     super.usage = "<prefix>pause";
+    super.alias = ["pause"];
     this.playerService = playerService;
   }
 

@@ -3,8 +3,9 @@ const Command = require("./Command.js");
 class PlayCommand extends Command {
   constructor(chatService, playerService, searchService) {
     super("play");
-    super.help = "Play a song by URL or query.";
-    super.usage = "<prefix>play <URL or query>";
+    super.help = "play a song by url or query.";
+    super.usage = "<prefix>play <url or query>";
+    super.alias = ["play", "p"];
     this.playerService = playerService;
     this.chatService = chatService;
     this.searchService = searchService;

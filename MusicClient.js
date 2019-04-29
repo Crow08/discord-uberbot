@@ -1,30 +1,35 @@
 const AddCommand = require("./cmd/Command_Add");
-const ClearCommand = require("./cmd/Command_Clear");
-const LeaveCommand = require("./cmd/Command_Leave");
-const PLCommand = require("./cmd/Command_PL");
 const AddPLCommand = require("./cmd/Command_PL_Add");
-const ClearPLCommand = require("./cmd/Command_PL_Clear");
-const RemovePLCommand = require("./cmd/Command_PL_Remove");
-const PauseCommand = require("./cmd/Command_Pause");
-const PlayCommand = require("./cmd/Command_Play");
-const RemoveCommand = require("./cmd/Command_Remove");
-const SearchCommand = require("./cmd/Command_Search");
-const SkipCommand = require("./cmd/Command_Skip");
-const StopCommand = require("./cmd/Command_Stop");
 const ChatService = require("./ChatService");
-const VoiceService = require("./VoiceService");
-const PlayerService = require("./PlayerService");
+const ClearCommand = require("./cmd/Command_Clear");
+const ClearPLCommand = require("./cmd/Command_PL_Clear");
 const DBService = require("./DBService");
+const HelpCommand = require("./cmd/Command_Help");
+const LeaveCommand = require("./cmd/Command_Leave");
+const PauseCommand = require("./cmd/Command_Pause");
+const PlayerService = require("./PlayerService");
+const PlayCommand = require("./cmd/Command_Play");
+const PLCommand = require("./cmd/Command_PL");
 const QueueService = require("./QueueService");
+const RemoveCommand = require("./cmd/Command_Remove");
+const RemovePLCommand = require("./cmd/Command_PL_Remove");
+const TestCommand = require("./cmd/Command_Test");
+const SearchCommand = require("./cmd/Command_Search");
 const SearchService = require("./SearchService");
-const YouTubeService = require("./YouTubeService");
+const ShowQueueCommand = require("./cmd/Command_ShowQueue");
+const SkipCommand = require("./cmd/Command_Skip");
 const SoundCloudService = require("./SoundCloudService");
 const SpotifyService = require("./SpotifyService");
+const StopCommand = require("./cmd/Command_Stop");
+const VoiceService = require("./VoiceService");
+const YouTubeService = require("./YouTubeService");
+
 
 class MusicClient {
-  constructor(client, opt) {
+  constructor(client, discord, opt) {
     this.commands = [];
     this.baseClient = client;
+    this.discord = discord;
     this.defVolume = (typeof opt !== "undefined" && typeof opt.defVolume !== "undefined") ? opt.defVolume : 50;
     this.bitRate = (typeof opt !== "undefined" && typeof opt.bitRate !== "undefined") ? opt.bitRate : "96000";
     console.log("Loading services...\n>");
@@ -44,36 +49,63 @@ class MusicClient {
     console.log("Loading commands...\n>");
     const addCommand = new AddCommand(this.chatService, this.queueService, this.searchService);
     this.commands[addCommand.name] = addCommand;
-    const clearCommand = new ClearCommand(this.chatService, this.queueService);
-    this.commands[clearCommand.name] = clearCommand;
-    const leaveCommand = new LeaveCommand(this.voiceService);
-    this.commands[leaveCommand.name] = leaveCommand;
-    const pLCommand = new PLCommand();
-    this.commands[pLCommand.name] = pLCommand;
+
     const addPLCommand = new AddPLCommand();
     this.commands[addPLCommand.name] = addPLCommand;
+
+    const clearCommand = new ClearCommand(this.chatService, this.queueService);
+    this.commands[clearCommand.name] = clearCommand;
+
     const clearPLCommand = new ClearPLCommand();
     this.commands[clearPLCommand.name] = clearPLCommand;
-    const removePLCommand = new RemovePLCommand();
-    this.commands[removePLCommand.name] = removePLCommand;
+
+    const helpCommand = new HelpCommand(this.chatService, this.commands);
+    this.commands[helpCommand.name] = helpCommand;
+
+    const leaveCommand = new LeaveCommand(this.voiceService);
+    this.commands[leaveCommand.name] = leaveCommand;
+
     const pauseCommand = new PauseCommand(this.playerService);
     this.commands[pauseCommand.name] = pauseCommand;
+
     const playCommand = new PlayCommand(this.chatService, this.playerService, this.searchService);
     this.commands[playCommand.name] = playCommand;
+
+    const pLCommand = new PLCommand();
+    this.commands[pLCommand.name] = pLCommand;
+
     const removeCommand = new RemoveCommand();
     this.commands[removeCommand.name] = removeCommand;
+
+    const removePLCommand = new RemovePLCommand();
+    this.commands[removePLCommand.name] = removePLCommand;
+
     const searchCommand = new SearchCommand();
     this.commands[searchCommand.name] = searchCommand;
-    const stopCommand = new StopCommand(this.playerService);
-    this.commands[stopCommand.name] = stopCommand;
+
+    const showQueueCommand = new ShowQueueCommand(this.chatService, this.queueService, this.discord);
+    this.commands[showQueueCommand.name] = showQueueCommand;
+
     const skipCommand = new SkipCommand(this.playerService);
     this.commands[skipCommand.name] = skipCommand;
+
+    const stopCommand = new StopCommand(this.playerService);
+    this.commands[stopCommand.name] = stopCommand;
+
+    const testCommand = new TestCommand(this.chatService, this.discord);
+    this.commands[testCommand.name] = testCommand;
   }
 
   execute(cmd, payload, msg) {
     console.log(`CMD: ${cmd}\n>`);
-    if (cmd in this.commands) {
-      this.commands[cmd].run(payload, msg);
+    for (const key in this.commands) {
+      if (Object.prototype.hasOwnProperty.call(this.commands, key)) {
+        this.commands[key].alias.forEach((element) => {
+          if (cmd === element) {
+            this.commands[key].run(payload, msg);
+          }
+        });
+      }
     }
   }
 }

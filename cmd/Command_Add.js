@@ -3,8 +3,9 @@ const Command = require("./Command.js");
 class AddCommand extends Command {
   constructor(chatService, queueService, searchService) {
     super("add");
-    super.help = "add a song to the current queue by URL or query.";
-    super.usage = "<prefix>add <URL or query>";
+    super.help = "add a song to the current queue by url or query.";
+    super.usage = "<prefix>add <url or query>";
+    super.alias = ["add"];
     this.chatService = chatService;
     this.queueService = queueService;
     this.searchService = searchService;
