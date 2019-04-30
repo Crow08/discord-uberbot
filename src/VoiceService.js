@@ -16,13 +16,15 @@ class VoiceService {
         this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
           this.youtubeService.getStream(song.url),
           {"bitrate": this.bitRate, "passes": 2, "seek": seek ? seek : 0, "volume": this.volume / 100}
-        )));
+        ))).
+          catch((error) => reject(error));
         break;
       case song.srcType.SC:
         this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
           this.soundCloudService.getStream(song.url),
           {"bitrate": this.bitRate, "passes": 2, "seek": seek ? seek : 0, "volume": this.volume / 100}
-        )));
+        ))).
+          catch((error) => reject(error));
         break;
       case song.srcType.SP:
         reject(new Error("No implementation to get stream from Spotify!"));
@@ -58,10 +60,10 @@ class VoiceService {
               resolve(connection);
             }).
             catch(() => {
-              reject(new Error("Error: Unable to join your voice channel!"));
+              reject(new Error("Unable to join your voice channel!"));
             });
         } else {
-          reject(new Error("Error: Unable to join your voice channel!"));
+          reject(new Error("Unable to join your voice channel!"));
         }
       } else {
         console.log("reuse voice");

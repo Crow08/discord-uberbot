@@ -35,7 +35,8 @@ class PlayerService {
       this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
       this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
       this.chatService.simpleNote(msg.channel, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
-    });
+    }).
+      catch((error) => this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL));
   }
 
   playMultipleNow(songs, msg) {
@@ -101,7 +102,8 @@ class PlayerService {
       this.audioDispatcher = dispatcher;
       this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
       this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
-    });
+    }).
+      catch((error) => this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL));
   }
 }
 module.exports = PlayerService;
