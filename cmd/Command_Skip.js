@@ -5,7 +5,7 @@ class SkipCommand extends Command {
     super("skip");
     super.help = "skip current song.";
     super.usage = "<prefix>skip";
-    super.alias = ["skip","s"];
+    super.alias = ["skip", "s"];
     this.playerService = playerService;
   }
 

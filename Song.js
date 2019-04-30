@@ -7,9 +7,9 @@ class Song {
     this.rating = 0;
     this.url = "";
     this.srcType = {
-      "YT": "yt",
       "SC": "sc",
-      "SP": "sp"
+      "SP": "sp",
+      "YT": "yt"
     };
   }
 }

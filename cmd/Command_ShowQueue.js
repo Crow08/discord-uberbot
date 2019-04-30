@@ -17,7 +17,7 @@ class ShowQueueCommand extends Command {
     let count = 1;
     const embed = new this.discord.RichEmbed();
     // Get queue
-    const queue = this.queueService.queue;
+    const {queue} = this.queueService;
     console.log(queue);
     // Empty variable to store output
     embed.setTitle("Queue");

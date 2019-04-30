@@ -8,11 +8,16 @@ class SearchService {
 
   search(payload, msg) {
     return new Promise((resolve, reject) => {
+      let note = "";
       let searchstring = payload.trim();
       if (searchstring.includes("soundcloud.com")) {
-        this.chatService.simpleNote(msg.channel, "Get song from SounCloud url~", this.chatService.msgType.SEARCH);
+        note = "Get song from SounCloud url~";
+        this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.SEARCH);
         this.soundCloudService.getSongViaUrl(searchstring).then((song) => resolve(song)).
-          catch((error) => { this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL); reject(error); });
+          catch((error) => {
+            this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL);
+            reject(error);
+          });
       } else if (searchstring.includes("youtu.be/") || searchstring.includes("youtube.com/")) {
       // YouTube url detected:
         if (searchstring.includes("&")) {
@@ -20,23 +25,35 @@ class SearchService {
         }
         if (searchstring.includes("watch") || searchstring.includes("youtu.be/")) {
         // YouTube video url detected:
-          this.chatService.simpleNote(msg.channel, "Get song from YouTube url~", this.chatService.msgType.SEARCH);
+          note = "Get song from YouTube url~";
+          this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.SEARCH);
           this.youtubeService.getSongViaUrl(searchstring).then((song) => resolve(song)).
-            catch((error) => { this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL); reject(error); });
+            catch((error) => {
+              this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL);
+              reject(error);
+            });
         } else if (searchstring.includes("playlist")) {
         // Youtube playlist url detected:
-          this.chatService.simpleNote(msg.channel, "Get songs from YouTube playlist url~", this.chatService.msgType.SEARCH);
+          note = "Get songs from YouTube playlist url~";
+          this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.SEARCH);
           this.youtubeService.getSongsViaPlaylistUrl(searchstring).then((songs) => resolve(songs)).
-            catch((error) => { this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL); reject(error); });
+            catch((error) => {
+              this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL);
+              reject(error);
+            });
         }
       } else {
       // Fallback on soundcloud query search:
-        this.chatService.simpleNote(msg.channel, "Get songs from SoundCloud search query~", this.chatService.msgType.SEARCH);
-        this.soundCloudService.getSongViaSearchQuery(searchstring).then((song) => resolve(song)).catch(() => {
-        // Fallback on youtube query search:
-          this.chatService.simpleNote(msg.channel, "Get songs from YouTube search query~", this.chatService.msgType.SEARCH);
-          this.youtubeService.getSongViaSearchQuery(searchstring).then((song) => resolve(song)).catch((error) => reject(error));
-        });
+        note = "Get songs from SoundCloud search query~";
+        this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.SEARCH);
+        this.soundCloudService.getSongViaSearchQuery(searchstring).then((song) => resolve(song)).
+          catch(() => {
+            // Fallback on youtube query search:
+            note = "Get songs from YouTube search query~";
+            this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.SEARCH);
+            this.youtubeService.getSongViaSearchQuery(searchstring).then((song) => resolve(song)).
+              catch((error) => reject(error));
+          });
       }
     });
   }

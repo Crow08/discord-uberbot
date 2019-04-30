@@ -12,17 +12,17 @@ class HelpCommand extends Command {
 
   run(payload, msg) {
     console.log("--------------------- Anyone called for a medic? ---------------------");
-    // Add some fancy stuff (More syntax highlighting: https://gist.github.com/Almeeida/41a664d8d5f3a8855591c2f1e0e07b19)
-    let helpText = "```prolog\n+---------------------------Commands-------------------------+\n";
+    // Add some fancy stuff
+    // (More syntax highlighting: https://gist.github.com/Almeeida/41a664d8d5f3a8855591c2f1e0e07b19)
     let count = 0;
+    let helpText = "```prolog\n+---------------------------Commands-------------------------+\n";
+
     for (const key in this.commands) {
       if (Object.prototype.hasOwnProperty.call(this.commands, key)) {
-        const name = this.commands[key].name;
-        const usage = this.commands[key].usage;
-        const help = this.commands[key].help;
+        const {help, name, usage} = this.commands[key];
         // Ignrore undefined commands
         if (String(name) !== "undefined") {
-          count++;
+          ++count;
           helpText += `${`| Name:  ${name}`.padEnd(61, " ")}|\n`;
           helpText += `${`| About: ${help}`.padEnd(61, " ")}|\n`;
           helpText += `${`| Usage: ${usage}`.padEnd(61, " ")}|\n`;

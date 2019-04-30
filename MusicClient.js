@@ -38,14 +38,22 @@ class MusicClient {
     this.youtubeService = new YouTubeService();
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
-    this.searchService = new SearchService(this.chatService, this.youtubeService, this.soundCloudService, this.spotifyService);
-    this.voiceService = new VoiceService(this.bitRate, this.defVolume, this.baseClient, this.youtubeService, this.soundCloudService, this.spotifyService);
+    this.searchService = new SearchService(
+      this.chatService, this.youtubeService, this.soundCloudService,
+      this.spotifyService
+    );
+    this.voiceService = new VoiceService(
+      {"bitRate": this.bitRate, "defVolume": this.defVolume}, this.baseClient,
+      this.youtubeService, this.soundCloudService, this.spotifyService
+    );
     this.dbService = new DBService();
     this.queueService = new QueueService(this.dbService);
     this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService);
     this.loadCommands();
   }
 
+  // TODO: find shorter way to init all Commands
+  // eslint-disable-next-line max-statements
   loadCommands() {
     console.log("Loading commands...\n>");
     const addCommand = new AddCommand(this.chatService, this.queueService, this.searchService);

@@ -21,12 +21,14 @@ class AddCommand extends Command {
     this.searchService.search(payload, msg).then((song) => {
       if (Array.isArray(song)) {
         this.queueService.addMultipleToQueue(song, msg);
-        this.chatService.simpleNote(msg.channel, `${song.length()}songs added to queue.`, this.chatService.msgType.MUSIC);
+        const count = song.length();
+        this.chatService.simpleNote(msg.channel, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
       } else {
         this.queueService.addToQueue(song, msg);
         this.chatService.simpleNote(msg.channel, "song added to queue.", this.chatService.msgType.MUSIC);
       }
-    }).catch();
+    }).
+      catch();
   }
 }
 

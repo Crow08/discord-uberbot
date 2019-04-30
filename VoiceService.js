@@ -1,7 +1,7 @@
 class VoiceService {
-  constructor(bitRate, volume, client, youtubeService, soundCloudService, spotifyService) {
-    this.bitRate = bitRate;
-    this.volume = volume;
+  constructor(options, client, youtubeService, soundCloudService, spotifyService) {
+    this.bitRate = options.bitRate;
+    this.volume = options.volume;
 
     this.client = client;
     this.youtubeService = youtubeService;
@@ -15,13 +15,13 @@ class VoiceService {
       case song.srcType.YT:
         this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
           this.youtubeService.getStream(song.url),
-          {"bitrate": this.bitRate, "volume": this.volume / 100, "passes": 2, "seek": seek ? seek : 0}
+          {"bitrate": this.bitRate, "passes": 2, "seek": seek ? seek : 0, "volume": this.volume / 100}
         )));
         break;
       case song.srcType.SC:
         this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
           this.soundCloudService.getStream(song.url),
-          {"bitrate": this.bitRate, "volume": this.volume / 100, "passes": 2, "seek": seek ? seek : 0}
+          {"bitrate": this.bitRate, "passes": 2, "seek": seek ? seek : 0, "volume": this.volume / 100}
         )));
         break;
       case song.srcType.SP:
@@ -45,18 +45,19 @@ class VoiceService {
 
   getVoiceConnection(message) {
     const serverId = message.guild.id;
-    const voiceChannel = message.member.voiceChannel;
+    const {voiceChannel} = message.member;
     return new Promise((resolve, reject) => {
       // Search for etablished connection with this server.
       const voiceConnection = this.client.voiceConnections.find((val) => val.channel.guild.id === serverId);
       // If not already connected try to join.
       if (voiceConnection === null) {
         if (voiceChannel && voiceChannel.joinable) {
-          voiceChannel.join()
-            .then((connection) => {
+          voiceChannel.join().
+            then((connection) => {
               console.log("use new voice");
               resolve(connection);
-            }).catch(() => {
+            }).
+            catch(() => {
               reject(new Error("Error: Unable to join your voice channel!"));
             });
         } else {

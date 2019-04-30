@@ -11,7 +11,7 @@ class SoundCloudService {
 
   getSongViaSearchQuery(searchstring) {
     return new Promise((resolve, reject) => {
-      this.spotify.search({"type": "track", "query": searchstring, "limit": 1}, (err, data) => {
+      this.spotify.search({"limit": 1, "query": searchstring, "type": "track"}, (err, data) => {
         if (err) {
           reject(new Error(err));
         }
