@@ -51,7 +51,12 @@ class PlayerService {
   }
 
   play(msg) {
-    if (!this.audioDispatcher) {
+    if (!this.audioDispatcher || this.destroyed) {
+      const nextSong = this.queueService.getNextSong();
+      if (nextSong) {
+        this.playNow(nextSong, msg);
+        return;
+      }
       this.chatService.simpleNote(msg.channel, "Audiostream not found!", this.chatService.msgType.FAIL);
       return;
     }

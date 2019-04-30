@@ -12,7 +12,6 @@ class AddCommand extends Command {
   }
 
   run(payload, msg) {
-    console.log("add!!!");
     if (typeof payload === "undefined" || payload.length === 0) {
       this.chatService.simpleNote(msg.channel, "No URL or query found!", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
