@@ -12,18 +12,18 @@ class SoundCloudService {
         `http://api.soundcloud.com/resolve?url=${payload}&client_id=${this.clientId}`,
         (error, response, body) => {
           if (error) {
-            reject(new Error("Something went wrong fetching the song!"));
+            return reject(new Error("Something went wrong fetching the song!"));
           }
           const info = JSON.parse(body);
           if (!info.streamable) {
-            reject(new Error("Song is not Streamable from SoundCloud!"));
+            return reject(new Error("Song is not Streamable from SoundCloud!"));
           }
           const song = new Song();
           song.title = info.title;
           song.url = info.stream_url;
           song.artist = info.user.username;
           song.src = song.srcType.SC;
-          resolve(song);
+          return resolve(song);
         }
       );
     });
@@ -36,17 +36,17 @@ class SoundCloudService {
         (error, response, body) => {
           const info = JSON.parse(body);
           if (error || !info || info.length === 0) {
-            reject(new Error("Something went wrong. Try again!"));
+            return reject(new Error("Something went wrong. Try again!"));
           }
-          if (!info[0].streamable) {
-            reject(new Error("Song is not Streamable from SoundCloud!"));
+          if (!(info[0].streamable)) {
+            return reject(new Error("Song is not Streamable from SoundCloud!"));
           }
           const song = new Song();
           song.title = info[0].title;
           song.url = info[0].stream_url;
           song.artist = info[0].user.username;
           song.src = song.srcType.SC;
-          resolve(song);
+          return resolve(song);
         }
       );
     });
