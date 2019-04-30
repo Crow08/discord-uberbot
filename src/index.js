@@ -1,5 +1,5 @@
 /* global require */
-const settings = require("./settings.json");
+const settings = require("../settings.json");
 const Discord = require("discord.js");
 const MusicClient = require("./MusicClient.js");
 

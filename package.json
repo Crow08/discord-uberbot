@@ -2,12 +2,12 @@
   "name": "uber-bot",
   "version": "0.0.1",
   "description": "Uber Discord Bot",
-  "main": "index.js",
+  "main": "uberbot",
   "author": "Crow08",
   "license": "MIT",
   "scripts": {
     "build": "npm install",
-    "start": "node ./index.js",
+    "start": "node ./src/index.js",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
   },
