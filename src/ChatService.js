@@ -2,15 +2,16 @@ class ChatService {
   constructor(options) {
     this.options = options;
     this.msgType = {
+      "FAIL": "fail",
       "INFO": "info",
       "MUSIC": "music",
-      "SEARCH": "search",
-      "FAIL": "fail"
+      "SEARCH": "search"
+
     };
   }
-  
+
   basicNote(channel, text) {
-      return channel.send(`${text}`);  
+    return channel.send(`${text}`);
   }
 
   simpleNote(channel, text, type) {
@@ -28,9 +29,9 @@ class ChatService {
     }
   }
 
-  //richEmbed-Wiki -> https://anidiots.guide/first-bot/using-embeds-in-messages
-  //Previewer -> https://leovoel.github.io/embed-visualizer/
-  richNote(channel, embed){
+  // RichEmbed-Wiki -> https://anidiots.guide/first-bot/using-embeds-in-messages
+  // Previewer -> https://leovoel.github.io/embed-visualizer/
+  richNote(channel, embed) {
     return channel.send(embed);
   }
 }

@@ -9,14 +9,14 @@ class YoutubeService {
     return new Promise((resolve, reject) => {
       ytdl.getBasicInfo(searchstring, {}, (err, info) => {
         if (err) {
-          reject(new Error("Something went wrong fetching the song!"));
+          return reject(new Error("Something went wrong fetching the song!"));
         }
         const song = new Song();
         song.title = info.title;
         song.url = info.video_url;
         song.artist = info.author.name;
         song.src = song.srcType.YT;
-        resolve(song);
+        return resolve(song);
       });
     });
   }
@@ -26,10 +26,10 @@ class YoutubeService {
     return new Promise((resolve, reject) => {
       ytpl(playid, (err, playlist) => {
         if (err) {
-          reject(new Error("Something went wrong fetching that playlist!"));
+          return reject(new Error("Something went wrong fetching that playlist!"));
         }
         if (playlist.items.length <= 0) {
-          reject(new Error("Couldn't get any songs from that playlist."));
+          return reject(new Error("Couldn't get any songs from that playlist."));
         }
         const songs = [];
         playlist.items.forEach((info) => {
@@ -40,7 +40,7 @@ class YoutubeService {
           song.src = song.srcType.YT;
           songs.push(song);
         });
-        resolve(songs);
+        return resolve(songs);
       });
     });
   }
@@ -49,14 +49,14 @@ class YoutubeService {
     return new Promise((resolve, reject) => {
       ytsr(searchstring, {"limit": 1}).then((result) => {
         if (!result || !result.items || !result.items[0]) {
-          reject(new Error("Something went wrong. Try again!"));
+          return reject(new Error("Something went wrong. Try again!"));
         }
         const song = new Song();
         song.title = result.items[0].title;
         song.url = result.items[0].link;
         song.Author = result.items[0].author.name;
         song.src = song.srcType.YT;
-        resolve(song);
+        return resolve(song);
       });
     });
   }

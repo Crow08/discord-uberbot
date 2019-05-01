@@ -22,7 +22,8 @@ class PlayCommand extends Command {
       } else {
         this.playerService.playNow(song, msg);
       }
-    }).catch();
+    }).
+      catch();
   }
 }
 

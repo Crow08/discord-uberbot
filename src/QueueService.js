@@ -1,3 +1,16 @@
+const shuffle = function shuffle(array) {
+  let pos1 = 0,
+    pos2 = 0,
+    tmpVal = 0;
+  for (pos1 = array.length - 1; pos1 > 0; pos1--) {
+    pos2 = Math.floor(Math.random() * (pos1 + 1));
+    tmpVal = array[pos1];
+    array[pos1] = array[pos2];
+    array[pos2] = tmpVal;
+  }
+  return array;
+};
+
 class QueueService {
   constructor(historyLength, dbService) {
     this.dbService = dbService;
@@ -19,8 +32,8 @@ class QueueService {
     this.history.unshift(song);
   }
 
-  getHistorySong(i) {
-    const index = (this.history.length - i) < i ? this.history.length - i : i;
+  getHistorySong(position) {
+    const index = (this.history.length - position) < position ? this.history.length - position : position;
     return this.history[index];
   }
 
@@ -43,17 +56,6 @@ class QueueService {
   loadPlaylist(plName) {
     this.queue = this.dbService.getPlaylist(plName);
   }
-}
-
-function shuffle(a) {
-  let i, j, x;
-  for (i = a.length - 1; i > 0; i--) {
-    j = Math.floor(Math.random() * (i + 1));
-    x = a[i];
-    a[i] = a[j];
-    a[j] = x;
-  }
-  return a;
 }
 
 module.exports = QueueService;

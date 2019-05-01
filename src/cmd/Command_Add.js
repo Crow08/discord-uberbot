@@ -12,7 +12,6 @@ class AddCommand extends Command {
   }
 
   run(payload, msg) {
-    console.log("add!!!");
     if (typeof payload === "undefined" || payload.length === 0) {
       this.chatService.simpleNote(msg.channel, "No URL or query found!", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
@@ -21,12 +20,14 @@ class AddCommand extends Command {
     this.searchService.search(payload, msg).then((song) => {
       if (Array.isArray(song)) {
         this.queueService.addMultipleToQueue(song, msg);
-        this.chatService.simpleNote(msg.channel, `${song.length()}songs added to queue.`, this.chatService.msgType.MUSIC);
+        const count = song.length();
+        this.chatService.simpleNote(msg.channel, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
       } else {
         this.queueService.addToQueue(song, msg);
-        this.chatService.simpleNote(msg.channel, "song added to queue.", this.chatService.msgType.MUSIC);
+        this.chatService.simpleNote(msg.channel, `song added to queue: ${song.title}`, this.chatService.msgType.MUSIC);
       }
-    }).catch();
+    }).
+      catch();
   }
 }
 

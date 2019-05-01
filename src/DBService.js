@@ -1,4 +1,4 @@
-const MongoClient = require("mongodb").MongoClient;
+const {MongoClient} = require("mongodb");
 
 class DBService {
   constructor() {
@@ -8,15 +8,15 @@ class DBService {
 
   getPlaylist(plName) {
     return new Promise((resolve, reject) => {
-      MongoClient.connect(this.url, (err, client) => {
-        if (err) {
-          reject(err);
+      MongoClient.connect(this.url, (err1, client) => {
+        if (err1) {
+          reject(err1);
         }
-        const db = client.db(this.dbName);
-        const songsCollection = db.collection(plName);
-        songsCollection.find({}).toArray((e, songs) => {
-          if (e) {
-            reject(e);
+        const db = client.db(this.dbName),
+          songsCollection = db.collection(plName);
+        songsCollection.find({}).toArray((err2, songs) => {
+          if (err2) {
+            reject(err2);
           }
           resolve(songs);
         });
@@ -31,8 +31,8 @@ class DBService {
         console.log(err);
         return;
       }
-      const db = client.db(this.dbName);
-      const songsCollection = db.collection(plName);
+      const db = client.db(this.dbName),
+        songsCollection = db.collection(plName);
       songsCollection.insertOne(song);
       client.close();
     });
@@ -44,8 +44,8 @@ class DBService {
         console.log(err);
         return;
       }
-      const db = client.db(this.dbName);
-      const songsCollection = db.collection(plName);
+      const db = client.db(this.dbName),
+        songsCollection = db.collection(plName);
       songsCollection.insertMany(songs);
       client.close();
     });

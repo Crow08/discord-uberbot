@@ -4,5 +4,7 @@
     "bitRate": 96000,
     "defVolume": 100,
     "token": "DISCORD_BOT_TOKEN", 
-    "scClientId": "SOUNDCLOUD_CLIENT_ID"
+    "scClientId": "SOUNDCLOUD_CLIENT_ID",
+    "spotifyClientId": "SPOTIFY_CLIENT_ID",
+    "spotifyClientSecret": "SPOTIFY_CLIENT_SECRET"
 }

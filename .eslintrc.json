@@ -1,5 +1,10 @@
 {
-  "parser": "Esprima",
+    "env": {
+        "es6": true,
+        "node": true
+    },
+    "extends": "eslint:all",
+    "parser": "Esprima",
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module",
@@ -9,7 +14,6 @@
             "globalReturn": true
         }
     },
-    "extends": "eslint:all",
     "rules": {
         "semi": 2,
         "no-console": "off",
@@ -24,6 +28,10 @@
         "indent": ["warn", 2],
         "key-spacing": "warn",
         "keyword-spacing": "warn",
+        "max-len": ["warn", { "code": 120, "tabWidth": 2 }],
+        "max-lines-per-function": ["warn", {"max": 50, "skipBlankLines": true, "skipComments": true}],
+        "max-statements": ["warn", { "max": 25}],
+        "max-params": ["warn", {"max": 6}],
         "no-else-return": "warn",
         "no-empty": "warn",
         "no-param-reassign": "warn",
@@ -34,65 +42,32 @@
         "object-curly-spacing": "warn",
         "prefer-arrow-callback": "warn",
         "prefer-const": "warn",
+        "prefer-destructuring": ["warn",{"array": false, "object": true}],
         "prefer-promise-reject-errors": "warn",
         "prefer-template": "warn",
         "quote-props": "warn",
         "quotes": "warn",
         "space-before-blocks": "warn",
         "spaced-comment": "warn",
+        "space-before-function-paren": ["warn", "never"],
         "space-infix-ops": "warn",
         "space-in-parens": "warn",
-
-        "space-before-function-paren": ["warn", "never"],
         "yoda": "warn",
 
-        "array-bracket-newline": "off",
         "array-element-newline": "off",
-        "brace-style": "off",
-        "dot-location": "off",
-        "func-names": "off",
-        "func-style": "off",
-        "id-length": "off",
-        "init-declarations": "off",
         "linebreak-style": "off",
         "line-comment-position": "off",
-        "max-len": "off",
-        "max-lines": "off",
-        "max-lines-per-function": "off",
-        "max-params": "off",
-        "max-statements": "off",
-        "max-statements-per-line": "off",
         "multiline-comment-style": "off",
         "multiline-ternary": "off",
-        "newline-per-chained-call": "off",
         "no-extra-parens": "off",
         "no-inline-comments": "off",
-        "no-invalid-this": "off",
         "no-magic-numbers": "off",
-        "no-negated-condition": "off",
         "no-plusplus": "off",
-        "no-tabs": "off",
         "no-ternary": "off",
-        "no-underscore-dangle": "off",
-        "no-use-before-define": "off",
         "object-property-newline": "off",
-        "object-shorthand": "off",
         "one-var": "off",
         "padded-blocks": "off",
-        "prefer-destructuring": "off",
-        "require-jsdoc": "off",
-        "sort-keys": "off",
-        "strict": "off",
-        "wrap-iife": "off",
 
-        "complexity": "off",
-        "no-nested-ternary": "off",
-        "max-depth": "off",
-        "consistent-return": "off",
         "class-methods-use-this": "off"
-    },
-    "env": {
-        "es6": true,
-        "node": true
     }
 }
