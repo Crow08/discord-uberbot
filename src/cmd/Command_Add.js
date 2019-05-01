@@ -24,7 +24,7 @@ class AddCommand extends Command {
         this.chatService.simpleNote(msg.channel, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
       } else {
         this.queueService.addToQueue(song, msg);
-        this.chatService.simpleNote(msg.channel, "song added to queue.", this.chatService.msgType.MUSIC);
+        this.chatService.simpleNote(msg.channel, `song added to queue: ${song.title}`, this.chatService.msgType.MUSIC);
       }
     }).
       catch();
