@@ -1,0 +1,17 @@
+TO-DO:
+
+Datenbank anbinden
+- kann die Datenbank im git-Projekt geteilt werden, oder müssen wir den Bot extern hosten?
+
+Error-Handling!
+- Generelle Antwort an User, was überhaupt passiert
+    - Wenn der Song nicht gefunden wurde
+    - etc. (erweitern, wenn man mal zum Testen kommt/ Fehler auffallen)
+- Manchmal hört man keinen Sound, "lösbar" durch reconnect des Bots.
+    - kann es noch nicht zuverlässig reproduzueren, vermutete den Stop-Befehl, aber trat nach Neustart des Bots erneut auf
+    - In der Konsole steht nichts
+
+Deezer anbinden
+- besser als Soundcloud?
+- fertige API zum "inspirieren lassen" (https://github.com/acostes/deezer-node-api)
+- zukünftige Suchreihenfolge: Deezer, Soundcloud, Youtube

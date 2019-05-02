@@ -5,14 +5,14 @@ class ShowQueueCommand extends Command {
     super("showqueue");
     super.help = "displays all songs from current queue.";
     super.usage = "<prefix>showqueue";
-    super.alias = ["showqueue", "q"];
+    super.alias = ["showqueue", "q", "queue"];
     this.chatService = chatService;
     this.queueService = queueService;
     this.discord = discord;
   }
 
   run(payload, msg) {
-    console.log("queue:");
+    console.log("displaying queue:");
     let songlist = "";
     let count = 1;
     const embed = new this.discord.RichEmbed();
