@@ -1,18 +1,18 @@
 const Command = require("./Command.js");
 
-class TestCommand extends Command {
+class NowPlayingCommand extends Command {
   constructor(chatService, queueService, discord) {
-    super("test");
-    super.help = "for testing - duh!";
-    super.usage = "<prefix>test";
-    super.alias = ["test"];
+    super("nowplaying");
+    super.help = "returns first song in history (current song)";
+    super.usage = "<prefix>nowplaying";
+    super.alias = ["nowplaying", "np"];
     this.chatService = chatService;
     this.queueService = queueService;
     this.discord = discord;
   }
 
   run(payload, msg) {
-    console.log("Testing...");
+    console.log("Getting Current Song...");
     const nowplaying = this.queueService.history[0];
     const embed = new this.discord.RichEmbed();
     console.log(nowplaying);
@@ -39,4 +39,4 @@ class TestCommand extends Command {
   }
 }
 
-module.exports = TestCommand;
+module.exports = NowPlayingCommand;

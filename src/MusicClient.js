@@ -6,6 +6,7 @@ const ClearPLCommand = require("./cmd/Command_PL_Clear");
 const DBService = require("./DBService");
 const HelpCommand = require("./cmd/Command_Help");
 const LeaveCommand = require("./cmd/Command_Leave");
+const NowPlayingCommand = require("./cmd/Command_NowPlaying");
 const PauseCommand = require("./cmd/Command_Pause");
 const PlayerService = require("./PlayerService");
 const PlayCommand = require("./cmd/Command_Play");
@@ -74,6 +75,9 @@ class MusicClient {
     const leaveCommand = new LeaveCommand(this.voiceService);
     this.commands[leaveCommand.name] = leaveCommand;
 
+    const nowPlayingCommand = new NowPlayingCommand(this.chatService, this.queueService, this.discord);
+    this.commands[nowPlayingCommand.name] = nowPlayingCommand;
+
     const pauseCommand = new PauseCommand(this.playerService);
     this.commands[pauseCommand.name] = pauseCommand;
 
@@ -104,7 +108,7 @@ class MusicClient {
     const stopCommand = new StopCommand(this.playerService);
     this.commands[stopCommand.name] = stopCommand;
 
-    const testCommand = new TestCommand(this.chatService, this.discord);
+    const testCommand = new TestCommand(this.chatService, this.queueService, this.discord);
     this.commands[testCommand.name] = testCommand;
   }
 
