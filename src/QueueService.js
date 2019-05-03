@@ -54,7 +54,14 @@ class QueueService {
   }
 
   loadPlaylist(plName) {
-    this.queue = this.dbService.getPlaylist(plName);
+    return new Promise((resolve, reject) => {
+      this.dbService.getPlaylist(plName).
+        then((songs) => {
+          this.queue = songs;
+          resolve();
+        }).
+        catch((error) => reject(error));
+    });
   }
 }
 

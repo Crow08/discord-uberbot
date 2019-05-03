@@ -8,46 +8,94 @@ class DBService {
 
   getPlaylist(plName) {
     return new Promise((resolve, reject) => {
-      MongoClient.connect(this.url, (err1, client) => {
+      MongoClient.connect(this.url, {"useNewUrlParser": true}, (err1, client) => {
         if (err1) {
+          console.log(`Error: unable to connect to MongoDB!\n${err1}`);
           reject(err1);
+          return;
         }
-        const db = client.db(this.dbName),
-          songsCollection = db.collection(plName);
+        const db = client.db(this.dbName);
+        const songsCollection = db.collection(plName);
         songsCollection.find({}).toArray((err2, songs) => {
           if (err2) {
+            console.log(`Error: unable to find songs!\n${err2}`);
             reject(err2);
+          } else {
+            resolve(songs);
           }
-          resolve(songs);
+          client.close();
         });
-        client.close();
       });
     });
   }
 
   addSong(song, plName) {
-    MongoClient.connect(this.url, (err, client) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      const db = client.db(this.dbName),
-        songsCollection = db.collection(plName);
-      songsCollection.insertOne(song);
-      client.close();
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this.url, {"useNewUrlParser": true}, (err1, client) => {
+        if (err1) {
+          console.log(`Error: unable to connect to MongoDB!\n${err1}`);
+          reject(err1);
+          return;
+        }
+        const db = client.db(this.dbName);
+        const songsCollection = db.collection(plName);
+        songsCollection.insertOne(song, (err2) => {
+          if (err2) {
+            console.log(`Error: unable to insert song!\n${err2}`);
+            reject(err2);
+          } else {
+            resolve();
+          }
+
+          client.close();
+        });
+      });
     });
   }
 
   addSongs(songs, plName) {
-    MongoClient.connect(this.url, (err, client) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      const db = client.db(this.dbName),
-        songsCollection = db.collection(plName);
-      songsCollection.insertMany(songs);
-      client.close();
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this.url, {"useNewUrlParser": true}, (err1, client) => {
+        if (err1) {
+          console.log(`Error: unable to connect to MongoDB!\n${err1}`);
+          reject(err1);
+          return;
+        }
+        const db = client.db(this.dbName);
+        const songsCollection = db.collection(plName);
+        songsCollection.insertMany(songs, (err2) => {
+          if (err2) {
+            console.log(`Error: unable to insert songs!\n${err2}`);
+            reject(err2);
+          } else {
+            resolve();
+          }
+          client.close();
+        });
+      });
+    });
+  }
+
+  deletePlaylist(plName) {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this.url, {"useNewUrlParser": true}, (err1, client) => {
+        if (err1) {
+          console.log(`Error: unable to delete playlist!\n${err1}`);
+          reject(err1);
+          return;
+        }
+        const db = client.db(this.dbName);
+        const songsCollection = db.collection(plName);
+        songsCollection.drop((err2) => {
+          if (err2) {
+            console.log(`Error: unable to find songs!\n${err2}`);
+            reject(err2);
+          } else {
+            resolve();
+          }
+          client.close();
+        });
+      });
     });
   }
 }
