@@ -19,13 +19,14 @@ class HelpCommand extends Command {
 
     for (const key in this.commands) {
       if (Object.prototype.hasOwnProperty.call(this.commands, key)) {
-        const {help, name, usage} = this.commands[key];
+        const {help, name, usage, alias} = this.commands[key];
         // Ignrore undefined commands
         if (String(name) !== "undefined") {
           ++count;
           helpText += `${`| Name:  ${name}`.padEnd(61, " ")}|\n`;
           helpText += `${`| About: ${help}`.padEnd(61, " ")}|\n`;
           helpText += `${`| Usage: ${usage}`.padEnd(61, " ")}|\n`;
+          helpText += `${`| Alias: ${alias}`.padEnd(61, " ")}|\n`;
           helpText += "+------------------------------------------------------------+\n";
           if (count % 5 === 0) {
             helpText += "```";
