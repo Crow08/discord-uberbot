@@ -61,6 +61,28 @@ class YoutubeService {
     });
   }
 
+  getSongsViaSearchQuery(searchstring, count) {
+    return new Promise((resolve, reject) => {
+      ytsr(searchstring, {"limit": count}).then((result) => {
+        if (!result || !result.items || !result.items[0]) {
+          return reject(new Error("Something went wrong. Try again!"));
+        }
+        const songs = [];
+        for (let index = 0; index < result.items.length; index++) {
+          if (result.items[index].type === "video") {
+            const song = new Song();
+            song.title = result.items[index].title;
+            song.url = result.items[index].link;
+            song.Author = result.items[index].author.name;
+            song.src = song.srcType.YT;
+            songs.push(song);
+          }
+        }
+        return resolve(songs);
+      });
+    });
+  }
+
   getStream(url) {
     return ytdl(url, {"filter": "audioonly"});
   }

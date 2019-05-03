@@ -2,15 +2,15 @@ const AddCommand = require("./cmd/Command_Add");
 const AddPLCommand = require("./cmd/Command_PL_Add");
 const ChatService = require("./ChatService");
 const ClearCommand = require("./cmd/Command_Clear");
-const ClearPLCommand = require("./cmd/Command_PL_Clear");
 const DBService = require("./DBService");
+const DeletePLCommand = require("./cmd/Command_PL_Delete");
 const HelpCommand = require("./cmd/Command_Help");
 const LeaveCommand = require("./cmd/Command_Leave");
+const LoadPLCommand = require("./cmd/Command_PL_Load");
 const NowPlayingCommand = require("./cmd/Command_NowPlaying");
 const PauseCommand = require("./cmd/Command_Pause");
 const PlayerService = require("./PlayerService");
 const PlayCommand = require("./cmd/Command_Play");
-const PLCommand = require("./cmd/Command_PL");
 const QueueService = require("./QueueService");
 const RemoveCommand = require("./cmd/Command_Remove");
 const RemovePLCommand = require("./cmd/Command_PL_Remove");
@@ -48,7 +48,7 @@ class MusicClient {
       this.youtubeService, this.soundCloudService, this.spotifyService
     );
     this.dbService = new DBService();
-    this.queueService = new QueueService(this.dbService);
+    this.queueService = new QueueService(500, this.dbService);
     this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService);
     this.loadCommands();
   }
@@ -60,20 +60,23 @@ class MusicClient {
     const addCommand = new AddCommand(this.chatService, this.queueService, this.searchService);
     this.commands[addCommand.name] = addCommand;
 
-    const addPLCommand = new AddPLCommand();
+    const addPLCommand = new AddPLCommand(this.chatService, this.dbService, this.searchService);
     this.commands[addPLCommand.name] = addPLCommand;
 
     const clearCommand = new ClearCommand(this.chatService, this.queueService);
     this.commands[clearCommand.name] = clearCommand;
 
-    const clearPLCommand = new ClearPLCommand();
-    this.commands[clearPLCommand.name] = clearPLCommand;
+    const deletePLCommand = new DeletePLCommand(this.chatService, this.dbService);
+    this.commands[deletePLCommand.name] = deletePLCommand;
 
     const helpCommand = new HelpCommand(this.chatService, this.commands);
     this.commands[helpCommand.name] = helpCommand;
 
     const leaveCommand = new LeaveCommand(this.voiceService);
     this.commands[leaveCommand.name] = leaveCommand;
+
+    const loadPLCommand = new LoadPLCommand(this.chatService, this.queueService);
+    this.commands[loadPLCommand.name] = loadPLCommand;
 
     const nowPlayingCommand = new NowPlayingCommand(this.chatService, this.queueService, this.discord);
     this.commands[nowPlayingCommand.name] = nowPlayingCommand;
@@ -84,17 +87,14 @@ class MusicClient {
     const playCommand = new PlayCommand(this.chatService, this.playerService, this.searchService);
     this.commands[playCommand.name] = playCommand;
 
-    const pLCommand = new PLCommand();
-    this.commands[pLCommand.name] = pLCommand;
-
     const removeCommand = new RemoveCommand();
     this.commands[removeCommand.name] = removeCommand;
 
     const removePLCommand = new RemovePLCommand();
     this.commands[removePLCommand.name] = removePLCommand;
 
-    const searchCommand = new SearchCommand();
-    this.commands[searchCommand.name] = searchCommand;
+    const searchCmd = new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService);
+    this.commands[searchCmd.name] = searchCmd;
 
     const seekCommand = new SeekCommand(this.playerService, this.chatService);
     this.commands[seekCommand.name] = seekCommand;
