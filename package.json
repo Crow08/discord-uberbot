@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npm install",
+    "debug": "node ./src/index.js no_dc",
     "start": "node ./src/index.js",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
