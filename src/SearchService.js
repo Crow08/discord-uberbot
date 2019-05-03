@@ -57,6 +57,33 @@ class SearchService {
       }
     });
   }
+
+  searchMultiple(payload, count, msg, src) {
+    return new Promise((resolve, reject) => {
+      let note = "";
+      const searchstring = payload.trim();
+      switch (src) {
+      case "YT":
+        note = "Get songs from YouTube search query~";
+        this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.SEARCH);
+        this.youtubeService.getSongsViaSearchQuery(searchstring, count).then((songs) => resolve(songs)).
+          catch((error) => reject(error));
+        break;
+      case "SC":
+        note = "Get songs from SoundCloud search query~";
+        this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.SEARCH);
+        this.soundCloudService.getSongsViaSearchQuery(searchstring, count).then((songs) => resolve(songs)).
+          catch((error) => reject(error));
+        break;
+      case "SP":
+        note = "Unable to get Songs from Spotify~";
+        this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.FAIL);
+        break;
+      default:
+        break;
+      }
+    });
+  }
 }
 
 module.exports = SearchService;

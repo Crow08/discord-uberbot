@@ -31,8 +31,9 @@ class SoundCloudService {
 
   getSongViaSearchQuery(searchstring) {
     return new Promise((resolve, reject) => {
+      const query = encodeURIComponent(searchstring);
       request(
-        `https://api.soundcloud.com/tracks?q=${encodeURIComponent(searchstring)}&limit=1&client_id=${this.clientId}`,
+        `https://api.soundcloud.com/tracks?q=${query}&limit=1&client_id=${this.clientId}`,
         (error, response, body) => {
           const info = JSON.parse(body);
           if (error || !info || info.length === 0) {
@@ -47,6 +48,33 @@ class SoundCloudService {
           song.artist = info[0].user.username;
           song.src = song.srcType.SC;
           return resolve(song);
+        }
+      );
+    });
+  }
+
+  getSongsViaSearchQuery(searchstring, count) {
+    return new Promise((resolve, reject) => {
+      const query = encodeURIComponent(searchstring);
+      request(
+        `https://api.soundcloud.com/tracks?q=${query}&limit=${count}&client_id=${this.clientId}`,
+        (error, response, body) => {
+          const info = JSON.parse(body);
+          if (error || !info || info.length === 0) {
+            return reject(new Error("Something went wrong. Try again!"));
+          }
+          const songs = [];
+          for (let index = 0; index < info.length; index++) {
+            if ((info[index].streamable)) {
+              const song = new Song();
+              song.title = info[index].title;
+              song.url = info[index].stream_url;
+              song.artist = info[index].user.username;
+              song.src = song.srcType.SC;
+              songs.push(song);
+            }
+          }
+          return resolve(songs);
         }
       );
     });
