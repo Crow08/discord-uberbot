@@ -17,7 +17,7 @@ if (!process.argv.includes("no_dc")) {
   baseClient.login(settings.token);
 }
 
-baseClient.on("message", (msg) => {
+const processMsg = function processMsg(msg) {
   if (msg.author.bot && !settings.botTalk) {
     return;
   }
@@ -29,7 +29,11 @@ baseClient.on("message", (msg) => {
       musicClient.execute(cmd, payload, msg);
     }
   });
-});
+};
+
+baseClient.on("message", (msg) => processMsg(msg));
+
+baseClient.on("messageUpdate", (oldMsg, newMsg) => processMsg(newMsg));
 
 baseClient.on("ready", () => {
   console.log("------- UberBot is fully charged! -------\n>");
