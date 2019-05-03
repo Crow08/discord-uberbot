@@ -89,8 +89,8 @@ class MusicClient {
     const removePLCommand = new RemovePLCommand();
     this.commands[removePLCommand.name] = removePLCommand;
 
-    const searchCommand = new SearchCommand(this.chatService, this.playerService, this.searchService);
-    this.commands[searchCommand.name] = searchCommand;
+    const searchCmd = new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService);
+    this.commands[searchCmd.name] = searchCmd;
 
     const seekCommand = new SeekCommand(this.playerService, this.chatService);
     this.commands[seekCommand.name] = seekCommand;
