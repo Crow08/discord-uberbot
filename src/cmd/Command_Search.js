@@ -19,49 +19,35 @@ class SearchCommand extends Command {
       return;
     }
     this.searchService.searchMultiple(payload, 50, msg, "YT").
-      then((songs) => this.openSelectionMenu(songs, msg)).
+      then((songs) => this.chatService.openSelectionMenu(songs, msg, this.isSelectionCmd, (collected, songs) => {
+        const that = this;
+        console.log("000");
+        const msg = collected.array()[0];
+        const content = msg.content.trim();
+        if (!isNaN(content)) {
+          console.log("111");
+          console.log(that.playerService);
+          console.log("222");
+          that.playerService.playNow(songs[content - 1], msg);
+        } else if (content !== "cancel") {
+          const cmd = content.split(" ")[0];
+          const song = songs[content.split(" ")[1] - 1];
+          switch (cmd) {
+          case "play":
+          that.playerService.playNow(song, msg);
+            break;
+          case "add":
+          that.queueService.addToQueue(song);
+          that.chatService.simpleNote(msg.channel, `song added to queue: ${song.title}`, that.chatService.msgType.MUSIC);
+            break;
+          default:
+            break;
+          }
+        }
+      })).
       catch((error) => this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL));
   }
 
-  openSelectionMenu(songs, msg) {
-    let page = 0;
-    // Build choose menu.
-    msg.channel.send(this.buildSelectionPage(songs, page)).
-      // Add reactions for page navigation.
-      then((menuMsg) => menuMsg.react("⏪").then(() => menuMsg.react("⏩").then(() => {
-        // Add listeners to reactions.
-        const nextReaction = menuMsg.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏩" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        const backReaction = menuMsg.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏪" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        nextReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
-          if ((page + 1) * 10 <= songs.length) {
-            ++page;
-            menuMsg.edit(this.buildSelectionPage(songs, page));
-          }
-        });
-        backReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
-          if (page > 0) {
-            --page;
-            menuMsg.edit(this.buildSelectionPage(songs, page));
-          }
-        });
-        // Add listener for response Message.
-        msg.channel.awaitMessages(this.isSelectionCmd, {"errors": ["time"], "max": 1, "time": 120000}).
-          then((collected) => {
-            this.processSelectionCmd(collected, songs);
-            menuMsg.delete();
-          }).
-          // Timeout or error.
-          catch(() => menuMsg.delete());
-      })));
-  }
 
   isSelectionCmd(resp) {
     const message = resp.content.trim();
@@ -78,38 +64,6 @@ class SearchCommand extends Command {
       }
     }
     return false;
-  }
-
-  processSelectionCmd(collected, songs) {
-    const msg = collected.array()[0];
-    const content = msg.content.trim();
-    if (!isNaN(content)) {
-      this.playerService.playNow(songs[content - 1], msg);
-    } else if (content !== "cancel") {
-      const cmd = content.split(" ")[0];
-      const song = songs[content.split(" ")[1] - 1];
-      switch (cmd) {
-      case "play":
-        this.playerService.playNow(song, msg);
-        break;
-      case "add":
-        this.queueService.addToQueue(song);
-        this.chatService.simpleNote(msg.channel, `song added to queue: ${song.title}`, this.chatService.msgType.MUSIC);
-        break;
-      default:
-        break;
-      }
-    }
-  }
-
-  buildSelectionPage(songs, pageNo) {
-    const first = 10 * pageNo;
-    const last = first + 10 > songs.length - 1 ? songs.length - 1 : first + 10;
-    let page = "";
-    for (let index = first; index < last; index++) {
-      page += `${index + 1}. ${songs[index].title}\n`;
-    }
-    return page;
   }
 }
 
