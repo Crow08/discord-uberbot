@@ -98,6 +98,33 @@ class DBService {
       });
     });
   }
+
+  listPlaylists() {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this.url, {"useNewUrlParser": true}, (err1, client) => {
+        if (err1) {
+          console.log(`Error: unable to connect to MongoDB!\n${err1}`);
+          reject(err1);
+          return;
+        }
+        const db = client.db(this.dbName);
+        console.log("list PL");
+        db.listCollections().toArray((err, collInfos) => {
+          if (err) {
+            console.log(`Something went wrong: ${err}`);
+            reject(err);
+            return;
+          }
+          const plNames = [];
+          collInfos.forEach((playlist) => {
+            plNames.push(playlist.name);
+            client.close();
+          });
+          resolve(plNames);
+        });
+      });
+    });
+  }
 }
 
 module.exports = DBService;
