@@ -1,13 +1,14 @@
 const Command = require("./Command.js");
 
 class ListPLCommand extends Command {
-  constructor(chatService, dbService) {
+  constructor(chatService, dbService, discord) {
     super("pllist");
     super.help = "lists avaliable playlists";
     super.usage = "<prefix>pllist";
     super.alias = ["pllist", "l"];
     this.chatService = chatService;
     this.dbService = dbService;
+    this.discord = discord;
   }
 
   run(payload, msg) {
