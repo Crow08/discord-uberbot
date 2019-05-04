@@ -80,7 +80,7 @@ class MusicClient {
     const listPLCommand = new ListPLCommand(this.chatService, this.dbService, this.discord);
     this.commands[listPLCommand.name] = listPLCommand;
 
-    const listSongsCommand = new ListSongsCommand(this.chatService, this.dbService, this.discord);
+    const listSongsCommand = new ListSongsCommand(this.chatService, this.discord, this.dbService);
     this.commands[listSongsCommand.name] = listSongsCommand;
 
     const loadPLCommand = new LoadPLCommand(this.chatService, this.queueService);

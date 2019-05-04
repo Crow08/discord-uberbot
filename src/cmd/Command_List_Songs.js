@@ -14,10 +14,18 @@ class ListSongsCommand extends Command {
   run(payload, msg) {
     console.log("Testing...");
     this.dbService.getPlaylist(payload).then((songs) => {
+      let count = 1;
+      const embed = new this.discord.RichEmbed();
+      let songlist = "";
+      embed.setTitle(`Playlist: ${payload}`);
+      embed.setColor(48769);
       songs.forEach((song) => {
         console.log(`${song.title} - ${song.artist}`);
-        this.chatService.basicNote(msg.channel, `\`\`\`${song.title} - ${song.artist}\`\`\``);
+            songlist += `\`\`\`${count}. ${song.title} - ${song.artist}\`\`\`\n`;
+        count++;
       });
+      embed.setDescription(songlist);
+      this.chatService.richNote(msg.channel, embed);
     });
   }
 }

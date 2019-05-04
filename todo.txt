@@ -19,11 +19,9 @@ Deezer anbinden
 - zukünftige Suchreihenfolge: Deezer, Soundcloud, Youtube
 
 Playlists
-- listPlaylists - formating
 - remove songs from Playlists
 - merge Playlist-Befehl
 - upload file
-- list songs
 - add rating
 - load autoplaylist when queue empty
 
