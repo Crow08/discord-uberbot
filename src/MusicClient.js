@@ -76,7 +76,7 @@ class MusicClient {
     const leaveCommand = new LeaveCommand(this.voiceService);
     this.commands[leaveCommand.name] = leaveCommand;
 
-    const listPLCommand = new ListPLCommand(this.chatService, this.dbService);
+    const listPLCommand = new ListPLCommand(this.chatService, this.dbService, this.discord);
     this.commands[listPLCommand.name] = listPLCommand;
 
     const loadPLCommand = new LoadPLCommand(this.chatService, this.queueService);
