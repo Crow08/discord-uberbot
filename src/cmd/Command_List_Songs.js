@@ -1,13 +1,12 @@
 const Command = require("./Command.js");
 
-class TestCommand extends Command {
-  constructor(chatService, queueService, discord, dbService) {
-    super("test");
-    super.help = "for testing - duh!";
-    super.usage = "<prefix>test";
-    super.alias = ["test"];
+class ListSongsCommand extends Command {
+  constructor(chatService, discord, dbService) {
+    super("listsongs");
+    super.help = "lists all songs of the specified playlist";
+    super.usage = "<prefix>listsongs <playlist>";
+    super.alias = ["listsongs", "ls"];
     this.chatService = chatService;
-    this.queueService = queueService;
     this.discord = discord;
     this.dbService = dbService;
   }
@@ -23,4 +22,4 @@ class TestCommand extends Command {
   }
 }
 
-module.exports = TestCommand;
+module.exports = ListSongsCommand;

@@ -8,6 +8,7 @@ const HelpCommand = require("./cmd/Command_Help");
 const LeaveCommand = require("./cmd/Command_Leave");
 const ListPLCommand = require("./cmd/Command_PL_List");
 const LoadPLCommand = require("./cmd/Command_PL_Load");
+const ListSongsCommand = require("./cmd/Command_List_Songs");
 const NowPlayingCommand = require("./cmd/Command_NowPlaying");
 const PauseCommand = require("./cmd/Command_Pause");
 const PlayerService = require("./PlayerService");
@@ -78,6 +79,9 @@ class MusicClient {
 
     const listPLCommand = new ListPLCommand(this.chatService, this.dbService, this.discord);
     this.commands[listPLCommand.name] = listPLCommand;
+
+    const listSongsCommand = new ListSongsCommand(this.chatService, this.dbService, this.discord);
+    this.commands[listSongsCommand.name] = listSongsCommand;
 
     const loadPLCommand = new LoadPLCommand(this.chatService, this.queueService);
     this.commands[loadPLCommand.name] = loadPLCommand;
