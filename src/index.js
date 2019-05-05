@@ -33,7 +33,11 @@ const processMsg = function processMsg(msg) {
 
 baseClient.on("message", (msg) => processMsg(msg));
 
-baseClient.on("messageUpdate", (oldMsg, newMsg) => processMsg(newMsg));
+baseClient.on("messageUpdate", (oldMsg, newMsg) => {
+  if (oldMsg.content !== newMsg.content) {
+    processMsg(newMsg);
+  }
+});
 
 baseClient.on("ready", () => {
   console.log("------- UberBot is fully charged! -------\n>");
