@@ -22,8 +22,8 @@ class RemovePLCommand extends Command {
     this.dbService.removeSong(songName, plName).then((info) => {
       console.log(info.result);
       if (info.deletedCount === 0) {
-        // eslint-disable-next-line max-len
-        this.chatService.simpleNote(msg.channel, `"${songName}" wurde nicht in ${plName} gefunden`, this.chatService.msgType.FAIL);
+        const note = `"${songName}" wurde nicht in ${plName} gefunden`;
+        this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.FAIL);
       } else {
         this.chatService.simpleNote(msg.channel, `Song aus ${plName} entfernt`, this.chatService.msgType.INFO);
       }

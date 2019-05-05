@@ -16,13 +16,11 @@ class NowPlayingCommand extends Command {
     const nowplaying = this.queueService.history[0];
     const embed = new this.discord.RichEmbed();
     console.log(nowplaying);
-    // eslint-disable-next-line no-negated-condition
-    if (String(nowplaying) !== "undefined") {
-      this.chatService.displaySong(msg.channel, nowplaying);
-    } else {
-      console.log();
+    if (typeof nowplaying === "undefined") {
       embed.setColor(13632027);
       embed.addField("Are you deaf?", "Go check your ears, there is clearly nothing playing right now!", true);
+    } else {
+      this.chatService.displaySong(msg.channel, nowplaying);
     }
     this.chatService.richNote(msg.channel, embed);
   }

@@ -86,8 +86,7 @@ class DBService {
           return;
         }
         const db = client.db(this.dbName);
-        // eslint-disable-next-line quote-props
-        const info = db.collection(plName).deleteOne({title: {$regex: song, $options: "$i"}});
+        const info = db.collection(plName).deleteOne({"title": {"$regex": song, "$options": "$i"}});
         resolve(info);
         client.close();
       });
@@ -103,8 +102,7 @@ class DBService {
           return;
         }
         const db = client.db(this.dbName);
-        // eslint-disable-next-line quote-props
-        const info = db.collection(plName).findOne({title: {$regex: song, $options: "$i"}});
+        const info = db.collection(plName).findOne({"title": {"$regex": song, "$options": "$i"}});
         resolve(info);
         client.close();
       });

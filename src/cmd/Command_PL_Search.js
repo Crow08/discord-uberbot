@@ -23,8 +23,8 @@ class SearchPLCommand extends Command {
     this.dbService.findSong(songName, plName).then((info) => {
       console.log(info);
       if (info === "null") {
-        // eslint-disable-next-line max-len
-        this.chatService.simpleNote(msg.channel, `"${songName}" wurde nicht in ${plName} gefunden`, this.chatService.msgType.FAIL);
+        const note = `"${songName}" wurde nicht in ${plName} gefunden`;
+        this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.FAIL);
       } else {
         this.chatService.displaySong(msg.channel, info);
       }
