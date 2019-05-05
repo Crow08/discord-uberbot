@@ -26,6 +26,7 @@ const SkipCommand = require("./cmd/Command_Skip");
 const SoundCloudService = require("./SoundCloudService");
 const SpotifyService = require("./SpotifyService");
 const StopCommand = require("./cmd/Command_Stop");
+const UploadCommand = require("./cmd/Command_Upload");
 const VoiceService = require("./VoiceService");
 const YouTubeService = require("./YouTubeService");
 
@@ -122,6 +123,9 @@ class MusicClient {
 
     const testCommand = new TestCommand(this.chatService, this.queueService, this.discord, this.dbService);
     this.commands[testCommand.name] = testCommand;
+
+    const uploadCommand = new UploadCommand(this.chatService, this.dBService, this.searchService, this.queueService);
+    this.commands[uploadCommand.name] = uploadCommand;
   }
 
   execute(cmd, payload, msg) {
