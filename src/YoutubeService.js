@@ -1,9 +1,13 @@
 const ytdl = require("ytdl-core");
 const ytpl = require("ytpl");
-const ytsr = require("ytsr");
+const request = require("request");
 const Song = require("./Song");
 
 class YoutubeService {
+
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+  }
 
   getSongViaUrl(searchstring) {
     return new Promise((resolve, reject) => {
@@ -47,39 +51,67 @@ class YoutubeService {
 
   getSongViaSearchQuery(searchstring) {
     return new Promise((resolve, reject) => {
-      ytsr(searchstring, {"limit": 1}).then((result) => {
-        if (!result || !result.items || !result.items[0]) {
-          return reject(new Error("Something went wrong. Try again!"));
+      request(
+        "https://www.googleapis.com/youtube/v3/search?" +
+        "part=snippet&" +
+        "type=video&" +
+        "videoCategoryId=10&" +
+        "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
+        "maxResults=1&" +
+        `q=${searchstring}&` +
+        `key=${this.apiKey}`,
+        (error, response, body) => {
+          if (error) {
+            return reject(error);
+          }
+          if (typeof body === "undefined" || typeof JSON.parse(body).items === "undefined" ||
+            JSON.parse(body).items.length < 1) {
+            return reject(new Error("Something went wrong. Try again!"));
+          }
+          const result = JSON.parse(body).items[0];
+          const song = new Song();
+          song.title = result.snippet.title;
+          song.url = `https://www.youtube.com/watch?v=${result.id.videoId}`;
+          song.artist = result.snippet.channelTitle;
+          song.src = song.srcType.YT;
+          return resolve(song);
         }
-        const song = new Song();
-        song.title = result.items[0].title;
-        song.url = result.items[0].link;
-        song.Author = result.items[0].author.name;
-        song.src = song.srcType.YT;
-        return resolve(song);
-      });
+      );
     });
   }
 
   getSongsViaSearchQuery(searchstring, count) {
     return new Promise((resolve, reject) => {
-      ytsr(searchstring, {"limit": count}).then((result) => {
-        if (!result || !result.items || !result.items[0]) {
-          return reject(new Error("Something went wrong. Try again!"));
-        }
-        const songs = [];
-        for (let index = 0; index < result.items.length; index++) {
-          if (result.items[index].type === "video") {
+      request(
+        "https://www.googleapis.com/youtube/v3/search?" +
+        "part=snippet&" +
+        "type=video&" +
+        "videoCategoryId=10&" +
+        "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
+        `maxResults=${count}&` +
+        `q=${searchstring}&` +
+        `key=${this.apiKey}`,
+        (error, response, body) => {
+          if (error) {
+            return reject(error);
+          }
+          if (typeof body === "undefined" || typeof JSON.parse(body).items === "undefined" ||
+            JSON.parse(body).items.length < 1) {
+            return reject(new Error("Something went wrong. Try again!"));
+          }
+          const result = JSON.parse(body).items;
+          const songs = [];
+          for (let index = 0; index < result.length; index++) {
             const song = new Song();
-            song.title = result.items[index].title;
-            song.url = result.items[index].link;
-            song.Author = result.items[index].author.name;
+            song.title = result[index].snippet.title;
+            song.url = `https://www.youtube.com/watch?v=${result[index].id.videoId}`;
+            song.artist = result[index].snippet.channelTitle;
             song.src = song.srcType.YT;
             songs.push(song);
           }
+          return resolve(songs);
         }
-        return resolve(songs);
-      });
+      );
     });
   }
 

@@ -6,5 +6,6 @@
     "token": "DISCORD_BOT_TOKEN", 
     "scClientId": "SOUNDCLOUD_CLIENT_ID",
     "spotifyClientId": "SPOTIFY_CLIENT_ID",
-    "spotifyClientSecret": "SPOTIFY_CLIENT_SECRET"
+    "spotifyClientSecret": "SPOTIFY_CLIENT_SECRET",
+    "youtubeApiKey": "AIzaSyAdORXg7UZUo7sePv97JyoDqtQVi3Ll0b8"
 }

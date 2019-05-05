@@ -40,7 +40,7 @@ class MusicClient {
     this.bitRate = (typeof opt !== "undefined" && typeof opt.bitRate !== "undefined") ? opt.bitRate : "96000";
     console.log("Loading services...\n>");
     this.chatService = new ChatService({}, this.discord);
-    this.youtubeService = new YouTubeService();
+    this.youtubeService = new YouTubeService(opt.youtubeApiKey);
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
     this.searchService = new SearchService(

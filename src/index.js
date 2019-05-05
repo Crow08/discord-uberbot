@@ -10,7 +10,8 @@ const musicClient = new MusicClient(baseClient, Discord, {
   "defVolume": settings.defVolume,
   "scClientId": settings.scClientId,
   "spotifyClientId": settings.spotifyClientId,
-  "spotifyClientSecret": settings.spotifyClientSecret
+  "spotifyClientSecret": settings.spotifyClientSecret,
+  "youtubeApiKey": settings.youtubeApiKey
 });
 
 if (!process.argv.includes("no_dc")) {
