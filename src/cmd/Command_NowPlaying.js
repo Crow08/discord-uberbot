@@ -18,7 +18,7 @@ class NowPlayingCommand extends Command {
     console.log(nowplaying);
     // eslint-disable-next-line no-negated-condition
     if (String(nowplaying) !== "undefined") {
-      this.chatService.displaySong(msg.channel, nowplaying, this.discord);
+      this.chatService.displaySong(msg.channel, nowplaying);
     } else {
       console.log();
       embed.setColor(13632027);

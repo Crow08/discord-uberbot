@@ -26,7 +26,7 @@ class SearchPLCommand extends Command {
         // eslint-disable-next-line max-len
         this.chatService.simpleNote(msg.channel, `"${songName}" wurde nicht in ${plName} gefunden`, this.chatService.msgType.FAIL);
       } else {
-        this.chatService.displaySong(msg.channel, info, this.discord);
+        this.chatService.displaySong(msg.channel, info);
       }
     });
   }

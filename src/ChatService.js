@@ -1,6 +1,7 @@
 class ChatService {
-  constructor(options) {
+  constructor(options, discord) {
     this.options = options;
+    this.discord = discord;
     this.msgType = {
       "FAIL": "fail",
       "INFO": "info",
@@ -35,8 +36,7 @@ class ChatService {
     return channel.send(embed);
   }
 
-  displaySong(channel, song, discord) {
-    this.discord = discord;
+  displaySong(channel, song) {
     const embed = new this.discord.RichEmbed();
     for (const key in song) {
       if (song[key] === "") {
