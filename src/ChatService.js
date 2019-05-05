@@ -68,7 +68,7 @@ class ChatService {
         // Add listener for response Message.
         msg.channel.awaitMessages(isSelectionCmd, {"errors": ["time"], "max": 1, "time": 120000}).
           then((collected) => {
-            processSelectionCmd(collected, songs);
+            processSelectionCmd(collected);
             menuMsg.delete();
           }).
           // Timeout or error.

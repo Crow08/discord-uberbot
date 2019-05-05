@@ -1,7 +1,7 @@
 const Command = require("./Command.js");
 
 class RemoveCommand extends Command {
-  constructor(chatService, queueService, searchService) {
+  constructor(chatService, queueService) {
     super("remove");
     super.help = "removes a song from the current queue.";
     super.usage = "<prefix>remove <queue number>";
@@ -11,12 +11,19 @@ class RemoveCommand extends Command {
   }
 
   run(payload, msg) {
-    if (typeof payload === "undefined" || payload.length === 0 || !isNaN(payload)) {
-      this.chatService.simpleNote(msg.channel, "No queue Number found!", this.chatService.msgType.FAIL);
+    if (typeof payload === "undefined" || payload.length === 0 || isNaN(payload)) {
+      this.chatService.simpleNote(msg.channel, "No queue number found!", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
+    const index = payload - 1;
+    if (index < 0 || index >= this.queueService.queue.length) {
+      this.chatService.simpleNote(msg.channel, "queue number out of bounds!", this.chatService.msgType.FAIL);
+      return;
+    }
 
+    this.queueService.remove(index);
+    this.chatService.simpleNote(msg.channel, "song removed from the queue!", this.chatService.msgType.MUSIC);
   }
 }
 

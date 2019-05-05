@@ -49,6 +49,10 @@ class QueueService {
     this.queue = [];
   }
 
+  remove(position) {
+    this.queue.splice(position, 1);
+  }
+
   shuffleQueue() {
     this.queue = shuffle(this.queue);
   }
