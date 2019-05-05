@@ -7,7 +7,7 @@ Error-Handling!
 - Generelle Antwort an User, was überhaupt passiert
     - Wenn der Song nicht gefunden wurde
     - etc. (erweitern, wenn man mal zum Testen kommt/ Fehler auffallen)
-- Manchmal hört man keinen Sound, "lösbar" durch reconnect des Bots.
+- Manchmal hört man keinen Sound, "lösbar" durch reconnect des Bots. (.leave)
     - kann es noch nicht zuverlässig reproduzueren, vermutete den Stop-Befehl, aber trat nach Neustart des Bots erneut auf
     - In der Konsole steht nichts
 - Stream endet direkt nachdem Song hinzugefügt wird
@@ -25,7 +25,3 @@ Queue
 
 Play Song
 - raw-MP3-Support
-- display songinfo when new Song starts
-
-General:
-- add discord to chat-service (don´t want to pass that shit everytime)
