@@ -28,6 +28,8 @@ class AddPLCommand extends Command {
       } else {
         this.dBService.addSong(song, plName);
         const note = `added song: ${song.title} to playlist: ${plName}`;
+        song.playlist = plName;
+        console.log(song);
         this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.MUSIC);
       }
     }).

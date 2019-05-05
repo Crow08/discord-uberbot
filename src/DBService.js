@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 const {MongoClient} = require("mongodb");
 
 class DBService {
@@ -72,6 +73,23 @@ class DBService {
           }
           client.close();
         });
+      });
+    });
+  }
+
+  removeSong(song, plName) {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this.url, {"useNewUrlParser": true}, (err1, client) => {
+        if (err1) {
+          console.log(`Error: unable to connect to MongoDB!\n${err1}`);
+          reject(err1);
+          return;
+        }
+        const db = client.db(this.dbName);
+        // eslint-disable-next-line quote-props
+        const info = db.collection(plName).deleteOne({title: {$regex: song, $options: "$i"}});
+        resolve(info);
+        client.close();
       });
     });
   }

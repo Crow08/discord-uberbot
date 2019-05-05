@@ -12,7 +12,7 @@ class ListPLCommand extends Command {
   }
 
   run(payload, msg) {
-    console.log("Testing...");
+    console.log("Listing all playlists:");
     this.dbService.listPlaylists().then((plNames) => {
       const embed = new this.discord.RichEmbed();
       embed.setColor(890629);
