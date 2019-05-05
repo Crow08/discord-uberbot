@@ -13,20 +13,19 @@ Error-Handling!
 - Stream endet direkt nachdem Song hinzugefügt wird
     - evtl. retry implementieren
 
-Deezer anbinden
-- besser als Soundcloud?
-- fertige API zum "inspirieren lassen" (https://github.com/acostes/deezer-node-api)
-- zukünftige Suchreihenfolge: Deezer, Soundcloud, Youtube
-
 Playlists
-- remove songs from Playlists
 - merge Playlist-Befehl
 - upload file
 - add rating
 - load autoplaylist when queue empty
+- remove song: display removed song
 
 Queue
-- remove song from queue
+- remove: display removed Song
 
 Play Song
 - raw-MP3-Support
+- display songinfo when new Song starts
+
+General:
+- add discord to chat-service (don´t want to pass that shit everytime)
