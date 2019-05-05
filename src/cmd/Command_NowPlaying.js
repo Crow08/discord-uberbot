@@ -18,18 +18,7 @@ class NowPlayingCommand extends Command {
     console.log(nowplaying);
     // eslint-disable-next-line no-negated-condition
     if (String(nowplaying) !== "undefined") {
-      for (const key in nowplaying) {
-        if (nowplaying[key] === "") {
-          nowplaying[key] = "-";
-        }
-      }
-      embed.setColor(890629);
-      embed.addField("Title", nowplaying.title, true);
-      embed.addField("Artist", nowplaying.artist, true);
-      embed.addBlankField();
-      embed.addField("Requester", nowplaying.requester, true);
-      embed.addField("Rating", nowplaying.rating, true);
-      embed.addField("Source", nowplaying.src, true);
+      this.chatService.displaySong(msg.channel, nowplaying, this.discord);
     } else {
       console.log();
       embed.setColor(13632027);

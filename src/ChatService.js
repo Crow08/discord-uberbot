@@ -35,6 +35,23 @@ class ChatService {
     return channel.send(embed);
   }
 
+  displaySong(channel, song, discord) {
+    this.discord = discord;
+    const embed = new this.discord.RichEmbed();
+    for (const key in song) {
+      if (song[key] === "") {
+        song[key] = "-";
+      }
+    }
+    embed.setColor(890629);
+    embed.addField("Title", song.title, true);
+    embed.addField("Artist", song.artist, true);
+    embed.addBlankField();
+    embed.addField("Requester", song.requester, true);
+    embed.addField("Rating", song.rating, true);
+    embed.addField("Source", song.src, true);
+    return channel.send(embed);
+  }
 
   openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
     let page = 0;
