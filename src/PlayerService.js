@@ -11,13 +11,15 @@ class PlayerService {
     if (reason === "ignore") {
       return;
     }
-    const song = this.queueService.getNextSong(msg);
-    if (song) {
-      this.playNow(song, msg);
-    } else {
-      this.chatService.simpleNote(msg.channel, "Playback finished!", this.chatService.msgType.MUSIC);
-      this.voiceService.disconnectVoiceConnection(msg);
-    }
+    this.queueService.getNextSong(msg).
+      then((song) => {
+        this.playNow(song, msg);
+      }).
+      catch((err) => {
+        console.log(err);
+        this.chatService.simpleNote(msg.channel, "Playback finished!", this.chatService.msgType.MUSIC);
+        this.voiceService.disconnectVoiceConnection(msg);
+      });
   }
 
   handleError(error, msg) {
@@ -53,33 +55,28 @@ class PlayerService {
 
   play(msg) {
     if (!this.audioDispatcher || this.destroyed) {
-      const nextSong = this.queueService.getNextSong();
-      if (nextSong) {
-        this.playNow(nextSong, msg);
-        return;
-      }
-      this.chatService.simpleNote(msg.channel, "Audiostream not found!", this.chatService.msgType.FAIL);
-      return;
-    }
-    if (!this.audioDispatcher.paused) {
+      this.queueService.getNextSong().
+        then((song) => {
+          this.playNow(song, msg);
+        }).
+        catch((err) => this.chatService.simpleNote(msg.channel, err, this.chatService.msgType.FAIL));
+    } else if (this.audioDispatcher.paused) {
+      this.audioDispatcher.resume();
+      this.chatService.simpleNote(msg.channel, "Now playing!", this.chatService.msgType.MUSIC);
+    } else {
       this.chatService.simpleNote(msg.channel, "Already playing!", this.chatService.msgType.FAIL);
-      return;
     }
-    this.audioDispatcher.resume();
-    this.chatService.simpleNote(msg.channel, "Now playing!", this.chatService.msgType.MUSIC);
   }
 
   pause(msg) {
     if (!this.audioDispatcher) {
       this.chatService.simpleNote(msg.channel, "Audiostream not found!", this.chatService.msgType.FAIL);
-      return;
-    }
-    if (this.audioDispatcher.paused) {
+    } else if (this.audioDispatcher.paused) {
       this.chatService.simpleNote(msg.channel, "Playback already paused!", this.chatService.msgType.FAIL);
-      return;
+    } else {
+      this.audioDispatcher.pause();
+      this.chatService.simpleNote(msg.channel, "Playback paused!", this.chatService.msgType.MUSIC);
     }
-    this.audioDispatcher.pause();
-    this.chatService.simpleNote(msg.channel, "Playback paused!", this.chatService.msgType.MUSIC);
   }
 
   stop(msg) {
