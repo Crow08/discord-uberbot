@@ -1,4 +1,3 @@
-/* eslint-disable sort-keys */
 const {MongoClient} = require("mongodb");
 
 class DBService {
@@ -21,8 +20,35 @@ class DBService {
           if (err2) {
             console.log(`Error: unable to find songs!\n${err2}`);
             reject(err2);
-          } else {
+          } else if (songs) {
             resolve(songs);
+          } else {
+            reject(new Error("Unable to find songs!"));
+          }
+          client.close();
+        });
+      });
+    });
+  }
+
+  getRandomSong(plName) {
+    return new Promise((resolve, reject) => {
+      MongoClient.connect(this.url, {"useNewUrlParser": true}, (err1, client) => {
+        if (err1) {
+          console.log(`Error: unable to connect to MongoDB!\n${err1}`);
+          reject(err1);
+          return;
+        }
+        const db = client.db(this.dbName);
+        const songsCollection = db.collection(plName);
+        songsCollection.aggregate([{"$sample": {"size": 1}}]).toArray((err2, songs) => {
+          if (err2) {
+            console.log(`Error: unable to find song!\n${err2}`);
+            reject(err2);
+          } else if (songs && songs[0]) {
+            resolve(songs[0]);
+          } else {
+            reject(new Error("Unable to find song!"));
           }
           client.close();
         });
@@ -47,7 +73,6 @@ class DBService {
           } else {
             resolve();
           }
-
           client.close();
         });
       });
@@ -86,7 +111,7 @@ class DBService {
           return;
         }
         const db = client.db(this.dbName);
-        const info = db.collection(plName).deleteOne({"title": {"$regex": song, "$options": "$i"}});
+        const info = db.collection(plName).deleteOne({"title": {"$options": "$i", "$regex": song}});
         resolve(info);
         client.close();
       });
@@ -102,7 +127,7 @@ class DBService {
           return;
         }
         const db = client.db(this.dbName);
-        const info = db.collection(plName).findOne({"title": {"$regex": song, "$options": "$i"}});
+        const info = db.collection(plName).findOne({"title": {"$options": "$i", "$regex": song}});
         resolve(info);
         client.close();
       });

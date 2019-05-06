@@ -1,5 +1,6 @@
 const AddCommand = require("./cmd/Command_Add");
 const AddPLCommand = require("./cmd/Command_PL_Add");
+const AutoPLCommand = require("./cmd/Command_AutoPL");
 const ChatService = require("./ChatService");
 const ClearCommand = require("./cmd/Command_Clear");
 const DBService = require("./DBService");
@@ -66,6 +67,9 @@ class MusicClient {
 
     const addPLCommand = new AddPLCommand(this.chatService, this.dbService, this.searchService);
     this.commands[addPLCommand.name] = addPLCommand;
+
+    const autoPLCommand = new AutoPLCommand(this.chatService, this.queueService);
+    this.commands[autoPLCommand.name] = autoPLCommand;
 
     const clearCommand = new ClearCommand(this.chatService, this.queueService);
     this.commands[clearCommand.name] = clearCommand;
