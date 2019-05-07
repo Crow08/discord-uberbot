@@ -39,6 +39,7 @@ class MusicClient {
     this.discord = discord;
     this.defVolume = (typeof opt !== "undefined" && typeof opt.defVolume !== "undefined") ? opt.defVolume : 50;
     this.bitRate = (typeof opt !== "undefined" && typeof opt.bitRate !== "undefined") ? opt.bitRate : "96000";
+    this.botPrefix = opt.botPrefix;
     console.log("Loading services...\n>");
     this.chatService = new ChatService({}, this.discord);
     this.youtubeService = new YouTubeService(opt.youtubeApiKey);
@@ -60,13 +61,14 @@ class MusicClient {
 
   loadCommands() {
     console.log("Loading commands...\n>");
-    this.commands = [
+    this.commands.splice(
+      0, 0,
       new AddCommand(this.chatService, this.queueService, this.searchService),
       new AddPLCommand(this.chatService, this.dbService, this.searchService),
       new AutoPLCommand(this.chatService, this.queueService),
       new ClearCommand(this.chatService, this.queueService),
       new DeletePLCommand(this.chatService, this.dbService),
-      new HelpCommand(this.chatService, this.commands),
+      new HelpCommand(this.chatService, this.commands, this.botPrefix),
       new LeaveCommand(this.playerService, this.voiceService),
       new ListPLCommand(this.chatService, this.dbService, this.discord),
       new ListSongsCommand(this.chatService, this.discord, this.dbService),
@@ -84,7 +86,7 @@ class MusicClient {
       new StopCommand(this.playerService),
       new TestCommand(this.chatService, this.queueService, this.discord, this.dbService),
       new UploadCommand(this.chatService, this.queueService, this.searchService, this.dBService)
-    ];
+    );
   }
 
   execute(cmd, payload, msg) {
