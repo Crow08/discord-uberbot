@@ -3,7 +3,7 @@ const Command = require("./Command.js");
 class AutoPLCommand extends Command {
   constructor(chatService, queueService) {
     super("autopl");
-    super.help = "set a playlist to be the autoplaylist. (leave empty to unset).";
+    super.help = "set a playlist to be the autoplaylist.\n(leave playlist name empty to unset autoplaylist).";
     super.usage = "<prefix>autopl [<playlist name>]";
     super.alias = ["autopl"];
     this.chatService = chatService;

@@ -7,6 +7,7 @@ const readline = require("readline");
 const baseClient = new Discord.Client();
 const musicClient = new MusicClient(baseClient, Discord, {
   "bitRate": settings.bitRate,
+  "botPrefix": settings.botPrefix,
   "defVolume": settings.defVolume,
   "scClientId": settings.scClientId,
   "spotifyClientId": settings.spotifyClientId,

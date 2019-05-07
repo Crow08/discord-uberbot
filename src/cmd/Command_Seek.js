@@ -1,7 +1,7 @@
 const Command = require("./Command.js");
 
 class StopCommand extends Command {
-  constructor(playerService, chatService) {
+  constructor(chatService, playerService) {
     super("seek");
     super.help = "seek playback position.";
     super.usage = "<prefix>seek <number>";
