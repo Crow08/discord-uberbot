@@ -5,6 +5,7 @@ class StopCommand extends Command {
     super("seek");
     super.help = "seek playback position.";
     super.usage = "<prefix>seek <number>";
+    super.alias = ["seek"];
     this.playerService = playerService;
     this.chatService = chatService;
   }

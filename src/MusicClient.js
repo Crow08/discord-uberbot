@@ -80,7 +80,7 @@ class MusicClient {
     const helpCommand = new HelpCommand(this.chatService, this.commands);
     this.commands[helpCommand.name] = helpCommand;
 
-    const leaveCommand = new LeaveCommand(this.voiceService);
+    const leaveCommand = new LeaveCommand(this.voiceService, this.playerService);
     this.commands[leaveCommand.name] = leaveCommand;
 
     const listPLCommand = new ListPLCommand(this.chatService, this.dbService, this.discord);

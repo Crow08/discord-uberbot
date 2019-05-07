@@ -54,7 +54,7 @@ class PlayerService {
   }
 
   play(msg) {
-    if (!this.audioDispatcher || this.destroyed) {
+    if (!this.audioDispatcher || this.audioDispatcher.destroyed) {
       this.queueService.getNextSong().
         then((song) => {
           this.playNow(song, msg);
@@ -85,6 +85,7 @@ class PlayerService {
       return;
     }
     this.audioDispatcher.end("ignore");
+    this.audioDispatcher.destroyed = true;
     this.chatService.simpleNote(msg.channel, "Playback stopped!", this.chatService.msgType.MUSIC);
   }
 
