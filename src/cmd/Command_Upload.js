@@ -2,7 +2,7 @@ const Command = require("./Command.js");
 const request = require("request");
 
 class UploadCommand extends Command {
-  constructor(chatService, dBService, searchService, queueService) {
+  constructor(chatService, queueService, searchService, dBService) {
     super("upload");
     super.help = "add a songs from a file to the queue or to a playlist.";
     super.usage = "<prefix>upload [<playlist name>] => attach file to the message";

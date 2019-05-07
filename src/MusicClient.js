@@ -67,7 +67,7 @@ class MusicClient {
       new ClearCommand(this.chatService, this.queueService),
       new DeletePLCommand(this.chatService, this.dbService),
       new HelpCommand(this.chatService, this.commands),
-      new LeaveCommand(this.voiceService, this.playerService),
+      new LeaveCommand(this.playerService, this.voiceService),
       new ListPLCommand(this.chatService, this.dbService, this.discord),
       new ListSongsCommand(this.chatService, this.discord, this.dbService),
       new LoadPLCommand(this.chatService, this.queueService),
@@ -78,12 +78,12 @@ class MusicClient {
       new RemovePLCommand(this.chatService, this.dbService),
       new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService),
       new SearchPLCommand(this.chatService, this.dbService, this.discord),
-      new SeekCommand(this.playerService, this.chatService),
+      new SeekCommand(this.chatService, this.playerService),
       new ShowQueueCommand(this.chatService, this.queueService, this.discord),
       new SkipCommand(this.playerService),
       new StopCommand(this.playerService),
       new TestCommand(this.chatService, this.queueService, this.discord, this.dbService),
-      new UploadCommand(this.chatService, this.dBService, this.searchService, this.queueService)
+      new UploadCommand(this.chatService, this.queueService, this.searchService, this.dBService)
     ];
   }
 
