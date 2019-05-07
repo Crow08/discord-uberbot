@@ -58,91 +58,42 @@ class MusicClient {
     this.loadCommands();
   }
 
-  // TODO: find shorter way to init all Commands
-  // eslint-disable-next-line max-statements
   loadCommands() {
     console.log("Loading commands...\n>");
-    const addCommand = new AddCommand(this.chatService, this.queueService, this.searchService);
-    this.commands[addCommand.name] = addCommand;
-
-    const addPLCommand = new AddPLCommand(this.chatService, this.dbService, this.searchService);
-    this.commands[addPLCommand.name] = addPLCommand;
-
-    const autoPLCommand = new AutoPLCommand(this.chatService, this.queueService);
-    this.commands[autoPLCommand.name] = autoPLCommand;
-
-    const clearCommand = new ClearCommand(this.chatService, this.queueService);
-    this.commands[clearCommand.name] = clearCommand;
-
-    const deletePLCommand = new DeletePLCommand(this.chatService, this.dbService);
-    this.commands[deletePLCommand.name] = deletePLCommand;
-
-    const helpCommand = new HelpCommand(this.chatService, this.commands);
-    this.commands[helpCommand.name] = helpCommand;
-
-    const leaveCommand = new LeaveCommand(this.voiceService, this.playerService);
-    this.commands[leaveCommand.name] = leaveCommand;
-
-    const listPLCommand = new ListPLCommand(this.chatService, this.dbService, this.discord);
-    this.commands[listPLCommand.name] = listPLCommand;
-
-    const listSongsCommand = new ListSongsCommand(this.chatService, this.discord, this.dbService);
-    this.commands[listSongsCommand.name] = listSongsCommand;
-
-    const loadPLCommand = new LoadPLCommand(this.chatService, this.queueService);
-    this.commands[loadPLCommand.name] = loadPLCommand;
-
-    const nowPlayingCommand = new NowPlayingCommand(this.chatService, this.queueService, this.discord);
-    this.commands[nowPlayingCommand.name] = nowPlayingCommand;
-
-    const pauseCommand = new PauseCommand(this.playerService);
-    this.commands[pauseCommand.name] = pauseCommand;
-
-    const playCommand = new PlayCommand(this.chatService, this.playerService, this.searchService);
-    this.commands[playCommand.name] = playCommand;
-
-    const removeCommand = new RemoveCommand(this.chatService, this.queueService);
-    this.commands[removeCommand.name] = removeCommand;
-
-    const removePLCommand = new RemovePLCommand(this.chatService, this.dbService);
-    this.commands[removePLCommand.name] = removePLCommand;
-
-    const searchCmd = new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService);
-    this.commands[searchCmd.name] = searchCmd;
-
-    const searchPLCommand = new SearchPLCommand(this.chatService, this.dbService, this.discord);
-    this.commands[searchPLCommand.name] = searchPLCommand;
-
-    const seekCommand = new SeekCommand(this.playerService, this.chatService);
-    this.commands[seekCommand.name] = seekCommand;
-
-    const showQueueCommand = new ShowQueueCommand(this.chatService, this.queueService, this.discord);
-    this.commands[showQueueCommand.name] = showQueueCommand;
-
-    const skipCommand = new SkipCommand(this.playerService);
-    this.commands[skipCommand.name] = skipCommand;
-
-    const stopCommand = new StopCommand(this.playerService);
-    this.commands[stopCommand.name] = stopCommand;
-
-    const testCommand = new TestCommand(this.chatService, this.queueService, this.discord, this.dbService);
-    this.commands[testCommand.name] = testCommand;
-
-    const uploadCommand = new UploadCommand(this.chatService, this.dBService, this.searchService, this.queueService);
-    this.commands[uploadCommand.name] = uploadCommand;
+    this.commands = [
+      new AddCommand(this.chatService, this.queueService, this.searchService),
+      new AddPLCommand(this.chatService, this.dbService, this.searchService),
+      new AutoPLCommand(this.chatService, this.queueService),
+      new ClearCommand(this.chatService, this.queueService),
+      new DeletePLCommand(this.chatService, this.dbService),
+      new HelpCommand(this.chatService, this.commands),
+      new LeaveCommand(this.voiceService, this.playerService),
+      new ListPLCommand(this.chatService, this.dbService, this.discord),
+      new ListSongsCommand(this.chatService, this.discord, this.dbService),
+      new LoadPLCommand(this.chatService, this.queueService),
+      new NowPlayingCommand(this.chatService, this.queueService, this.discord),
+      new PauseCommand(this.playerService),
+      new PlayCommand(this.chatService, this.playerService, this.searchService),
+      new RemoveCommand(this.chatService, this.queueService),
+      new RemovePLCommand(this.chatService, this.dbService),
+      new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService),
+      new SearchPLCommand(this.chatService, this.dbService, this.discord),
+      new SeekCommand(this.playerService, this.chatService),
+      new ShowQueueCommand(this.chatService, this.queueService, this.discord),
+      new SkipCommand(this.playerService),
+      new StopCommand(this.playerService),
+      new TestCommand(this.chatService, this.queueService, this.discord, this.dbService),
+      new UploadCommand(this.chatService, this.dBService, this.searchService, this.queueService)
+    ];
   }
 
   execute(cmd, payload, msg) {
     console.log(`CMD: ${cmd}\n>`);
-    for (const key in this.commands) {
-      if (Object.prototype.hasOwnProperty.call(this.commands, key)) {
-        this.commands[key].alias.forEach((element) => {
-          if (cmd === element) {
-            this.commands[key].run(payload, msg);
-          }
-        });
+    this.commands.forEach((command) => {
+      if (command.alias.includes(cmd)) {
+        command.run(payload, msg);
       }
-    }
+    });
   }
 }
 
