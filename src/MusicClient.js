@@ -23,6 +23,7 @@ const SearchService = require("./SearchService");
 const SearchPLCommand = require("./cmd/Command_PL_Search");
 const SeekCommand = require("./cmd/Command_Seek");
 const ShowQueueCommand = require("./cmd/Command_ShowQueue");
+const ShuffleCommand = require("./cmd/Command_Shuffle");
 const SkipCommand = require("./cmd/Command_Skip");
 const SoundCloudService = require("./SoundCloudService");
 const SpotifyService = require("./SpotifyService");
@@ -56,7 +57,9 @@ class MusicClient {
     this.dbService = new DBService();
     this.queueService = new QueueService(500, this.dbService);
     this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService);
+    console.log("services loaded!\n>");
     this.loadCommands();
+    this.connectDB();
   }
 
   loadCommands() {
@@ -82,11 +85,20 @@ class MusicClient {
       new SearchPLCommand(this.chatService, this.dbService, this.discord),
       new SeekCommand(this.chatService, this.playerService),
       new ShowQueueCommand(this.chatService, this.queueService, this.discord),
+      new ShuffleCommand(this.chatService,this.queueService),
       new SkipCommand(this.playerService),
       new StopCommand(this.playerService),
       new TestCommand(this.chatService, this.queueService, this.discord, this.dbService),
       new UploadCommand(this.chatService, this.queueService, this.searchService, this.dBService)
     );
+    console.log("Commands loaded!\n>");
+  }
+
+  connectDB() {
+    console.log("Connecting to DB...\n>");
+    this.dbService.connectDB().
+      then(() => console.log("DB Connected!\n>")).
+      catch((err) => console.log(err));
   }
 
   execute(cmd, payload, msg) {
