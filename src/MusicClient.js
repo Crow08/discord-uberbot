@@ -23,6 +23,7 @@ const SearchService = require("./SearchService");
 const SearchPLCommand = require("./cmd/Command_PL_Search");
 const SeekCommand = require("./cmd/Command_Seek");
 const ShowQueueCommand = require("./cmd/Command_ShowQueue");
+const ShuffleCommand = require("./cmd/Command_Shuffle");
 const SkipCommand = require("./cmd/Command_Skip");
 const SoundCloudService = require("./SoundCloudService");
 const SpotifyService = require("./SpotifyService");
@@ -82,6 +83,7 @@ class MusicClient {
       new SearchPLCommand(this.chatService, this.dbService, this.discord),
       new SeekCommand(this.chatService, this.playerService),
       new ShowQueueCommand(this.chatService, this.queueService, this.discord),
+      new ShuffleCommand(this.chatService,this.queueService),
       new SkipCommand(this.playerService),
       new StopCommand(this.playerService),
       new TestCommand(this.chatService, this.queueService, this.discord, this.dbService),

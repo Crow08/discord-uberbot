@@ -9,7 +9,6 @@
 - add rating
 
 ##### Queue ##### 
-- shuffle queue
 - loop with options (song / queue / none)
 
 ##### Play song ##### 
