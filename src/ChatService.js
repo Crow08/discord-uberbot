@@ -1,7 +1,8 @@
 class ChatService {
-  constructor(options, discord) {
+  constructor(options, discord, dbService) {
     this.options = options;
     this.discord = discord;
+    this.dbService = dbService;
     this.msgType = {
       "FAIL": "fail",
       "INFO": "info",
@@ -36,21 +37,14 @@ class ChatService {
     return channel.send(embed);
   }
 
-  displaySong(channel, song) {
-    const embed = new this.discord.RichEmbed();
-    for (const key in song) {
-      if (song[key] === "") {
-        song[key] = "-";
-      }
-    }
-    embed.setColor(890629);
-    embed.addField("Title", song.title, true);
-    embed.addField("Artist", song.artist, true);
-    embed.addBlankField();
-    embed.addField("Requester", song.requester, true);
-    embed.addField("Rating", song.rating, true);
-    embed.addField("Source", song.src, true);
-    return channel.send(embed);
+  displaySong(msg, song) {
+    this.openRatingMenu(song, msg, (ratedSong) => {
+      this.dbService.updateSongRating(ratedSong).
+        then((rateResult) => {
+          console.log(rateResult);
+        }).
+        catch((err) => console.log(err));
+    });
   }
 
   openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
@@ -93,6 +87,35 @@ class ChatService {
       })));
   }
 
+  openRatingMenu(song, msg, processRating) {
+    // Build choose menu.
+    msg.channel.send(this.buildSongEmbed(song)).
+      // Add reactions for page navigation.
+      then((menuMsg) => menuMsg.react("⏫").then(() => menuMsg.react("⏬").then(() => {
+        // Add listeners to reactions.
+        const upReaction = menuMsg.createReactionCollector(
+          (reaction, user) => reaction.emoji.name === "⏫" && user.id === msg.author.id,
+          {"time": 120000}
+        );
+        const downReaction = menuMsg.createReactionCollector(
+          (reaction, user) => reaction.emoji.name === "⏬" && user.id === msg.author.id,
+          {"time": 120000}
+        );
+        upReaction.on("collect", (reaction) => {
+          reaction.remove(msg.author);
+          ++song.rating;
+          processRating(song);
+          menuMsg.edit(this.buildSongEmbed(song));
+        });
+        downReaction.on("collect", (reaction) => {
+          reaction.remove(msg.author);
+          --song.rating;
+          processRating(song);
+          menuMsg.edit(this.buildSongEmbed(song));
+        });
+      })));
+  }
+
   buildSelectionPage(songs, pageNo) {
     const first = 10 * pageNo;
     const last = first + 10 > songs.length - 1 ? songs.length - 1 : first + 10;
@@ -101,6 +124,23 @@ class ChatService {
       page += `${index + 1}. ${songs[index].title}\n`;
     }
     return page;
+  }
+
+  buildSongEmbed(song) {
+    const embed = new this.discord.RichEmbed();
+    for (const key in song) {
+      if (song[key] === "") {
+        song[key] = "-";
+      }
+    }
+    embed.setColor(890629);
+    embed.addField("Title", song.title, true);
+    embed.addField("Artist", song.artist, true);
+    embed.addBlankField();
+    embed.addField("Requester", song.requester, true);
+    embed.addField("Rating", song.rating, true);
+    embed.addField("Source", song.src, true);
+    return embed;
   }
 }
 

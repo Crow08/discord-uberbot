@@ -26,7 +26,7 @@ class SearchPLCommand extends Command {
         const note = `"${songName}" wurde nicht in ${plName} gefunden`;
         this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.FAIL);
       } else {
-        this.chatService.displaySong(msg.channel, info);
+        this.chatService.displaySong(msg, info);
       }
     });
   }

@@ -42,10 +42,11 @@ class MusicClient {
     this.bitRate = (typeof opt !== "undefined" && typeof opt.bitRate !== "undefined") ? opt.bitRate : "96000";
     this.botPrefix = opt.botPrefix;
     console.log("Loading services...\n>");
-    this.chatService = new ChatService({}, this.discord);
     this.youtubeService = new YouTubeService(opt.youtubeApiKey);
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
+    this.dbService = new DBService();
+    this.chatService = new ChatService({}, this.discord, this.dbService);
     this.searchService = new SearchService(
       this.chatService, this.youtubeService, this.soundCloudService,
       this.spotifyService
@@ -54,7 +55,6 @@ class MusicClient {
       {"bitRate": this.bitRate, "defVolume": this.defVolume}, this.baseClient,
       this.youtubeService, this.soundCloudService, this.spotifyService
     );
-    this.dbService = new DBService();
     this.queueService = new QueueService(500, this.dbService);
     this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService);
     console.log("services loaded!\n>");

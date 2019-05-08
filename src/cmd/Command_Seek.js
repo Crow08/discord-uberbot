@@ -13,6 +13,7 @@ class StopCommand extends Command {
   run(payload, msg) {
     if (isNaN(payload)) {
       this.chatService.simpleNote(msg.channel, "Seek position must be numeric!", this.chatService.msgType.Fail);
+      return;
     }
     this.playerService.seek(payload, msg);
   }

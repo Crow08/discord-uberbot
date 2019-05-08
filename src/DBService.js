@@ -89,15 +89,12 @@ class DBService {
     });
   }
 
-  rateSong(song, rate) {
-    console.log("got parameter:");
-    console.log(song);
-    console.log(rate);
-    console.log(song.playlist);
+  updateSongRating(song) {
     return new Promise((resolve, reject) => {
+      const {title, rating} = song;
       this.db.collection(song.playlist).findOneAndUpdate(
-        {"title": {"$options": "$i", "$regex": song.title}},
-        {"$inc": {"rating": rate}}
+        {title},
+        {"$set": {rating}}
       ).
         then(resolve).
         catch(reject);

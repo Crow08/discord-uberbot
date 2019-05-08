@@ -20,7 +20,7 @@ class NowPlayingCommand extends Command {
       embed.setColor(13632027);
       embed.addField("Are you deaf?", "Go check your ears, there is clearly nothing playing right now!", true);
     } else {
-      this.chatService.displaySong(msg.channel, nowplaying);
+      this.chatService.displaySong(msg, nowplaying);
     }
     this.chatService.richNote(msg.channel, embed);
   }
