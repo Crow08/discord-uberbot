@@ -89,6 +89,21 @@ class DBService {
     });
   }
 
+  rateSong(song, rate) {
+    console.log("got parameter:");
+    console.log(song);
+    console.log(rate);
+    console.log(song.playlist);
+    return new Promise((resolve, reject) => {
+      this.db.collection(song.playlist).findOneAndUpdate(
+        {"title": {"$options": "$i", "$regex": song.title}},
+        {"$inc": {"rating": rate}}
+      ).
+        then(resolve).
+        catch(reject);
+    });
+  }
+
   getPlaylist(plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
