@@ -57,7 +57,9 @@ class MusicClient {
     this.dbService = new DBService();
     this.queueService = new QueueService(500, this.dbService);
     this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService);
+    console.log("services loaded!\n>");
     this.loadCommands();
+    this.connectDB();
   }
 
   loadCommands() {
@@ -89,6 +91,14 @@ class MusicClient {
       new TestCommand(this.chatService, this.queueService, this.discord, this.dbService),
       new UploadCommand(this.chatService, this.queueService, this.searchService, this.dBService)
     );
+    console.log("Commands loaded!\n>");
+  }
+
+  connectDB() {
+    console.log("Connecting to DB...\n>");
+    this.dbService.connectDB().
+      then(() => console.log("DB Connected!\n>")).
+      catch((err) => console.log(err));
   }
 
   execute(cmd, payload, msg) {
