@@ -16,14 +16,16 @@ class PlayCommand extends Command {
       this.playerService.play(msg);
       return;
     }
-    this.searchService.search(payload, msg).then((song) => {
-      if (Array.isArray(song)) {
-        this.playerService.playMultipleNow(song, msg);
-      } else {
-        this.playerService.playNow(song, msg);
-      }
-    }).
-      catch();
+    this.searchService.search(payload).
+      then((song, note) => {
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+        if (Array.isArray(song)) {
+          this.playerService.playMultipleNow(song, msg);
+        } else {
+          this.playerService.playNow(song, msg);
+        }
+      }).
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
 

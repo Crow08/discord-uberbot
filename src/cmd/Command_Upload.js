@@ -34,52 +34,48 @@ class UploadCommand extends Command {
   }
 
   addToQueue(lines, msg) {
-    const promisses = [];
-    lines.forEach((line) => {
-      promisses.push(this.searchService.search(line, msg));
-    });
-    Promise.all(promisses).then((allSongs) => {
-      let count = 0;
-      allSongs.forEach((song) => {
-        if (Array.isArray(song)) {
-          this.queueService.addMultipleToQueue(song, msg);
-          count += song.length();
-        } else {
-          this.queueService.addToQueue(song, msg);
-          ++count;
-        }
-      });
-      this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
-    }).
-      catch();
+    const promisses = lines.map((line) => this.searchService.search(line));
+    Promise.all(promisses).
+      then((allSongs) => {
+        let count = 0;
+        allSongs.forEach((song) => {
+          if (Array.isArray(song)) {
+            this.queueService.addMultipleToQueue(song, msg);
+            count += song.length();
+          } else {
+            this.queueService.addToQueue(song, msg);
+            ++count;
+          }
+        });
+        this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
+      }).
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 
   addToPlaylist(lines, msg, payload) {
     const plName = payload;
-    const promisses = [];
-    lines.forEach((line) => {
-      promisses.push(this.searchService.search(line, msg));
-    });
-    Promise.all(promisses).then((allSongs) => {
-      let count = 0;
-      allSongs.forEach((song) => {
-        if (Array.isArray(song)) {
-          const songs = song.map((element) => {
-            element.playlist = plName;
-            return element;
-          });
-          this.dBService.addSongs(songs, plName);
-          count += songs.length();
-        } else {
-          song.playlist = plName;
-          this.dBService.addSong(song, plName);
-          ++count;
-        }
-      });
-      const note = `${count} songs added to playlist: ${plName}`;
-      this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
-    }).
-      catch();
+    const promisses = lines.map((line) => this.searchService.search(line));
+    Promise.all(promisses).
+      then((allSongs) => {
+        let count = 0;
+        allSongs.forEach((song) => {
+          if (Array.isArray(song)) {
+            const songs = song.map((element) => {
+              element.playlist = plName;
+              return element;
+            });
+            this.dBService.addSongs(songs, plName);
+            count += songs.length();
+          } else {
+            song.playlist = plName;
+            this.dBService.addSong(song, plName);
+            ++count;
+          }
+        });
+        const note = `${count} songs added to playlist: ${plName}`;
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+      }).
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
 

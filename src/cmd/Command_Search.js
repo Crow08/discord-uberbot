@@ -58,11 +58,14 @@ class SearchCommand extends Command {
       this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
-    this.searchService.searchMultiple(payload, 50, msg, "YT").
-      then((songs) => this.chatService.openSelectionMenu(
-        songs, msg, isSelectionCmd,
-        (collected) => processSelectionCmd(collected, songs, this.playerService, this.queueService, this.chatService)
-      )).
+    this.searchService.searchMultiple(payload, 50, "YT").
+      then((songs, note) => {
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+        this.chatService.openSelectionMenu(
+          songs, msg, isSelectionCmd,
+          (collected) => processSelectionCmd(collected, songs, this.playerService, this.queueService, this.chatService)
+        );
+      }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }

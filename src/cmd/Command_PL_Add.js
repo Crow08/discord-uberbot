@@ -19,24 +19,26 @@ class AddPLCommand extends Command {
     }
     const plName = payload.split(" ")[0];
     const query = payload.substr(plName.length + 1);
-    this.searchService.search(query, msg).then((song) => {
-      if (Array.isArray(song)) {
-        const songs = song.map((element) => {
-          element.playlist = plName;
-          return element;
-        });
-        this.dBService.addSongs(songs, plName);
-        const count = songs.length();
-        const note = `${count} songs added to playlist: ${plName}`;
+    this.searchService.search(query).
+      then((song, note) => {
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
-      } else {
-        song.playlist = plName;
-        this.dBService.addSong(song, plName);
-        const note = `added song: ${song.title} to playlist: ${plName}`;
-        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
-      }
-    }).
-      catch();
+        if (Array.isArray(song)) {
+          const songs = song.map((element) => {
+            element.playlist = plName;
+            return element;
+          });
+          this.dBService.addSongs(songs, plName);
+          const count = songs.length();
+          const note2 = `${count} songs added to playlist: ${plName}`;
+          this.chatService.simpleNote(msg, note2, this.chatService.msgType.MUSIC);
+        } else {
+          song.playlist = plName;
+          this.dBService.addSong(song, plName);
+          const note2 = `added song: ${song.title} to playlist: ${plName}`;
+          this.chatService.simpleNote(msg, note2, this.chatService.msgType.MUSIC);
+        }
+      }).
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
 

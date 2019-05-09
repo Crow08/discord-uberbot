@@ -47,10 +47,7 @@ class MusicClient {
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
     this.dbService = new DBService();
     this.chatService = new ChatService({}, this.discord, this.dbService);
-    this.searchService = new SearchService(
-      this.chatService, this.youtubeService, this.soundCloudService,
-      this.spotifyService
-    );
+    this.searchService = new SearchService(this.youtubeService, this.soundCloudService, this.spotifyService);
     this.voiceService = new VoiceService(
       {"bitRate": this.bitRate, "defVolume": this.defVolume}, this.baseClient,
       this.youtubeService, this.soundCloudService, this.spotifyService
