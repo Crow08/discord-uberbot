@@ -12,14 +12,14 @@ class NowPlayingCommand extends Command {
   }
 
   run(payload, msg) {
-    const nowplaying = this.queueService.history[0];
-    if (typeof nowplaying === "undefined") {
+    const song = this.queueService.history[0];
+    if (typeof song === "undefined") {
       const embed = new this.chatService.DiscordRichEmbed();
       embed.setColor(13632027);
       embed.addField("Are you deaf?", "Go check your ears, there is clearly nothing playing right now!", true);
       this.chatService.richNote(msg, embed);
     } else {
-      this.chatService.displaySong(msg, nowplaying, this.ratingService.rateSong);
+      this.chatService.displaySong(msg, song, (rSong, user, delta) => this.ratingService.rateSong(rSong, user, delta));
     }
   }
 }

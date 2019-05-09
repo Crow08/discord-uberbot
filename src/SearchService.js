@@ -12,7 +12,7 @@ class SearchService {
       if (searchstring.includes("soundcloud.com")) {
         note += "Get song from SounCloud url~";
         this.soundCloudService.getSongViaUrl(searchstring).
-          then((song) => resolve(song, note)).
+          then((song) => resolve({note, song})).
           catch(reject);
       } else if (searchstring.includes("youtu.be/") || searchstring.includes("youtube.com/")) {
       // YouTube url detected:
@@ -23,25 +23,25 @@ class SearchService {
         // YouTube video url detected:
           note += "Get song from YouTube url~";
           this.youtubeService.getSongViaUrl(searchstring).
-            then((song) => resolve(song, note)).
+            then((song) => resolve({note, song})).
             catch(reject);
         } else if (searchstring.includes("playlist")) {
         // Youtube playlist url detected:
           note += "Get songs from YouTube playlist url~";
           this.youtubeService.getSongsViaPlaylistUrl(searchstring).
-            then((songs) => resolve(songs, note)).
+            then((songs) => resolve({note, songs})).
             catch(reject);
         }
       } else {
       // Fallback on soundcloud query search:
         note += "Get songs from SoundCloud search query~";
         this.soundCloudService.getSongViaSearchQuery(searchstring).
-          then((song) => resolve(song, note)).
+          then((song) => resolve({note, song})).
           catch(() => {
             // Fallback on youtube query search:
             note += "Get songs from YouTube search query~";
             this.youtubeService.getSongViaSearchQuery(searchstring).
-              then((song) => resolve(song, note)).
+              then((song) => resolve({note, song})).
               catch(reject);
           });
       }
@@ -56,13 +56,13 @@ class SearchService {
       case "YT":
         note += "Get songs from YouTube search query~";
         this.youtubeService.getSongsViaSearchQuery(searchstring, count).
-          then((songs) => resolve(songs, note)).
+          then((songs) => resolve({note, songs})).
           catch(reject);
         break;
       case "SC":
         note += "Get songs from SoundCloud search query~";
         this.soundCloudService.getSongsViaSearchQuery(searchstring, count).
-          then((songs) => resolve(songs, note)).
+          then((songs) => resolve({note, songs})).
           catch(reject);
         break;
       case "SP":

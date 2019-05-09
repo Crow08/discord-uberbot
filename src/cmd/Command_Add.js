@@ -18,7 +18,7 @@ class AddCommand extends Command {
       return;
     }
     this.searchService.search(payload).
-      then((song, note) => {
+      then(({note, song}) => {
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
         if (Array.isArray(song)) {
           this.queueService.addMultipleToQueue(song, msg);

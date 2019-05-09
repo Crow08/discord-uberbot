@@ -59,7 +59,7 @@ class SearchCommand extends Command {
       return;
     }
     this.searchService.searchMultiple(payload, 50, "YT").
-      then((songs, note) => {
+      then(({note, songs}) => {
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
         this.chatService.openSelectionMenu(
           songs, msg, isSelectionCmd,

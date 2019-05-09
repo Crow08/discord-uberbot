@@ -46,7 +46,7 @@ class MusicClient {
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
     this.dbService = new DBService();
-    this.RatingService = new RatingService(this.dbService);
+    this.ratingService = new RatingService(this.dbService);
     this.chatService = new ChatService(DiscordRichEmbed);
     this.searchService = new SearchService(this.youtubeService, this.soundCloudService, this.spotifyService);
     this.voiceService = new VoiceService(

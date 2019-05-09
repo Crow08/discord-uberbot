@@ -42,11 +42,11 @@ class ChatService {
       then((menuMsg) => menuMsg.react("⏫").then(() => menuMsg.react("⏬").then(() => {
         // Add listeners to reactions.
         const upReaction = menuMsg.createReactionCollector(
-          (reaction) => reaction.emoji.name === "⏫",
+          (reaction, user) => (reaction.emoji.name === "⏫" && (!user.bot)),
           {"time": 120000}
         );
         const downReaction = menuMsg.createReactionCollector(
-          (reaction) => reaction.emoji.name === "⏬",
+          (reaction, user) => (reaction.emoji.name === "⏬" && (!user.bot)),
           {"time": 120000}
         );
         upReaction.on("collect", (reaction) => {

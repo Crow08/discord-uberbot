@@ -38,7 +38,7 @@ class PlayerService {
       this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
       this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
       this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
-      this.chatService.displaySong(msg, song, this.ratingService.rateSong);
+      this.chatService.displaySong(msg, song, (rSong, user, delta) => this.ratingService.rateSong(rSong, user, delta));
     }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }

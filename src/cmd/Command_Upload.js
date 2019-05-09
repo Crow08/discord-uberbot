@@ -38,7 +38,7 @@ class UploadCommand extends Command {
     Promise.all(promisses).
       then((allSongs) => {
         let count = 0;
-        allSongs.forEach((song) => {
+        allSongs.forEach(({song}) => {
           if (Array.isArray(song)) {
             this.queueService.addMultipleToQueue(song, msg);
             count += song.length();
@@ -58,7 +58,7 @@ class UploadCommand extends Command {
     Promise.all(promisses).
       then((allSongs) => {
         let count = 0;
-        allSongs.forEach((song) => {
+        allSongs.forEach(({song}) => {
           if (Array.isArray(song)) {
             const songs = song.map((element) => {
               element.playlist = plName;

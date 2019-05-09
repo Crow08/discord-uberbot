@@ -20,7 +20,7 @@ class AddPLCommand extends Command {
     const plName = payload.split(" ")[0];
     const query = payload.substr(plName.length + 1);
     this.searchService.search(query).
-      then((song, note) => {
+      then(({note, song}) => {
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
         if (Array.isArray(song)) {
           const songs = song.map((element) => {
