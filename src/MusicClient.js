@@ -87,7 +87,7 @@ class MusicClient {
       new SkipCommand(this.playerService),
       new StopCommand(this.playerService),
       new TestCommand(this.chatService, this.queueService, this.dbService),
-      new UploadCommand(this.chatService, this.queueService, this.searchService, this.dBService)
+      new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService)
     );
     console.log("Commands loaded!\n>");
   }

@@ -26,54 +26,60 @@ class UploadCommand extends Command {
       }
       const lines = body.split("\n");
       if (typeof payload === "undefined" || payload.length === 0) {
-        this.addToQueue(lines, msg);
+        this.addToQueueRecursive(lines, msg, 0);
       } else {
-        this.addToPlaylist(lines, msg, payload);
+        this.addToPlaylistRecursive(lines, msg, payload, 0);
       }
     }));
   }
 
-  addToQueue(lines, msg) {
-    const promisses = lines.map((line) => this.searchService.search(line));
-    Promise.all(promisses).
-      then((allSongs) => {
-        let count = 0;
-        allSongs.forEach(({song}) => {
-          if (Array.isArray(song)) {
-            this.queueService.addMultipleToQueue(song, msg);
-            count += song.length();
-          } else {
-            this.queueService.addToQueue(song, msg);
-            ++count;
-          }
-        });
-        this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
+  addToQueueRecursive(lines, msg, count) {
+    if (lines.length <= 0) {
+      this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
+    }
+    this.searchService.search(lines.pop()).
+      then(({note, song}) => {
+        console.log(note);
+        let newCount = count;
+        if (Array.isArray(song)) {
+          this.queueService.addMultipleToQueue(song, msg);
+          newCount += song.length();
+        } else {
+          this.queueService.addToQueue(song, msg);
+          ++newCount;
+        }
+        this.addToQueueRecursive(lines, msg, newCount);
+        if (newCount % 10 === 0) {
+          this.chatService.simpleNote(msg, "Working on import please be patient!", this.chatService.msgType.Info);
+        }
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 
-  addToPlaylist(lines, msg, payload) {
-    const plName = payload;
-    const promisses = lines.map((line) => this.searchService.search(line));
-    Promise.all(promisses).
-      then((allSongs) => {
-        let count = 0;
-        allSongs.forEach(({song}) => {
-          if (Array.isArray(song)) {
-            const songs = song.map((element) => {
-              element.playlist = plName;
-              return element;
-            });
-            this.dBService.addSongs(songs, plName);
-            count += songs.length();
-          } else {
-            song.playlist = plName;
-            this.dBService.addSong(song, plName);
-            ++count;
-          }
-        });
-        const note = `${count} songs added to playlist: ${plName}`;
-        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+  addToPlaylistRecursive(lines, msg, plName, count) {
+    if (lines.length <= 0) {
+      this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
+    }
+    this.searchService.search(lines.pop()).
+      then(({note, song}) => {
+        console.log(note);
+        let newCount = count;
+        if (Array.isArray(song)) {
+          const songs = song.map((element) => {
+            element.playlist = plName;
+            return element;
+          });
+          this.dBService.addSongs(songs, plName);
+          newCount += songs.length();
+        } else {
+          song.playlist = plName;
+          this.dBService.addSong(song, plName);
+          ++newCount;
+        }
+        this.addToPlaylistRecursive(lines, msg, plName, newCount);
+        if (newCount % 10 === 0) {
+          this.chatService.simpleNote(msg, "Working on import please be patient!", this.chatService.msgType.Info);
+        }
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }

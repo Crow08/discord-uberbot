@@ -58,7 +58,7 @@ class YoutubeService {
         "videoCategoryId=10&" +
         "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
         "maxResults=1&" +
-        `q=${searchstring}&` +
+        `q=${encodeURIComponent(searchstring)}&` +
         `key=${this.apiKey}`,
         (error, response, body) => {
           if (error) {
@@ -89,7 +89,7 @@ class YoutubeService {
         "videoCategoryId=10&" +
         "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
         `maxResults=${count}&` +
-        `q=${searchstring}&` +
+        `q=${encodeURIComponent(searchstring)}&` +
         `key=${this.apiKey}`,
         (error, response, body) => {
           if (error) {

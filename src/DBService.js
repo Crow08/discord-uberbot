@@ -60,7 +60,7 @@ class DBService {
         then(() => {
           resolve();
           this.db.collection(plName).
-            createIndexes("title").
+            createIndex("title").
             catch((err) => console.log(err));
         }).
         catch(reject);
@@ -74,7 +74,7 @@ class DBService {
         then(() => {
           resolve();
           this.db.collection(plName).
-            createIndexes("title").
+            createIndex("title").
             catch((err) => console.log(err));
         }).
         catch(reject);
