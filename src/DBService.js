@@ -57,7 +57,12 @@ class DBService {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
         insertOne(song).
-        then(resolve).
+        then(() => {
+          resolve();
+          this.db.collection(plName).
+            createIndexes("title").
+            catch((err) => console.log(err));
+        }).
         catch(reject);
     });
   }
@@ -66,7 +71,12 @@ class DBService {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
         insertMany(songs).
-        then(resolve).
+        then(() => {
+          resolve();
+          this.db.collection(plName).
+            createIndexes("title").
+            catch((err) => console.log(err));
+        }).
         catch(reject);
     });
   }
@@ -91,10 +101,12 @@ class DBService {
 
   updateSongRating(song) {
     return new Promise((resolve, reject) => {
-      const {title, rating} = song;
       this.db.collection(song.playlist).findOneAndUpdate(
-        {title},
-        {"$set": {rating}}
+        {"title": song.title},
+        {"$set": {
+          "rating": song.rating,
+          "ratingLog": song.ratingLog
+        }}
       ).
         then(resolve).
         catch(reject);

@@ -1,8 +1,6 @@
 class ChatService {
-  constructor(options, discord, dbService) {
-    this.options = options;
+  constructor(discord) {
     this.discord = discord;
-    this.dbService = dbService;
     this.msgType = {
       "FAIL": "fail",
       "INFO": "info",
@@ -37,14 +35,35 @@ class ChatService {
     return msg.channel.send(embed);
   }
 
-  displaySong(msg, song) {
-    this.openRatingMenu(song, msg, (ratedSong) => {
-      this.dbService.updateSongRating(ratedSong).
-        then((rateResult) => {
-          console.log(rateResult);
-        }).
-        catch((err) => console.log(err));
-    });
+  displaySong(msg, song, processRating) {
+    // Build Song embed.
+    msg.channel.send(this.buildSongEmbed(song)).
+      // Add reactions for song rating.
+      then((menuMsg) => menuMsg.react("⏫").then(() => menuMsg.react("⏬").then(() => {
+        // Add listeners to reactions.
+        const upReaction = menuMsg.createReactionCollector(
+          (reaction) => reaction.emoji.name === "⏫",
+          {"time": 120000}
+        );
+        const downReaction = menuMsg.createReactionCollector(
+          (reaction) => reaction.emoji.name === "⏬",
+          {"time": 120000}
+        );
+        upReaction.on("collect", (reaction) => {
+          const user = msg.author; // TODO: find correct user
+          reaction.remove(user);
+          processRating(song, user, 1).
+            then(() => menuMsg.edit(this.buildSongEmbed(song))).
+            catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+        });
+        downReaction.on("collect", (reaction) => {
+          const user = msg.author; // TODO: find correct user
+          reaction.remove(user);
+          processRating(song, user, -1).
+            then(() => menuMsg.edit(this.buildSongEmbed(song))).
+            catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+        });
+      })));
   }
 
   openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
@@ -84,35 +103,6 @@ class ChatService {
           }).
           // Timeout or error.
           catch(() => menuMsg.delete());
-      })));
-  }
-
-  openRatingMenu(song, msg, processRating) {
-    // Build choose menu.
-    msg.channel.send(this.buildSongEmbed(song)).
-      // Add reactions for page navigation.
-      then((menuMsg) => menuMsg.react("⏫").then(() => menuMsg.react("⏬").then(() => {
-        // Add listeners to reactions.
-        const upReaction = menuMsg.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏫" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        const downReaction = menuMsg.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏬" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        upReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
-          ++song.rating;
-          processRating(song);
-          menuMsg.edit(this.buildSongEmbed(song));
-        });
-        downReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
-          --song.rating;
-          processRating(song);
-          menuMsg.edit(this.buildSongEmbed(song));
-        });
       })));
   }
 

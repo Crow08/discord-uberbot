@@ -1,10 +1,11 @@
 class PlayerService {
-  constructor(voiceService, queueService, chatService) {
+  constructor(voiceService, queueService, chatService, ratingService) {
     this.audioDispatcher = null;
 
     this.voiceService = voiceService;
     this.queueService = queueService;
     this.chatService = chatService;
+    this.ratingService = ratingService;
   }
 
   handleSongEnd(reason, msg) {
@@ -37,7 +38,7 @@ class PlayerService {
       this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
       this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
       this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
-      this.chatService.displaySong(msg, song);
+      this.chatService.displaySong(msg, song, this.ratingService.rateSong);
     }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }

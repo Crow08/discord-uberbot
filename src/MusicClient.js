@@ -15,6 +15,7 @@ const PauseCommand = require("./cmd/Command_Pause");
 const PlayerService = require("./PlayerService");
 const PlayCommand = require("./cmd/Command_Play");
 const QueueService = require("./QueueService");
+const RatingService = require("./RatingService");
 const RemoveCommand = require("./cmd/Command_Remove");
 const RemovePLCommand = require("./cmd/Command_PL_Remove");
 const TestCommand = require("./cmd/Command_Test");
@@ -46,14 +47,15 @@ class MusicClient {
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
     this.dbService = new DBService();
-    this.chatService = new ChatService({}, this.discord, this.dbService);
+    this.RatingService = new RatingService(this.dbService);
+    this.chatService = new ChatService(this.discord);
     this.searchService = new SearchService(this.youtubeService, this.soundCloudService, this.spotifyService);
     this.voiceService = new VoiceService(
       {"bitRate": this.bitRate, "defVolume": this.defVolume}, this.baseClient,
       this.youtubeService, this.soundCloudService, this.spotifyService
     );
     this.queueService = new QueueService(500, this.dbService);
-    this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService);
+    this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService, this.ratingService);
     console.log("services loaded!\n>");
     this.loadCommands();
     this.connectDB();
@@ -73,13 +75,13 @@ class MusicClient {
       new ListPLCommand(this.chatService, this.dbService, this.discord),
       new ListSongsCommand(this.chatService, this.discord, this.dbService),
       new LoadPLCommand(this.chatService, this.queueService),
-      new NowPlayingCommand(this.chatService, this.queueService, this.discord),
+      new NowPlayingCommand(this.chatService, this.queueService, this.ratingService, this.discord),
       new PauseCommand(this.playerService),
       new PlayCommand(this.chatService, this.playerService, this.searchService),
       new RemoveCommand(this.chatService, this.queueService),
       new RemovePLCommand(this.chatService, this.dbService),
       new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService),
-      new SearchPLCommand(this.chatService, this.dbService, this.discord),
+      new SearchPLCommand(this.chatService, this.dbService, this.ratingService, this.discord),
       new SeekCommand(this.chatService, this.playerService),
       new ShowQueueCommand(this.chatService, this.queueService, this.discord),
       new ShuffleCommand(this.chatService, this.queueService),
