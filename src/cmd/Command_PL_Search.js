@@ -1,7 +1,7 @@
 const Command = require("./Command.js");
 
 class SearchPLCommand extends Command {
-  constructor(chatService, dbService, ratingService, discord) {
+  constructor(chatService, dbService, ratingService) {
     super("plsearch");
     super.help = "search given song in given playlist";
     super.usage = "<prefix>plsearch <pl name> <songname>";
@@ -9,7 +9,6 @@ class SearchPLCommand extends Command {
     this.chatService = chatService;
     this.dbService = dbService;
     this.ratingService = ratingService;
-    this.discord = discord;
   }
 
   run(payload, msg) {

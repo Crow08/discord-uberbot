@@ -1,20 +1,19 @@
 const Command = require("./Command.js");
 
 class ListPLCommand extends Command {
-  constructor(chatService, dbService, discord) {
+  constructor(chatService, dbService) {
     super("pllist");
     super.help = "lists avaliable playlists";
     super.usage = "<prefix>pllist";
     super.alias = ["pllist", "l"];
     this.chatService = chatService;
     this.dbService = dbService;
-    this.discord = discord;
   }
 
   run(payload, msg) {
     console.log("Listing all playlists:");
     this.dbService.listPlaylists().then((plNames) => {
-      const embed = new this.discord.RichEmbed();
+      const embed = new this.chatService.DiscordRichEmbed();
       embed.setColor(890629);
       embed.setTitle("Playlists:");
       const promisses = [];

@@ -1,21 +1,20 @@
 const Command = require("./Command.js");
 
 class ShowQueueCommand extends Command {
-  constructor(chatService, queueService, discord) {
+  constructor(chatService, queueService) {
     super("showqueue");
     super.help = "displays all songs from current queue.";
     super.usage = "<prefix>showqueue";
     super.alias = ["showqueue", "q", "queue"];
     this.chatService = chatService;
     this.queueService = queueService;
-    this.discord = discord;
   }
 
   run(payload, msg) {
     console.log("displaying queue:");
     let songlist = "";
     let count = 1;
-    const embed = new this.discord.RichEmbed();
+    const embed = new this.chatService.DiscordRichEmbed();
     // Get queue
     const {queue} = this.queueService;
     console.log(queue);

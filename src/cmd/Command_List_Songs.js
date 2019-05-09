@@ -1,13 +1,12 @@
 const Command = require("./Command.js");
 
 class ListSongsCommand extends Command {
-  constructor(chatService, discord, dbService) {
+  constructor(chatService, dbService) {
     super("listsongs");
     super.help = "lists all songs of the specified playlist";
     super.usage = "<prefix>listsongs <playlist>";
     super.alias = ["listsongs", "ls"];
     this.chatService = chatService;
-    this.discord = discord;
     this.dbService = dbService;
   }
 
@@ -15,7 +14,7 @@ class ListSongsCommand extends Command {
     console.log(`Listing songs of ${payload}:`);
     this.dbService.getPlaylist(payload).then((songs) => {
       let count = 1;
-      const embed = new this.discord.RichEmbed();
+      const embed = new this.chatService.DiscordRichEmbed();
       let songlist = "";
       embed.setTitle(`Playlist: ${payload}`);
       embed.setColor(48769);
