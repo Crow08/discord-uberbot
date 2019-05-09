@@ -29,7 +29,7 @@ class ShowQueueCommand extends Command {
     });
     embed.setDescription(songlist);
     console.log(embed);
-    this.chatService.richNote(msg.channel, embed);
+    this.chatService.richNote(msg, embed);
   }
 }
 

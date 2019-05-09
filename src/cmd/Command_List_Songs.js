@@ -25,7 +25,7 @@ class ListSongsCommand extends Command {
         count++;
       });
       embed.setDescription(songlist);
-      this.chatService.richNote(msg.channel, embed);
+      this.chatService.richNote(msg, embed);
     });
   }
 }

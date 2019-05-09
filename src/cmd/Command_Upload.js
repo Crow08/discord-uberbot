@@ -15,8 +15,8 @@ class UploadCommand extends Command {
 
   run(payload, msg) {
     if (typeof msg.attachments === "undefined" || msg.attachments.array().length === 0) {
-      this.chatService.simpleNote(msg.channel, "No attached file found!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "No attached file found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
 
@@ -49,7 +49,7 @@ class UploadCommand extends Command {
           ++count;
         }
       });
-      this.chatService.simpleNote(msg.channel, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
+      this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
     }).
       catch();
   }
@@ -77,7 +77,7 @@ class UploadCommand extends Command {
         }
       });
       const note = `${count} songs added to playlist: ${plName}`;
-      this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.MUSIC);
+      this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
     }).
       catch();
   }

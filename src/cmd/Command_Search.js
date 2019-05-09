@@ -54,8 +54,8 @@ class SearchCommand extends Command {
 
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
-      this.chatService.simpleNote(msg.channel, "No query found!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "No query found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
     this.searchService.searchMultiple(payload, 50, msg, "YT").
@@ -63,7 +63,7 @@ class SearchCommand extends Command {
         songs, msg, isSelectionCmd,
         (collected) => processSelectionCmd(collected, songs, this.playerService, this.queueService, this.chatService)
       )).
-      catch((error) => this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL));
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
 

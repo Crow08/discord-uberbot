@@ -12,18 +12,18 @@ class RemoveCommand extends Command {
 
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0 || isNaN(payload)) {
-      this.chatService.simpleNote(msg.channel, "No queue number found!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "No queue number found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
     const index = payload - 1;
     if (index < 0 || index >= this.queueService.queue.length) {
-      this.chatService.simpleNote(msg.channel, "queue number out of bounds!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, "queue number out of bounds!", this.chatService.msgType.FAIL);
       return;
     }
 
     this.queueService.remove(index);
-    this.chatService.simpleNote(msg.channel, "song removed from the queue!", this.chatService.msgType.MUSIC);
+    this.chatService.simpleNote(msg, "song removed from the queue!", this.chatService.msgType.MUSIC);
   }
 }
 

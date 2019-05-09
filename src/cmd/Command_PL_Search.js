@@ -14,8 +14,8 @@ class SearchPLCommand extends Command {
   run(payload, msg) {
     console.log("Searching Song");
     if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length < 2) {
-      this.chatService.simpleNote(msg.channel, "falscher Syntax!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "falscher Syntax!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
     const plName = payload.split(" ")[0];
@@ -24,7 +24,7 @@ class SearchPLCommand extends Command {
       console.log(info);
       if (info === "null") {
         const note = `"${songName}" wurde nicht in ${plName} gefunden`;
-        this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.FAIL);
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
       } else {
         this.chatService.displaySong(msg, info);
       }

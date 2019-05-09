@@ -13,13 +13,13 @@ class AutoPLCommand extends Command {
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
       this.queueService.unsetAutoPL();
-      this.chatService.simpleNote(msg.channel, "autoplaylist unset.", this.chatService.msgType.MUSIC);
+      this.chatService.simpleNote(msg, "autoplaylist unset.", this.chatService.msgType.MUSIC);
       return;
     }
     const note = `Autoplaylist set to: ${payload}`;
     this.queueService.setAutoPL(payload).
-      then(() => this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.MUSIC)).
-      catch((err) => this.chatService.simpleNote(msg.channel, err, this.chatService.msgType.Fail));
+      then(() => this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC)).
+      catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.Fail));
   }
 }
 

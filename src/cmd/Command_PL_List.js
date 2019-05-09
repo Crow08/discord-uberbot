@@ -27,7 +27,7 @@ class ListPLCommand extends Command {
           const plLength = plSongs.length;
           embed.addField(plNames[index], `${plLength} Songs`, true);
         });
-        this.chatService.richNote(msg.channel, embed);
+        this.chatService.richNote(msg, embed);
       });
     });
 

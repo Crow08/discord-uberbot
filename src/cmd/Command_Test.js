@@ -15,8 +15,8 @@ class TestCommand extends Command {
   run(payload, msg) {
     console.log("Searching Song");
     if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length < 2) {
-      this.chatService.simpleNote(msg.channel, "falscher Syntax!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "falscher Syntax!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
     }
   }
 }

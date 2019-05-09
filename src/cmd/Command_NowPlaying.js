@@ -22,7 +22,7 @@ class NowPlayingCommand extends Command {
     } else {
       this.chatService.displaySong(msg, nowplaying);
     }
-    this.chatService.richNote(msg.channel, embed);
+    this.chatService.richNote(msg, embed);
   }
 }
 

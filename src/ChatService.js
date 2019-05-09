@@ -12,29 +12,29 @@ class ChatService {
     };
   }
 
-  basicNote(channel, text) {
-    return channel.send(`${text}`);
+  basicNote(msg, text) {
+    return msg.channel.send(`${text}`);
   }
 
-  simpleNote(channel, text, type) {
+  simpleNote(msg, text, type) {
     switch (type) {
     case this.msgType.INFO:
-      return channel.send(`:information_source: | ${text}`);
+      return msg.channel.send(`:information_source: | ${text}`);
     case this.msgType.MUSIC:
-      return channel.send(`:musical_note: | ${text}`);
+      return msg.channel.send(`:musical_note: | ${text}`);
     case this.msgType.SEARCH:
-      return channel.send(`:mag: | ${text}`);
+      return msg.channel.send(`:mag: | ${text}`);
     case this.msgType.FAIL:
-      return channel.send(`:x: | ${text}`);
+      return msg.channel.send(`:x: | ${text}`);
     default:
-      return channel.send(text);
+      return msg.channel.send(text);
     }
   }
 
   // RichEmbed-Wiki -> https://anidiots.guide/first-bot/using-embeds-in-messages
   // Previewer -> https://leovoel.github.io/embed-visualizer/
-  richNote(channel, embed) {
-    return channel.send(embed);
+  richNote(msg, embed) {
+    return msg.channel.send(embed);
   }
 
   displaySong(msg, song) {

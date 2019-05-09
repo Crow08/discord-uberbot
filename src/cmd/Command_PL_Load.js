@@ -12,15 +12,15 @@ class LoadPLCommand extends Command {
 
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
-      this.chatService.simpleNote(msg.channel, "No playlist name found!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "No playlist name found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
     const plName = payload.trim();
     const note = `playlist loaded: ${plName}`;
     this.queueService.loadPlaylist(plName).
-      then(() => this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.MUSIC)).
-      catch((error) => this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL));
+      then(() => this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC)).
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
 
