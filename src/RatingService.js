@@ -5,6 +5,9 @@ class RateingService {
 
   rateSong(song, user, delta) {
     return new Promise((resolve, reject) => {
+      if (typeof song.ratingLog === "undefined") {
+        song.ratingLog = {};
+      }
       // If user has ever rated this song.
       if (Object.prototype.hasOwnProperty.call(song.ratingLog, user)) {
         const ratedDeltaTime = Date.now() - song.ratingLog[user];

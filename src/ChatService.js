@@ -50,18 +50,20 @@ class ChatService {
           {"time": 120000}
         );
         upReaction.on("collect", (reaction) => {
-          const user = msg.author; // TODO: find correct user
-          reaction.remove(user);
-          processRating(song, user, 1).
-            then(() => menuMsg.edit(this.buildSongEmbed(song))).
-            catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+          reaction.users.filter((user) => !user.bot).forEach((user) => {
+            reaction.remove(user);
+            processRating(song, user, 1).
+              then(() => menuMsg.edit(this.buildSongEmbed(song))).
+              catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+          });
         });
         downReaction.on("collect", (reaction) => {
-          const user = msg.author; // TODO: find correct user
-          reaction.remove(user);
-          processRating(song, user, -1).
-            then(() => menuMsg.edit(this.buildSongEmbed(song))).
-            catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+          reaction.users.filter((user) => !user.bot).forEach((user) => {
+            reaction.remove(user);
+            processRating(song, user, -1).
+              then(() => menuMsg.edit(this.buildSongEmbed(song))).
+              catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+          });
         });
       })));
   }
