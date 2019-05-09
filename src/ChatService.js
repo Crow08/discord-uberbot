@@ -12,8 +12,8 @@ class ChatService {
     };
   }
 
-  basicNote(msg, text) {
-    return msg.channel.send(`${text}`);
+  plainText(msg, text) {
+    return msg.channel.send(text);
   }
 
   simpleNote(msg, text, type) {

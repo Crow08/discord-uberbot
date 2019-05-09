@@ -32,7 +32,7 @@ class HelpCommand extends Command {
         helpText += "+--------------------------------------------------------------+\n";
         if (count % 5 === 0) {
           helpText += "```";
-          this.chatService.basicNote(msg, helpText);
+          this.chatService.plainText(msg, helpText);
           if (index + 1 < this.commands.length) {
             helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
           }
@@ -41,7 +41,7 @@ class HelpCommand extends Command {
     });
     if (count % 5 !== 0) {
       helpText += "```";
-      this.chatService.basicNote(msg, helpText);
+      this.chatService.plainText(msg, helpText);
     }
   }
 
