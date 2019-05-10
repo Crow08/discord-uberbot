@@ -35,6 +35,38 @@ class ChatService {
     return msg.channel.send(embed);
   }
 
+  pagedContent(msg, pages) {
+    let page = 0;
+    // Build choose menu.
+    msg.channel.send(pages[0]).
+      // Add reactions for page navigation.
+      then((curPage) => curPage.react("⏪").then(() => curPage.react("⏩").then(() => {
+        // Add listeners to reactions.
+        const nextReaction = curPage.createReactionCollector(
+          (reaction, user) => reaction.emoji.name === "⏩" && user.id === msg.author.id,
+          {"time": 120000}
+        );
+        const backReaction = curPage.createReactionCollector(
+          (reaction, user) => reaction.emoji.name === "⏪" && user.id === msg.author.id,
+          {"time": 120000}
+        );
+        nextReaction.on("collect", (reaction) => {
+          reaction.remove(msg.author);
+          if ((page + 1) < pages.length) {
+            ++page;
+            curPage.edit(pages[page]);
+          }
+        });
+        backReaction.on("collect", (reaction) => {
+          reaction.remove(msg.author);
+          if (page > 0) {
+            --page;
+            curPage.edit(pages[page]);
+          }
+        });
+      })));
+  }
+
   displaySong(msg, song, processRating) {
     // Build Song embed.
     msg.channel.send(this.buildSongEmbed(song)).

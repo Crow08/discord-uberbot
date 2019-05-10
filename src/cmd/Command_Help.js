@@ -15,10 +15,10 @@ class HelpCommand extends Command {
     console.log("Anyone called for a medic?\n>");
     // Add some fancy stuff
     // (More syntax highlighting: https://gist.github.com/Almeeida/41a664d8d5f3a8855591c2f1e0e07b19)
+    const pages = [];
     let count = 0;
     let helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
-
-    this.commands.forEach((command, index) => {
+    this.commands.forEach((command) => {
       const {help, name, usage, alias} = command;
       // Ignrore undefined commands
       if (typeof name !== "undefined") {
@@ -32,17 +32,15 @@ class HelpCommand extends Command {
         helpText += "+--------------------------------------------------------------+\n";
         if (count % 5 === 0) {
           helpText += "```";
-          this.chatService.plainText(msg, helpText);
-          if (index + 1 < this.commands.length) {
-            helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
-          }
+          pages.push(helpText);
+          helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
         }
       }
     });
     if (count % 5 !== 0) {
-      helpText += "```";
-      this.chatService.plainText(msg, helpText);
+      pages.push(helpText);
     }
+    this.chatService.pagedContent(msg, pages);
   }
 
   buildLine(text) {
