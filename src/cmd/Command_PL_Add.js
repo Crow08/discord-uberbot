@@ -20,21 +20,23 @@ class AddPLCommand extends Command {
     const plName = payload.split(" ")[0];
     const query = payload.substr(plName.length + 1);
     this.searchService.search(query).
-      then(({note, song}) => {
+      then(({note, songs}) => {
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
-        if (Array.isArray(song)) {
-          const songs = song.map((element) => {
-            element.playlist = plName;
-            return element;
+        if (songs.length > 1) {
+          const enrichedSongs = songs.map((song) => {
+            song.playlist = plName;
+            song.requester = msg.author.username;
+            return song;
           });
-          this.dBService.addSongs(songs, plName);
-          const count = songs.length();
+          this.dBService.addSongs(enrichedSongs, plName);
+          const count = enrichedSongs.length();
           const note2 = `${count} songs added to playlist: ${plName}`;
           this.chatService.simpleNote(msg, note2, this.chatService.msgType.MUSIC);
         } else {
-          song.playlist = plName;
-          this.dBService.addSong(song, plName);
-          const note2 = `added song: ${song.title} to playlist: ${plName}`;
+          songs[0].playlist = plName;
+          songs[0].requester = msg.author.username;
+          this.dBService.addSong(songs[0], plName);
+          const note2 = `added song: ${songs[0].title} to playlist: ${plName}`;
           this.chatService.simpleNote(msg, note2, this.chatService.msgType.MUSIC);
         }
       }).

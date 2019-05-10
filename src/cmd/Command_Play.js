@@ -17,12 +17,17 @@ class PlayCommand extends Command {
       return;
     }
     this.searchService.search(payload).
-      then(({note, song}) => {
+      then(({note, songs}) => {
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
-        if (Array.isArray(song)) {
-          this.playerService.playMultipleNow(song, msg);
+        if (songs.length > 1) {
+          const enrichedSongs = songs.map((song) => {
+            song.requester = msg.author.username;
+            return song;
+          });
+          this.playerService.playMultipleNow(enrichedSongs, msg);
         } else {
-          this.playerService.playNow(song, msg);
+          songs[0].requester = msg.author.username;
+          this.playerService.playNow(songs[0], msg);
         }
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));

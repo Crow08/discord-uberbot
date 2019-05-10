@@ -18,15 +18,20 @@ class AddCommand extends Command {
       return;
     }
     this.searchService.search(payload).
-      then(({note, song}) => {
+      then(({note, songs}) => {
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
-        if (Array.isArray(song)) {
-          this.queueService.addMultipleToQueue(song, msg);
-          const count = song.length();
+        if (songs.length > 1) {
+          const enrichedSongs = songs.map((song) => {
+            song.requester = msg.author.username;
+            return song;
+          });
+          this.queueService.addMultipleToQueue(enrichedSongs, msg);
+          const count = enrichedSongs.length();
           this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
         } else {
-          this.queueService.addToQueue(song, msg);
-          this.chatService.simpleNote(msg, `song added to queue: ${song.title}`, this.chatService.msgType.MUSIC);
+          songs[0].requester = msg.author.username;
+          this.queueService.addToQueue(songs[0], msg);
+          this.chatService.simpleNote(msg, `song added to queue: ${songs[0].title}`, this.chatService.msgType.MUSIC);
         }
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));

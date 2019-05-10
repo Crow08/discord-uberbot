@@ -38,14 +38,19 @@ class UploadCommand extends Command {
       this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
     }
     this.searchService.search(lines.pop()).
-      then(({note, song}) => {
+      then(({note, songs}) => {
         console.log(note);
         let newCount = count;
-        if (Array.isArray(song)) {
-          this.queueService.addMultipleToQueue(song, msg);
-          newCount += song.length();
+        if (songs.length > 1) {
+          const enrichedSongs = songs.map((song) => {
+            song.requester = msg.author.username;
+            return song;
+          });
+          this.queueService.addMultipleToQueue(enrichedSongs, msg);
+          newCount += enrichedSongs.length();
         } else {
-          this.queueService.addToQueue(song, msg);
+          songs[0].requester = msg.author.username;
+          this.queueService.addToQueue(songs[0], msg);
           ++newCount;
         }
         this.addToQueueRecursive(lines, msg, newCount);
@@ -61,19 +66,21 @@ class UploadCommand extends Command {
       this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
     }
     this.searchService.search(lines.pop()).
-      then(({note, song}) => {
+      then(({note, songs}) => {
         console.log(note);
         let newCount = count;
-        if (Array.isArray(song)) {
-          const songs = song.map((element) => {
-            element.playlist = plName;
-            return element;
+        if (songs.length > 1) {
+          const enrichedSongs = songs.map((song) => {
+            song.playlist = plName;
+            song.requester = msg.author.username;
+            return song;
           });
-          this.dBService.addSongs(songs, plName);
-          newCount += songs.length();
+          this.dBService.addSongs(enrichedSongs, plName);
+          newCount += enrichedSongs.length();
         } else {
-          song.playlist = plName;
-          this.dBService.addSong(song, plName);
+          songs[0].playlist = plName;
+          songs[0].requester = msg.author.username;
+          this.dBService.addSong(songs[0], plName);
           ++newCount;
         }
         this.addToPlaylistRecursive(lines, msg, plName, newCount);
