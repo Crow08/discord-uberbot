@@ -26,6 +26,7 @@ try .help to get started
 
 ##### Playlists #####
 - create custom Playlists
+- add songs from playback, queue or other playlists
 - upload playlists via .txt
 - merge playlists
 - features autoplaylists (who need´s silence anyway?)
