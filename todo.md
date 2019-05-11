@@ -27,6 +27,7 @@
 - catch all promises and process accordingly. 
 - catch all fatal errors to prevent bot crash.
 - Notify user every time, even after unsuccessful execution.
+- Error when Playback is finished (when autoplaylist isn't set)
 
 ##### Strange behavior ##### 
 - sometimes in playback no sound is played while stream seems to be active.
@@ -35,7 +36,6 @@
 - Stream ends immediately after start
 	- can be solved via retry
 	- hard to reproduce reliable
-- Error when Playback is finished (when autoplaylist isn't set)
 
 ---
 
