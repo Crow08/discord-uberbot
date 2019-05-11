@@ -7,6 +7,12 @@
 ##### Playlists #####
 - merge playlist command
 - add rating
+	- implent autodelete
+	- implement autoadd after upvote (to autoplaylist)
+- add current queue to playlist
+- add current song to playlist
+- remove duplicates (dont delete songs with rating)
+- implement requester
 
 ##### Queue ##### 
 - loop with options (song / queue / none)

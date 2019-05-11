@@ -20,6 +20,13 @@ class QueueService {
     this.autoPL = null;
   }
 
+  getCurrentSong() {
+    return new Promise((resolve) => {
+      const nowplaying = this.history[0];
+      resolve(nowplaying);
+    });
+  }
+
   getNextSong() {
     return new Promise((resolve, reject) => {
       if (this.queue.length > 0) {
