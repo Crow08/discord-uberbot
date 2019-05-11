@@ -1,7 +1,8 @@
 const AddCommand = require("./cmd/Command_Add");
 const AddPLCommand = require("./cmd/Command_PL_Add");
 const AutoPLCommand = require("./cmd/Command_AutoPL");
-const AddSongToPlCommand = require("./cmd/Command_AddSongToPl");
+const AddSongToPLCommand = require("./cmd/Command_AddSongToPl");
+const AddQueueToPLCommand = require("./cmd/Command_AddQueueToPl");
 const ChatService = require("./ChatService");
 const ClearCommand = require("./cmd/Command_Clear");
 const DBService = require("./DBService");
@@ -70,7 +71,8 @@ class MusicClient {
       new AddCommand(this.chatService, this.queueService, this.searchService),
       new AddPLCommand(this.chatService, this.dbService, this.searchService),
       new AutoPLCommand(this.chatService, this.queueService),
-      new AddSongToPlCommand(this.chatService, this.queueService, this.dbService),
+      new AddSongToPLCommand(this.chatService, this.queueService, this.dbService),
+      new AddQueueToPLCommand(this.chatService, this.queueService, this.dbService),
       new ClearCommand(this.chatService, this.queueService),
       new DeletePLCommand(this.chatService, this.dbService),
       new HelpCommand(this.chatService, this.commands, this.botPrefix),

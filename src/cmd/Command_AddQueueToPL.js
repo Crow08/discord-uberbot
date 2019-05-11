@@ -1,14 +1,13 @@
 const Command = require("./Command.js");
 
-class TestCommand extends Command {
-  constructor(chatService, queueService, discord, dbService) {
-    super("test");
-    super.help = "for testing - duh!";
-    super.usage = "<prefix>test";
-    super.alias = ["test"];
+class AddQueueToPLCommand extends Command {
+  constructor(chatService, queueService, dbService) {
+    super("addqueuetopl");
+    super.help = "adds queue to given playlist";
+    super.usage = "<prefix>addqueuetopl";
+    super.alias = ["addqueuetopl", "aq2pl", "aq2p"];
     this.chatService = chatService;
     this.queueService = queueService;
-    this.discord = discord;
     this.dbService = dbService;
   }
 
@@ -30,4 +29,4 @@ class TestCommand extends Command {
     this.chatService.simpleNote(msg.channel, `added ${count} Songs to ${payload}`, this.chatService.msgType.INFO);
   }
 }
-module.exports = TestCommand;
+module.exports = AddQueueToPLCommand;
