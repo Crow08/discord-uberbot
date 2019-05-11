@@ -5,7 +5,6 @@
 ### Features: ###
 
 ##### Playlists #####
-- merge playlist command (WIP)
 - add rating
 	- implent autodelete
 	- implement autoadd after upvote (to autoplaylist)

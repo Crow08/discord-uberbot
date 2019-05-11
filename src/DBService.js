@@ -144,6 +144,17 @@ class DBService {
         catch(reject);
     });
   }
+
+  mergePlaylists(source, target) {
+    return new Promise((resolve, reject) => {
+      this.db.collection(source).find().
+        forEach((song) => {
+          this.db.collection(target).insert(song);
+        }).
+        then(resolve).
+        catch(reject);
+    });
+  }
 }
 
 module.exports = DBService;
