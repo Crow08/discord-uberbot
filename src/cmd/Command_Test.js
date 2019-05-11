@@ -13,21 +13,24 @@ class TestCommand extends Command {
   }
 
   run(payload, msg) {
-    if (typeof payload === "undefined" || payload.length === 0) {
-      this.chatService.simpleNote(msg.channel, "falscher Syntax!", this.chatService.msgType.FAIL);
+    if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length < 2) {
+      this.chatService.simpleNote(msg.channel, "No URL or query found!", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      return;
     }
-    console.log("adding queue:");
-    // Get queue
-    const {queue} = this.queueService;
+    console.log("merging playlists:");
+    const source = payload.split(" ")[0];
+    const target = payload.split(" ")[1];
+    console.log(source);
+    console.log(target);
     let count = 0;
-    queue.forEach((entry) => {
+    source.forEach((entry) => {
       count++;
-      this.dbService.addSong(entry, payload).then(() => {
-        console.log(`added ${entry.title} to Playlist ${payload}`);
+      this.dbService.addSong(entry, target).then(() => {
+        console.log(`added ${entry.title} to Playlist ${target}`);
       });
     });
-    this.chatService.simpleNote(msg.channel, `added ${count} Songs to ${payload}`, this.chatService.msgType.INFO);
+    this.chatService.simpleNote(msg.channel, `added ${count} Songs to ${target}`, this.chatService.msgType.INFO);
   }
 }
 module.exports = TestCommand;

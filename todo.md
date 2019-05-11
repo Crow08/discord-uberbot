@@ -5,12 +5,10 @@
 ### Features: ###
 
 ##### Playlists #####
-- merge playlist command
+- merge playlist command (WIP)
 - add rating
 	- implent autodelete
 	- implement autoadd after upvote (to autoplaylist)
-- add current queue to playlist
-- add current song to playlist
 - remove duplicates (dont delete songs with rating)
 - method duplicate tester (checks playlist before adding song)
 	- maybe extend addSong
