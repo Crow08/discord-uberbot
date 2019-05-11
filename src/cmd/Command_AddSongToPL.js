@@ -1,14 +1,13 @@
 const Command = require("./Command.js");
 
-class TestCommand extends Command {
-  constructor(chatService, queueService, discord, dbService) {
-    super("test");
-    super.help = "for testing - duh!";
-    super.usage = "<prefix>test";
-    super.alias = ["test"];
+class AddSongToPlCommand extends Command {
+  constructor(chatService, queueService, dbService) {
+    super("addsongtopl");
+    super.help = "adds current song to given playlist";
+    super.usage = "<prefix>addsongtopl";
+    super.alias = ["addsongtopl", "as2pl", "as2p"];
     this.chatService = chatService;
     this.queueService = queueService;
-    this.discord = discord;
     this.dbService = dbService;
   }
 
@@ -22,6 +21,7 @@ class TestCommand extends Command {
       console.log(nowplaying);
       console.log(`add song ${nowplaying.title} to pl ${payload}`);
       this.dbService.addSong(nowplaying, payload).then(() => {
+        // eslint-disable-next-line max-len
         this.chatService.simpleNote(msg.channel, `added ${nowplaying.title} to Playlist ${payload}`, this.chatService.msgType.INFO);
       });
     });
@@ -29,4 +29,4 @@ class TestCommand extends Command {
   }
 }
 
-module.exports = TestCommand;
+module.exports = AddSongToPlCommand;

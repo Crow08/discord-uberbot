@@ -36,6 +36,7 @@
 - Stream ends immediately after start
 	- can be solved via retry
 	- hard to reproduce reliable
+- Error when Playback is finished (when autoplaylist isn't set)
 
 ---
 

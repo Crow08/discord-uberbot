@@ -21,9 +21,9 @@ class QueueService {
   }
 
   getCurrentSong() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const nowplaying = this.history[0];
-      resolve(nowplaying);
+      resolve(nowplaying).catch(reject);
     });
   }
 
