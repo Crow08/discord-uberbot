@@ -41,4 +41,4 @@ try .help to get started
 - npm install that bad boy
 - fill settings.example.json with your tokens and rename to settings.json
 - run index.js
-- debug until it works (O_o)
+- debug until it works (O_o)?
