@@ -105,6 +105,16 @@ class QueueService {
     });
   }
 
+  getAutoPL() {
+    return new Promise((resolve, reject) => {
+      if (this.autoPL === null) {
+        reject(new Error("Autoplaylist not set!"));
+      } else {
+        resolve(this.autoPL);
+      }
+    });
+  }
+
   unsetAutoPL() {
     this.autoPL = null;
   }
