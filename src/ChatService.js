@@ -1,8 +1,9 @@
 class ChatService {
-  constructor(options, discord, dbService) {
+  constructor(options, discord, dbService, queueService) {
     this.options = options;
     this.discord = discord;
     this.dbService = dbService;
+    this.queueService = queueService;
     this.msgType = {
       "FAIL": "fail",
       "INFO": "info",
@@ -105,6 +106,16 @@ class ChatService {
           reaction.remove(msg.author);
           ++song.rating;
           processRating(song);
+          // Adds upvoted song to autoPlaylist
+          this.queueService.getAutoPL().then((autoPL) => {
+            console.log(autoPL);
+            this.dbService.addSong(song, autoPL).then((result) => {
+              console.log(result);
+            });
+          }).
+            catch((err) => {
+              this.simpleNote(msg.channel, err, this.msgType.FAIL);
+            });
           menuMsg.edit(this.buildSongEmbed(song));
         });
         downReaction.on("collect", (reaction) => {
