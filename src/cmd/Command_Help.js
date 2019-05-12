@@ -29,15 +29,20 @@ class HelpCommand extends Command {
         if (alias.length > 1) {
           helpText += this.buildLine(`Alias:  ${alias.join(", ")}`);
         }
-        helpText += "+--------------------------------------------------------------+\n";
         if (count % 5 === 0) {
-          helpText += "```";
+          const pageing = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
+          helpText += `+------------------------- ${pageing} -------------------------+\n\`\`\``;
           pages.push(helpText);
           helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
+        } else {
+          helpText += "+--------------------------------------------------------------+\n";
         }
       }
     });
     if (count % 5 !== 0) {
+      helpText = helpText.substr(0, helpText.length - 65);
+      const pageing = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
+      helpText += `+------------------------- ${pageing} -------------------------+\n\`\`\``;
       pages.push(helpText);
     }
     this.chatService.pagedContent(msg, pages);
