@@ -106,6 +106,7 @@ class ChatService {
           reaction.remove(msg.author);
           ++song.rating;
           processRating(song);
+          menuMsg.edit(this.buildSongEmbed(song));
           // Adds upvoted song to autoPlaylist
           this.queueService.getAutoPL().then((autoPL) => {
             console.log(autoPL);
@@ -116,13 +117,18 @@ class ChatService {
             catch((err) => {
               this.simpleNote(msg.channel, err, this.msgType.FAIL);
             });
-          menuMsg.edit(this.buildSongEmbed(song));
         });
         downReaction.on("collect", (reaction) => {
           reaction.remove(msg.author);
           --song.rating;
           processRating(song);
           menuMsg.edit(this.buildSongEmbed(song));
+          // Removes song from autoplaylist if rating too bad
+          if (song.rating <= -2) {
+            this.dbService.removeSong(song.title, song.playlist).then((result) => {
+              console.log(result);
+            });
+          }
         });
       })));
   }

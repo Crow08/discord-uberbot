@@ -6,7 +6,7 @@
 
 ##### Playlists #####
 - add rating
-	- implement autodelete
+	- skip song on downvote
 - remove duplicates (dont delete songs with rating)
 - method duplicate tester (checks playlist before adding song)
 	- maybe extend addSong
