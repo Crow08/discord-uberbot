@@ -20,7 +20,7 @@ class YoutubeService {
         song.url = info.video_url;
         song.artist = info.author.name;
         song.src = song.srcType.YT;
-        return resolve(song);
+        return resolve([song]);
       });
     });
   }
@@ -49,38 +49,7 @@ class YoutubeService {
     });
   }
 
-  getSongViaSearchQuery(searchstring) {
-    return new Promise((resolve, reject) => {
-      request(
-        "https://www.googleapis.com/youtube/v3/search?" +
-        "part=snippet&" +
-        "type=video&" +
-        "videoCategoryId=10&" +
-        "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
-        "maxResults=1&" +
-        `q=${searchstring}&` +
-        `key=${this.apiKey}`,
-        (error, response, body) => {
-          if (error) {
-            return reject(error);
-          }
-          if (typeof body === "undefined" || typeof JSON.parse(body).items === "undefined" ||
-            JSON.parse(body).items.length < 1) {
-            return reject(new Error("Something went wrong. Try again!"));
-          }
-          const result = JSON.parse(body).items[0];
-          const song = new Song();
-          song.title = result.snippet.title;
-          song.url = `https://www.youtube.com/watch?v=${result.id.videoId}`;
-          song.artist = result.snippet.channelTitle;
-          song.src = song.srcType.YT;
-          return resolve(song);
-        }
-      );
-    });
-  }
-
-  getSongsViaSearchQuery(searchstring, count) {
+  getSongsViaSearchQuery(searchstring, count = 1) {
     return new Promise((resolve, reject) => {
       request(
         "https://www.googleapis.com/youtube/v3/search?" +
@@ -89,17 +58,19 @@ class YoutubeService {
         "videoCategoryId=10&" +
         "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
         `maxResults=${count}&` +
-        `q=${searchstring}&` +
+        `q=${encodeURIComponent(searchstring)}&` +
         `key=${this.apiKey}`,
         (error, response, body) => {
           if (error) {
             return reject(error);
           }
-          if (typeof body === "undefined" || typeof JSON.parse(body).items === "undefined" ||
-            JSON.parse(body).items.length < 1) {
+          if (typeof body === "undefined" || typeof JSON.parse(body).items === "undefined") {
             return reject(new Error("Something went wrong. Try again!"));
           }
           const result = JSON.parse(body).items;
+          if (result.length < 1) {
+            return reject(new Error("No results!"));
+          }
           const songs = [];
           for (let index = 0; index < result.length; index++) {
             const song = new Song();

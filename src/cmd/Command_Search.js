@@ -54,16 +54,23 @@ class SearchCommand extends Command {
 
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
-      this.chatService.simpleNote(msg.channel, "No query found!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "No query found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
-    this.searchService.searchMultiple(payload, 50, msg, "YT").
-      then((songs) => this.chatService.openSelectionMenu(
-        songs, msg, isSelectionCmd,
-        (collected) => processSelectionCmd(collected, songs, this.playerService, this.queueService, this.chatService)
-      )).
-      catch((error) => this.chatService.simpleNote(msg.channel, error, this.chatService.msgType.FAIL));
+    this.searchService.querySearch(payload, 50, "YT").
+      then(({note, songs}) => {
+        const eSongs = songs.map((song) => {
+          song.requester = msg.author.username;
+          return song;
+        });
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+        this.chatService.openSelectionMenu(
+          eSongs, msg, isSelectionCmd,
+          (col) => processSelectionCmd(col, eSongs, this.playerService, this.queueService, this.chatService)
+        );
+      }).
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
 

@@ -15,8 +15,8 @@ class UploadCommand extends Command {
 
   run(payload, msg) {
     if (typeof msg.attachments === "undefined" || msg.attachments.array().length === 0) {
-      this.chatService.simpleNote(msg.channel, "No attached file found!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "No attached file found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
 
@@ -26,60 +26,69 @@ class UploadCommand extends Command {
       }
       const lines = body.split("\n");
       if (typeof payload === "undefined" || payload.length === 0) {
-        this.addToQueue(lines, msg);
+        this.addToQueueRecursive(lines, msg, 0);
       } else {
-        this.addToPlaylist(lines, msg, payload);
+        this.addToPlaylistRecursive(lines, msg, payload, 0);
       }
     }));
   }
 
-  addToQueue(lines, msg) {
-    const promisses = [];
-    lines.forEach((line) => {
-      promisses.push(this.searchService.search(line, msg));
-    });
-    Promise.all(promisses).then((allSongs) => {
-      let count = 0;
-      allSongs.forEach((song) => {
-        if (Array.isArray(song)) {
-          this.queueService.addMultipleToQueue(song, msg);
-          count += song.length();
+  addToQueueRecursive(lines, msg, count) {
+    if (lines.length <= 0) {
+      this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
+    }
+    this.searchService.search(lines.pop()).
+      then(({note, songs}) => {
+        console.log(note);
+        let newCount = count;
+        if (songs.length > 1) {
+          const enrichedSongs = songs.map((song) => {
+            song.requester = msg.author.username;
+            return song;
+          });
+          this.queueService.addMultipleToQueue(enrichedSongs, msg);
+          newCount += enrichedSongs.length();
         } else {
-          this.queueService.addToQueue(song, msg);
-          ++count;
+          songs[0].requester = msg.author.username;
+          this.queueService.addToQueue(songs[0], msg);
+          ++newCount;
         }
-      });
-      this.chatService.simpleNote(msg.channel, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
-    }).
-      catch();
+        this.addToQueueRecursive(lines, msg, newCount);
+        if (newCount % 10 === 0) {
+          this.chatService.simpleNote(msg, "Working on import please be patient!", this.chatService.msgType.Info);
+        }
+      }).
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 
-  addToPlaylist(lines, msg, payload) {
-    const plName = payload;
-    const promisses = [];
-    lines.forEach((line) => {
-      promisses.push(this.searchService.search(line, msg));
-    });
-    Promise.all(promisses).then((allSongs) => {
-      let count = 0;
-      allSongs.forEach((song) => {
-        if (Array.isArray(song)) {
-          const songs = song.map((element) => {
-            element.playlist = plName;
-            return element;
+  addToPlaylistRecursive(lines, msg, plName, count) {
+    if (lines.length <= 0) {
+      this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
+    }
+    this.searchService.search(lines.pop()).
+      then(({note, songs}) => {
+        console.log(note);
+        let newCount = count;
+        if (songs.length > 1) {
+          const enrichedSongs = songs.map((song) => {
+            song.playlist = plName;
+            song.requester = msg.author.username;
+            return song;
           });
-          this.dBService.addSongs(songs, plName);
-          count += songs.length();
+          this.dBService.addSongs(enrichedSongs, plName);
+          newCount += enrichedSongs.length();
         } else {
-          song.playlist = plName;
-          this.dBService.addSong(song, plName);
-          ++count;
+          songs[0].playlist = plName;
+          songs[0].requester = msg.author.username;
+          this.dBService.addSong(songs[0], plName);
+          ++newCount;
         }
-      });
-      const note = `${count} songs added to playlist: ${plName}`;
-      this.chatService.simpleNote(msg.channel, note, this.chatService.msgType.MUSIC);
-    }).
-      catch();
+        this.addToPlaylistRecursive(lines, msg, plName, newCount);
+        if (newCount % 10 === 0) {
+          this.chatService.simpleNote(msg, "Working on import please be patient!", this.chatService.msgType.Info);
+        }
+      }).
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
 

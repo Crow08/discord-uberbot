@@ -18,6 +18,7 @@ const PauseCommand = require("./cmd/Command_Pause");
 const PlayerService = require("./PlayerService");
 const PlayCommand = require("./cmd/Command_Play");
 const QueueService = require("./QueueService");
+const RatingService = require("./RatingService");
 const RemoveCommand = require("./cmd/Command_Remove");
 const RemovePLCommand = require("./cmd/Command_PL_Remove");
 const TestCommand = require("./cmd/Command_Test");
@@ -37,10 +38,9 @@ const YouTubeService = require("./YouTubeService");
 
 
 class MusicClient {
-  constructor(client, discord, opt) {
+  constructor(client, DiscordRichEmbed, opt) {
     this.commands = [];
     this.baseClient = client;
-    this.discord = discord;
     this.defVolume = (typeof opt !== "undefined" && typeof opt.defVolume !== "undefined") ? opt.defVolume : 50;
     this.bitRate = (typeof opt !== "undefined" && typeof opt.bitRate !== "undefined") ? opt.bitRate : "96000";
     this.botPrefix = opt.botPrefix;
@@ -49,17 +49,15 @@ class MusicClient {
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
     this.dbService = new DBService();
-    this.queueService = new QueueService(500, this.dbService);
-    this.chatService = new ChatService({}, this.discord, this.dbService, this.queueService);
-    this.searchService = new SearchService(
-      this.chatService, this.youtubeService, this.soundCloudService,
-      this.spotifyService
-    );
+    this.ratingService = new RatingService(this.dbService);
+    this.chatService = new ChatService(DiscordRichEmbed);
+    this.searchService = new SearchService(this.youtubeService, this.soundCloudService, this.spotifyService);
     this.voiceService = new VoiceService(
       {"bitRate": this.bitRate, "defVolume": this.defVolume}, this.baseClient,
       this.youtubeService, this.soundCloudService, this.spotifyService
     );
-    this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService);
+    this.queueService = new QueueService(500, this.dbService);
+    this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService, this.ratingService);
     console.log("services loaded!\n>");
     this.loadCommands();
     this.connectDB();
@@ -79,23 +77,23 @@ class MusicClient {
       new GetAutoPLCommand(this.chatService, this.queueService),
       new HelpCommand(this.chatService, this.commands, this.botPrefix),
       new LeaveCommand(this.playerService, this.voiceService),
-      new ListPLCommand(this.chatService, this.dbService, this.discord),
-      new ListSongsCommand(this.chatService, this.discord, this.dbService),
+      new ListPLCommand(this.chatService, this.dbService),
+      new ListSongsCommand(this.chatService, this.dbService),
       new LoadPLCommand(this.chatService, this.queueService),
-      new NowPlayingCommand(this.chatService, this.queueService, this.discord),
+      new NowPlayingCommand(this.chatService, this.queueService, this.ratingService),
       new PauseCommand(this.playerService),
       new PlayCommand(this.chatService, this.playerService, this.searchService),
       new RemoveCommand(this.chatService, this.queueService),
       new RemovePLCommand(this.chatService, this.dbService),
       new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService),
-      new SearchPLCommand(this.chatService, this.dbService, this.discord),
+      new SearchPLCommand(this.chatService, this.dbService, this.ratingService),
       new SeekCommand(this.chatService, this.playerService),
-      new ShowQueueCommand(this.chatService, this.queueService, this.discord),
+      new ShowQueueCommand(this.chatService, this.queueService),
       new ShuffleCommand(this.chatService, this.queueService),
       new SkipCommand(this.playerService),
       new StopCommand(this.playerService),
-      new TestCommand(this.chatService, this.queueService, this.discord, this.dbService),
-      new UploadCommand(this.chatService, this.queueService, this.searchService, this.dBService)
+      new TestCommand(this.chatService, this.queueService, this.dbService),
+      new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService)
     );
     console.log("Commands loaded!\n>");
   }

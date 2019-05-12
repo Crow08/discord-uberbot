@@ -12,7 +12,7 @@ class ClearCommand extends Command {
 
   run(payload, msg) {
     this.queueService.clearQueue();
-    this.chatService.simpleNote(msg.channel, "Queue is now empty!", this.chatService.msgType.MUSIC);
+    this.chatService.simpleNote(msg, "Queue is now empty!", this.chatService.msgType.MUSIC);
   }
 }
 

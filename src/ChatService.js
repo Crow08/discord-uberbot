@@ -1,9 +1,6 @@
 class ChatService {
-  constructor(options, discord, dbService, queueService) {
-    this.options = options;
-    this.discord = discord;
-    this.dbService = dbService;
-    this.queueService = queueService;
+  constructor(DiscordRichEmbed) {
+    this.DiscordRichEmbed = DiscordRichEmbed;
     this.msgType = {
       "FAIL": "fail",
       "INFO": "info",
@@ -13,39 +10,94 @@ class ChatService {
     };
   }
 
-  basicNote(channel, text) {
-    return channel.send(`${text}`);
+  plainText(msg, text) {
+    return msg.channel.send(text);
   }
 
-  simpleNote(channel, text, type) {
+  simpleNote(msg, text, type) {
     switch (type) {
     case this.msgType.INFO:
-      return channel.send(`:information_source: | ${text}`);
+      return msg.channel.send(`:information_source: | ${text}`);
     case this.msgType.MUSIC:
-      return channel.send(`:musical_note: | ${text}`);
+      return msg.channel.send(`:musical_note: | ${text}`);
     case this.msgType.SEARCH:
-      return channel.send(`:mag: | ${text}`);
+      return msg.channel.send(`:mag: | ${text}`);
     case this.msgType.FAIL:
-      return channel.send(`:x: | ${text}`);
+      return msg.channel.send(`:x: | ${text}`);
     default:
-      return channel.send(text);
+      return msg.channel.send(text);
     }
   }
 
   // RichEmbed-Wiki -> https://anidiots.guide/first-bot/using-embeds-in-messages
   // Previewer -> https://leovoel.github.io/embed-visualizer/
-  richNote(channel, embed) {
-    return channel.send(embed);
+  richNote(msg, embed) {
+    return msg.channel.send(embed);
   }
 
-  displaySong(msg, song) {
-    this.openRatingMenu(song, msg, (ratedSong) => {
-      this.dbService.updateSongRating(ratedSong).
-        then((rateResult) => {
-          console.log(rateResult);
-        }).
-        catch((err) => console.log(err));
-    });
+  pagedContent(msg, pages) {
+    let page = 0;
+    // Build choose menu.
+    msg.channel.send(pages[0]).
+      // Add reactions for page navigation.
+      then((curPage) => curPage.react("⏪").then(() => curPage.react("⏩").then(() => {
+        // Add listeners to reactions.
+        const nextReaction = curPage.createReactionCollector(
+          (reaction, user) => reaction.emoji.name === "⏩" && user.id === msg.author.id,
+          {"time": 120000}
+        );
+        const backReaction = curPage.createReactionCollector(
+          (reaction, user) => reaction.emoji.name === "⏪" && user.id === msg.author.id,
+          {"time": 120000}
+        );
+        nextReaction.on("collect", (reaction) => {
+          reaction.remove(msg.author);
+          if ((page + 1) < pages.length) {
+            ++page;
+            curPage.edit(pages[page]);
+          }
+        });
+        backReaction.on("collect", (reaction) => {
+          reaction.remove(msg.author);
+          if (page > 0) {
+            --page;
+            curPage.edit(pages[page]);
+          }
+        });
+      })));
+  }
+
+  displaySong(msg, song, processRating) {
+    // Build Song embed.
+    msg.channel.send(this.buildSongEmbed(song)).
+      // Add reactions for song rating.
+      then((menuMsg) => menuMsg.react("⏫").then(() => menuMsg.react("⏬").then(() => {
+        // Add listeners to reactions.
+        const upReaction = menuMsg.createReactionCollector(
+          (reaction, user) => (reaction.emoji.name === "⏫" && (!user.bot)),
+          {"time": 120000}
+        );
+        const downReaction = menuMsg.createReactionCollector(
+          (reaction, user) => (reaction.emoji.name === "⏬" && (!user.bot)),
+          {"time": 120000}
+        );
+        upReaction.on("collect", (reaction) => {
+          reaction.users.filter((user) => !user.bot).forEach((user) => {
+            reaction.remove(user);
+            processRating(song, user, 1).
+              then(() => menuMsg.edit(this.buildSongEmbed(song))).
+              catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+          });
+        });
+        downReaction.on("collect", (reaction) => {
+          reaction.users.filter((user) => !user.bot).forEach((user) => {
+            reaction.remove(user);
+            processRating(song, user, -1).
+              then(() => menuMsg.edit(this.buildSongEmbed(song))).
+              catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+          });
+        });
+      })));
   }
 
   openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
@@ -144,7 +196,7 @@ class ChatService {
   }
 
   buildSongEmbed(song) {
-    const embed = new this.discord.RichEmbed();
+    const embed = new this.DiscordRichEmbed();
     for (const key in song) {
       if (song[key] === "") {
         song[key] = "-";

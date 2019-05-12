@@ -16,14 +16,21 @@ class PlayCommand extends Command {
       this.playerService.play(msg);
       return;
     }
-    this.searchService.search(payload, msg).then((song) => {
-      if (Array.isArray(song)) {
-        this.playerService.playMultipleNow(song, msg);
-      } else {
-        this.playerService.playNow(song, msg);
-      }
-    }).
-      catch();
+    this.searchService.search(payload).
+      then(({note, songs}) => {
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+        if (songs.length > 1) {
+          const enrichedSongs = songs.map((song) => {
+            song.requester = msg.author.username;
+            return song;
+          });
+          this.playerService.playMultipleNow(enrichedSongs, msg);
+        } else {
+          songs[0].requester = msg.author.username;
+          this.playerService.playNow(songs[0], msg);
+        }
+      }).
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
 

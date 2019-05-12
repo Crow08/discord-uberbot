@@ -12,7 +12,7 @@ class ShuffleCommand extends Command {
 
   run(payload, msg) {
     this.queueService.shuffleQueue();
-    this.chatService.simpleNote(msg.channel, "Queue shuffled!", this.chatService.msgType.MUSIC);
+    this.chatService.simpleNote(msg, "Queue shuffled!", this.chatService.msgType.MUSIC);
   }
 }
 

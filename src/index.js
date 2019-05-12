@@ -5,7 +5,7 @@ const MusicClient = require("./MusicClient.js");
 const readline = require("readline");
 
 const baseClient = new Discord.Client();
-const musicClient = new MusicClient(baseClient, Discord, {
+const musicClient = new MusicClient(baseClient, Discord.RichEmbed, {
   "bitRate": settings.bitRate,
   "botPrefix": settings.botPrefix,
   "defVolume": settings.defVolume,

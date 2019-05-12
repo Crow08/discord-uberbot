@@ -5,6 +5,7 @@ class Song {
     this.src = "";
     this.requester = "";
     this.rating = 0;
+    this.ratingLog = {};
     this.url = "";
     this.playlist = "";
     this.srcType = {

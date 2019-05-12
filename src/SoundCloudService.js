@@ -23,53 +23,38 @@ class SoundCloudService {
           song.url = info.stream_url;
           song.artist = info.user.username;
           song.src = song.srcType.SC;
-          return resolve(song);
+          return resolve([song]);
         }
       );
     });
   }
 
-  getSongViaSearchQuery(searchstring) {
+  getSongsViaSearchQuery(searchstring, count = 1) {
     return new Promise((resolve, reject) => {
       const query = encodeURIComponent(searchstring);
       request(
-        `https://api.soundcloud.com/tracks?q=${query}&limit=1&client_id=${this.clientId}`,
+        "https://api.soundcloud.com/tracks?" +
+        `q=${query}&` +
+        `limit=${count}&` +
+        `client_id=${this.clientId}`,
         (error, response, body) => {
-          const info = JSON.parse(body);
-          if (error || !info || info.length === 0) {
+          if (error) {
+            return reject(error);
+          }
+          const result = JSON.parse(body);
+          if (!result) {
             return reject(new Error("Something went wrong. Try again!"));
           }
-          if (!(info[0].streamable)) {
-            return reject(new Error("Song is not Streamable from SoundCloud!"));
-          }
-          const song = new Song();
-          song.title = info[0].title;
-          song.url = info[0].stream_url;
-          song.artist = info[0].user.username;
-          song.src = song.srcType.SC;
-          return resolve(song);
-        }
-      );
-    });
-  }
-
-  getSongsViaSearchQuery(searchstring, count) {
-    return new Promise((resolve, reject) => {
-      const query = encodeURIComponent(searchstring);
-      request(
-        `https://api.soundcloud.com/tracks?q=${query}&limit=${count}&client_id=${this.clientId}`,
-        (error, response, body) => {
-          const info = JSON.parse(body);
-          if (error || !info || info.length === 0) {
-            return reject(new Error("Something went wrong. Try again!"));
+          if (result.length < 1) {
+            return reject(new Error("No results!"));
           }
           const songs = [];
-          for (let index = 0; index < info.length; index++) {
-            if ((info[index].streamable)) {
+          for (let index = 0; index < result.length; index++) {
+            if ((result[index].streamable)) {
               const song = new Song();
-              song.title = info[index].title;
-              song.url = info[index].stream_url;
-              song.artist = info[index].user.username;
+              song.title = result[index].title;
+              song.url = result[index].stream_url;
+              song.artist = result[index].user.username;
               song.src = song.srcType.SC;
               songs.push(song);
             }
