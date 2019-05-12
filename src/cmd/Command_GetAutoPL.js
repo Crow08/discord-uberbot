@@ -13,10 +13,10 @@ class GetAutoPLCommand extends Command {
   run(payload, msg) {
     console.log("returning name of current autoplaylist");
     this.queueService.getAutoPL().then((autoPl) => {
-      this.chatService.simpleNote(msg.channel, `Current autoplaylist: ${autoPl}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, `Current autoplaylist: ${autoPl}`, this.chatService.msgType.INFO);
     }).
       catch((err) => {
-        this.chatService.simpleNote(msg.channel, err, this.chatService.msgType.FAIL);
+        this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL);
       });
   }
 }

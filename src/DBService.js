@@ -81,10 +81,10 @@ class DBService {
     });
   }
 
-  removeSong(song, plName) {
+  removeSong(title, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
-        deleteOne({"title": {"$options": "$i", "$regex": song}}).
+        deleteOne({title},).
         then(resolve).
         catch(reject);
     });

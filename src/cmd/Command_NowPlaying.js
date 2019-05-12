@@ -20,9 +20,9 @@ class NowPlayingCommand extends Command {
           embed.setColor(13632027);
           embed.addField("Are you deaf?", "Go check your ears, there is clearly nothing playing right now!", true);
         } else {
-          this.chatService.displaySong(msg, nowplaying, (rSong, user, delta) => this.ratingService.rateSong(rSong, user, delta));
+          this.chatService.displaySong(msg, nowplaying, (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd));
         }
-        this.chatService.richNote(msg.channel, embed);
+        this.chatService.richNote(msg, embed);
       });
   }
 }

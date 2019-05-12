@@ -49,14 +49,15 @@ class MusicClient {
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
     this.dbService = new DBService();
-    this.ratingService = new RatingService(this.dbService);
+    this.queueService = new QueueService(500, this.dbService);
+    this.ratingService = new RatingService(this.dbService, this.queueService);
     this.chatService = new ChatService(DiscordRichEmbed);
     this.searchService = new SearchService(this.youtubeService, this.soundCloudService, this.spotifyService);
     this.voiceService = new VoiceService(
       {"bitRate": this.bitRate, "defVolume": this.defVolume}, this.baseClient,
       this.youtubeService, this.soundCloudService, this.spotifyService
     );
-    this.queueService = new QueueService(500, this.dbService);
+    
     this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService, this.ratingService);
     console.log("services loaded!\n>");
     this.loadCommands();

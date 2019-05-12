@@ -13,8 +13,8 @@ class AddQueueToPLCommand extends Command {
 
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
-      this.chatService.simpleNote(msg.channel, "falscher Syntax!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg.channel, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "falscher Syntax!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
     }
     console.log("adding queue:");
     // Get queue
@@ -26,7 +26,7 @@ class AddQueueToPLCommand extends Command {
         console.log(`added ${entry.title} to Playlist ${payload}`);
       });
     });
-    this.chatService.simpleNote(msg.channel, `added ${count} Songs to ${payload}`, this.chatService.msgType.INFO);
+    this.chatService.simpleNote(msg, `added ${count} Songs to ${payload}`, this.chatService.msgType.INFO);
   }
 }
 module.exports = AddQueueToPLCommand;

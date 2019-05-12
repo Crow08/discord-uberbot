@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 class ChatService {
   constructor(DiscordRichEmbed) {
     this.DiscordRichEmbed = DiscordRichEmbed;
@@ -71,21 +72,30 @@ class ChatService {
     // Build Song embed.
     msg.channel.send(this.buildSongEmbed(song)).
       // Add reactions for song rating.
-      then((menuMsg) => menuMsg.react("⏫").then(() => menuMsg.react("⏬").then(() => {
+      then((menuMsg) => menuMsg.react("⏫").then(() => menuMsg.react("⏬").then(() => menuMsg.react("💩").then(() => {
         // Add listeners to reactions.
         const upReaction = menuMsg.createReactionCollector(
           (reaction, user) => (reaction.emoji.name === "⏫" && (!user.bot)),
-          {"time": 120000}
+          {"time": 300000}
         );
         const downReaction = menuMsg.createReactionCollector(
           (reaction, user) => (reaction.emoji.name === "⏬" && (!user.bot)),
-          {"time": 120000}
+          {"time": 300000}
+        );
+        const poopReaction = menuMsg.createReactionCollector(
+          (reaction, user) => (reaction.emoji.name === "💩" && (!user.bot)),
+          {"time": 300000}
         );
         upReaction.on("collect", (reaction) => {
           reaction.users.filter((user) => !user.bot).forEach((user) => {
             reaction.remove(user);
             processRating(song, user, 1).
-              then(() => menuMsg.edit(this.buildSongEmbed(song))).
+              then((note) => {
+                menuMsg.edit(this.buildSongEmbed(song));
+                if (note) {
+                  this.simpleNote(msg, note, this.msgType.MUSIC);
+                }
+              }).
               catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
           });
         });
@@ -93,11 +103,32 @@ class ChatService {
           reaction.users.filter((user) => !user.bot).forEach((user) => {
             reaction.remove(user);
             processRating(song, user, -1).
-              then(() => menuMsg.edit(this.buildSongEmbed(song))).
+              then((note) => {
+                menuMsg.edit(this.buildSongEmbed(song));
+                if (note) {
+                  this.simpleNote(msg, note, this.msgType.MUSIC);
+                }
+              }).
               catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
           });
         });
-      })));
+
+        poopReaction.on("collect", (reaction) => {
+          reaction.users.filter((user) => !user.bot).forEach((user) => {
+            reaction.remove(user);
+            processRating(song, user, -1000, true).
+              then((note) => {
+                menuMsg.edit(this.buildSongEmbed(song));
+                if (note) {
+                  this.simpleNote(msg, "Let me clean that 💩 for you", this.msgType.MUSIC);
+                  this.simpleNote(msg, note, this.msgType.MUSIC);
+                }
+              }).
+              catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+          });
+        });
+
+      }))));
   }
 
   openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
@@ -137,51 +168,6 @@ class ChatService {
           }).
           // Timeout or error.
           catch(() => menuMsg.delete());
-      })));
-  }
-
-  openRatingMenu(song, msg, processRating) {
-    // Build choose menu.
-    msg.channel.send(this.buildSongEmbed(song)).
-      // Add reactions for page navigation.
-      then((menuMsg) => menuMsg.react("⏫").then(() => menuMsg.react("⏬").then(() => {
-        // Add listeners to reactions.
-        const upReaction = menuMsg.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏫" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        const downReaction = menuMsg.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏬" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        upReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
-          ++song.rating;
-          processRating(song);
-          menuMsg.edit(this.buildSongEmbed(song));
-          // Adds upvoted song to autoPlaylist
-          this.queueService.getAutoPL().then((autoPL) => {
-            console.log(autoPL);
-            this.dbService.addSong(song, autoPL).then((result) => {
-              console.log(result);
-            });
-          }).
-            catch((err) => {
-              this.simpleNote(msg.channel, err, this.msgType.FAIL);
-            });
-        });
-        downReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
-          --song.rating;
-          processRating(song);
-          menuMsg.edit(this.buildSongEmbed(song));
-          // Removes song from autoplaylist if rating too bad
-          if (song.rating <= -2) {
-            this.dbService.removeSong(song.title, song.playlist).then((result) => {
-              console.log(result);
-            });
-          }
-        });
       })));
   }
 

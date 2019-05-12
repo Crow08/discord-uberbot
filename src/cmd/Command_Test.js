@@ -15,10 +15,10 @@ class TestCommand extends Command {
   run(payload, msg) {
     console.log("testing");
     this.queueService.getAutoPL().then((autoPl) => {
-      this.chatService.simpleNote(msg.channel, autoPl, this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, autoPl, this.chatService.msgType.INFO);
     }).
       catch((err) => {
-        this.chatService.simpleNote(msg.channel, err, this.chatService.msgType.FAIL);
+        this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL);
       });
 
     /* X
