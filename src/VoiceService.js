@@ -2,7 +2,6 @@ class VoiceService {
   constructor(options, client, youtubeService, soundCloudService, spotifyService) {
     this.bitRate = options.bitRate;
     this.volume = options.defVolume;
-
     this.client = client;
     this.youtubeService = youtubeService;
     this.soundCloudService = soundCloudService;

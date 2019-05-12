@@ -6,14 +6,18 @@
 
 ##### Playlists #####
 - add rating
-	- skip song on downvote
+	- skip song on downvote (and skip on shit)
+	- add are you sure on poop-emoji
 - remove duplicates (dont delete songs with rating)
 - method duplicate tester (checks playlist before adding song)
 	- maybe extend addSong
 - implement requester
+- search playlist
+- plload shuffled
 
 ##### Queue ##### 
 - loop with options (song / queue / none)
+- place desired song on top of the queue
 
 ##### Play song ##### 
 - raw-MP3-support
