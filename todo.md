@@ -6,8 +6,7 @@
 
 ##### Playlists #####
 - add rating
-	- implent autodelete
-	- implement autoadd after upvote (to autoplaylist)
+	- implement autodelete
 - remove duplicates (dont delete songs with rating)
 - method duplicate tester (checks playlist before adding song)
 	- maybe extend addSong
