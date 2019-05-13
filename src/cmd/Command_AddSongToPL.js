@@ -21,8 +21,8 @@ class AddSongToPlCommand extends Command {
       console.log(nowplaying);
       console.log(`add song ${nowplaying.title} to pl ${payload}`);
       this.dbService.addSong(nowplaying, payload).then(() => {
-        // eslint-disable-next-line max-len
-        this.chatService.simpleNote(msg, `added ${nowplaying.title} to Playlist ${payload}`, this.chatService.msgType.INFO);
+        const note = `added ${nowplaying.title} to Playlist ${payload}`;
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.INFO);
       });
     });
 
