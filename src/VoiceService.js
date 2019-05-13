@@ -35,8 +35,8 @@ class VoiceService {
     });
   }
 
-  disconnectVoiceConnection(message) {
-    const serverId = message.guild.id;
+  disconnectVoiceConnection(msg) {
+    const serverId = msg.guild.id;
     this.client.voiceConnections.forEach((conn) => {
       if (conn.channel.guild.id === serverId) {
         conn.disconnect();
@@ -44,9 +44,12 @@ class VoiceService {
     });
   }
 
-  getVoiceConnection(message) {
-    const serverId = message.guild.id;
-    const {voiceChannel} = message.member;
+  getVoiceConnection(msg) {
+    if (typeof msg.guild === "undefined") {
+      return new Promise((resolve, reject) => reject(new Error("Unable to find discord server!")));
+    }
+    const serverId = msg.guild.id;
+    const {voiceChannel} = msg.member;
     return new Promise((resolve, reject) => {
       // Search for etablished connection with this server.
       const voiceConnection = this.client.voiceConnections.find((val) => val.channel.guild.id === serverId);

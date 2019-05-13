@@ -1,8 +1,9 @@
-/* global require */
 const settings = require("../settings.json");
 const Discord = require("discord.js");
 const MusicClient = require("./MusicClient.js");
 const readline = require("readline");
+
+console.log("\x1b[32m%s\x1b[0m", "------- UberBot is charging! -------\n");
 
 if (typeof settings === "undefined" ||
   (typeof settings.scClientId === "undefined" || settings.scClientId === "SOUNDCLOUD_CLIENT_ID") ||
@@ -51,7 +52,7 @@ baseClient.on("messageUpdate", (oldMsg, newMsg) => {
 });
 
 baseClient.on("ready", () => {
-  console.log("------- UberBot is fully charged! -------\n>");
+  console.log("\x1b[32m%s\x1b[0m", "------- UberBot is fully charged! -------\n");
 });
 
 // DEBUG STUFF:
@@ -66,6 +67,6 @@ rl.on("line", (input) => {
   if (message.startsWith(settings.botPrefix)) {
     const cmd = message.substr(settings.botPrefix.length).split(" ", 1)[0];
     const payload = message.substr(cmd.length + settings.botPrefix.length + 1);
-    musicClient.execute(cmd, payload);
+    musicClient.execute(cmd, payload, {"author": {"username": "debug_console"}});
   }
 });

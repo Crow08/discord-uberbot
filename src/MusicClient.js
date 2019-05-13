@@ -42,7 +42,7 @@ class MusicClient {
     this.commands = [];
     this.baseClient = client;
     this.botPrefix = opt.botPrefix;
-    console.log("Loading services...\n>");
+    console.log("\x1b[35m%s\x1b[0m", "> Loading services\n> ...");
     this.chatService = new ChatService(DiscordRichEmbed);
     this.youtubeService = new YouTubeService(opt.youtubeApiKey);
     this.soundCloudService = new SoundCloudService(opt.scClientId);
@@ -56,13 +56,13 @@ class MusicClient {
     this.queueService = new QueueService(500, this.dbService);
     this.ratingService = new RatingService(opt.ratingCooldown, this.dbService, this.queueService);
     this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService, this.ratingService);
-    console.log("services loaded!\n>");
+    console.log("\x1b[35m%s\x1b[0m", "> services loaded!\n");
     this.loadCommands();
     this.connectDB();
   }
 
   loadCommands() {
-    console.log("Loading commands...\n>");
+    console.log("\x1b[35m%s\x1b[0m", "> Loading commands\n> ...");
     this.commands.splice(
       0, 0,
       new AddCommand(this.chatService, this.queueService, this.searchService),
@@ -93,23 +93,28 @@ class MusicClient {
       new TestCommand(this.chatService, this.queueService, this.dbService),
       new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService)
     );
-    console.log("Commands loaded!\n>");
+    console.log("\x1b[35m%s\x1b[0m", "> Commands loaded!\n");
   }
 
   connectDB() {
-    console.log("Connecting to DB...\n>");
+    console.log("\x1b[35m%s\x1b[0m", "> Connecting to DB\n> ...");
     this.dbService.connectDB().
-      then(() => console.log("DB Connected!\n>")).
+      then(() => console.log("\x1b[35m%s\x1b[0m", "> DB Connected!\n")).
       catch((err) => console.log(err));
   }
 
   execute(cmd, payload, msg) {
-    console.log(`CMD: ${cmd}\n>`);
+    let found = false;
     this.commands.forEach((command) => {
-      if (command.alias.includes(cmd)) {
+      if (!found && command.alias.includes(cmd)) {
+        console.log("\x1b[33m%s\x1b[0m", `> CMD: ${cmd}\n`);
         command.run(payload, msg);
+        found = true;
       }
     });
+    if (!found) {
+      console.log("\x1b[33m%s\x1b[0m", `> unrecognized command name:  ${cmd}\n`);
+    }
   }
 }
 

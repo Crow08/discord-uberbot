@@ -6,15 +6,22 @@ class ChatService {
       "INFO": "info",
       "MUSIC": "music",
       "SEARCH": "search"
-
     };
   }
 
   plainText(msg, text) {
+    this.debugPrint(text);
+    if (typeof msg.channel === "undefined") {
+      return false;
+    }
     return msg.channel.send(text);
   }
 
   simpleNote(msg, text, type) {
+    this.debugPrint(text);
+    if (typeof msg.channel === "undefined") {
+      return false;
+    }
     switch (type) {
     case this.msgType.INFO:
       return msg.channel.send(`:information_source: | ${text}`);
@@ -32,10 +39,17 @@ class ChatService {
   // RichEmbed-Wiki -> https://anidiots.guide/first-bot/using-embeds-in-messages
   // Previewer -> https://leovoel.github.io/embed-visualizer/
   richNote(msg, embed) {
+    this.debugPrint(embed);
+    if (typeof msg.channel === "undefined") {
+      return false;
+    }
     return msg.channel.send(embed);
   }
 
   pagedContent(msg, pages) {
+    if (typeof msg.channel === "undefined") {
+      return;
+    }
     let page = 0;
     // Build choose menu.
     msg.channel.send(pages[0]).
@@ -68,6 +82,9 @@ class ChatService {
   }
 
   displaySong(msg, song, processRating) {
+    if (typeof msg.channel === "undefined") {
+      return;
+    }
     // Build Song embed.
     msg.channel.send(this.buildSongEmbed(song)).
       // Add reactions for song rating.
@@ -189,6 +206,16 @@ class ChatService {
     embed.addField("Rating", song.rating, true);
     embed.addField("Source", song.src, true);
     return embed;
+  }
+
+  debugPrint(text) {
+    if (text instanceof Error) {
+      console.log("\x1b[31m%s\x1b[0m", text.stack);
+    } else if (typeof text === "object") {
+      console.log("\x1b[36m%s\x1b[0m", JSON.stringify(text, null, 4));
+    } else {
+      console.log("\x1b[36m%s\x1b[0m", text);
+    }
   }
 }
 
