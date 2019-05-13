@@ -130,7 +130,7 @@ class QueueService {
       message = `${this.queue[0].title} will allready play next`;
     } else {
       this.queue.splice(0, 0, this.queue.splice(songnumber, 1)[0]);
-      message = `Next up: ${this.queue[0].title}`;
+      message = `Next up: ${this.queue[0].title} - ${this.queue[0].artist}`;
     }
     return (message);
   }
