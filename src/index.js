@@ -4,11 +4,20 @@ const Discord = require("discord.js");
 const MusicClient = require("./MusicClient.js");
 const readline = require("readline");
 
+if (typeof settings === "undefined" ||
+  (typeof settings.scClientId === "undefined" || settings.scClientId === "SOUNDCLOUD_CLIENT_ID") ||
+  (typeof settings.spotifyClientId === "undefined" || settings.spotifyClientId === "SPOTIFY_CLIENT_ID") ||
+  (typeof settings.spotifyClientSecret === "undefined" || settings.spotifyClientSecret === "SPOTIFY_CLIENT_SECRET") ||
+  (typeof settings.youtubeApiKey === "undefined" || settings.youtubeApiKey === "YOUTUBE_API_KEY")) {
+  throw new Error("Necessary settings are not set! (please check your settings.json for missing API credentials.)");
+}
+
 const baseClient = new Discord.Client();
 const musicClient = new MusicClient(baseClient, Discord.RichEmbed, {
-  "bitRate": settings.bitRate,
-  "botPrefix": settings.botPrefix,
-  "defVolume": settings.defVolume,
+  "bitRate": typeof settings.bitRate === "undefined" ? 96000 : parseInt(settings.bitRate, 10),
+  "botPrefix": typeof settings.botPrefix === "undefined" ? "!" : settings.botPrefix,
+  "defVolume": typeof settings.defVolume === "undefined" ? 50 : parseInt(settings.defVolume, 10),
+  "ratingCooldown": typeof settings.ratingCooldown === "undefined" ? 86400 : parseInt(settings.ratingCooldown, 10),
   "scClientId": settings.scClientId,
   "spotifyClientId": settings.spotifyClientId,
   "spotifyClientSecret": settings.spotifyClientSecret,

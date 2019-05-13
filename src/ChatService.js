@@ -1,4 +1,3 @@
-/* eslint-disable max-lines-per-function */
 class ChatService {
   constructor(DiscordRichEmbed) {
     this.DiscordRichEmbed = DiscordRichEmbed;
@@ -41,7 +40,7 @@ class ChatService {
     // Build choose menu.
     msg.channel.send(pages[0]).
       // Add reactions for page navigation.
-      then((curPage) => curPage.react("⏪").then(() => curPage.react("⏩").then(() => {
+      then((curPage) => this.postReactionEmojis(curPage, ["⏪", "⏩"]).then(() => {
         // Add listeners to reactions.
         const nextReaction = curPage.createReactionCollector(
           (reaction, user) => reaction.emoji.name === "⏩" && user.id === msg.author.id,
@@ -65,70 +64,64 @@ class ChatService {
             curPage.edit(pages[page]);
           }
         });
-      })));
+      }));
   }
 
   displaySong(msg, song, processRating) {
     // Build Song embed.
     msg.channel.send(this.buildSongEmbed(song)).
       // Add reactions for song rating.
-      then((menuMsg) => menuMsg.react("⏫").then(() => menuMsg.react("⏬").then(() => menuMsg.react("💩").then(() => {
+      then((songMsg) => this.postReactionEmojis(songMsg, ["⏫", "⏬", "💩"]).
+        then(() => {
         // Add listeners to reactions.
-        const upReaction = menuMsg.createReactionCollector(
-          (reaction, user) => (reaction.emoji.name === "⏫" && (!user.bot)),
-          {"time": 300000}
-        );
-        const downReaction = menuMsg.createReactionCollector(
-          (reaction, user) => (reaction.emoji.name === "⏬" && (!user.bot)),
-          {"time": 300000}
-        );
-        const poopReaction = menuMsg.createReactionCollector(
-          (reaction, user) => (reaction.emoji.name === "💩" && (!user.bot)),
-          {"time": 300000}
-        );
-        upReaction.on("collect", (reaction) => {
-          reaction.users.filter((user) => !user.bot).forEach((user) => {
-            reaction.remove(user);
-            processRating(song, user, 1).
-              then((note) => {
-                menuMsg.edit(this.buildSongEmbed(song));
-                if (note) {
-                  this.simpleNote(msg, note, this.msgType.MUSIC);
-                }
-              }).
-              catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+          const upReaction = songMsg.createReactionCollector(
+            (reaction, user) => (reaction.emoji.name === "⏫" && (!user.bot)),
+            {"time": 300000}
+          );
+          const downReaction = songMsg.createReactionCollector(
+            (reaction, user) => (reaction.emoji.name === "⏬" && (!user.bot)),
+            {"time": 300000}
+          );
+          const poopReaction = songMsg.createReactionCollector(
+            (reaction, user) => (reaction.emoji.name === "💩" && (!user.bot)),
+            {"time": 300000}
+          );
+          upReaction.on("collect", (reaction) => {
+            this.handleRatingReaction(reaction, song, 1, processRating);
           });
-        });
-        downReaction.on("collect", (reaction) => {
-          reaction.users.filter((user) => !user.bot).forEach((user) => {
-            reaction.remove(user);
-            processRating(song, user, -1).
-              then((note) => {
-                menuMsg.edit(this.buildSongEmbed(song));
-                if (note) {
-                  this.simpleNote(msg, note, this.msgType.MUSIC);
-                }
-              }).
-              catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+          downReaction.on("collect", (reaction) => {
+            this.handleRatingReaction(reaction, song, -1, processRating);
           });
-        });
+          poopReaction.on("collect", (reaction) => {
+            const note = "Let me clean that 💩 for you";
+            this.simpleNote(reaction.message, note, this.msgType.MUSIC);
+            this.handleRatingReaction(reaction, song, -1000, processRating, true);
+          });
+        }));
+  }
 
-        poopReaction.on("collect", (reaction) => {
-          reaction.users.filter((user) => !user.bot).forEach((user) => {
-            reaction.remove(user);
-            processRating(song, user, -1000, true).
-              then((note) => {
-                menuMsg.edit(this.buildSongEmbed(song));
-                if (note) {
-                  this.simpleNote(msg, "Let me clean that 💩 for you", this.msgType.MUSIC);
-                  this.simpleNote(msg, note, this.msgType.MUSIC);
-                }
-              }).
-              catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
-          });
-        });
+  postReactionEmojis(msg, emojiList) {
+    return new Promise((resolve, reject) => {
+      const promisses = [];
+      emojiList.forEach((emoji) => promisses.push(msg.react(emoji)));
+      Promise.all(promisses).
+        then(resolve).
+        catch(reject);
+    });
+  }
 
-      }))));
+  handleRatingReaction(reaction, song, delta, processRating, ignoreCd = false) {
+    reaction.users.filter((user) => !user.bot).forEach((user) => {
+      reaction.remove(user);
+      processRating(song, user, delta, ignoreCd).
+        then((note) => {
+          reaction.message.edit(this.buildSongEmbed(song));
+          if (note) {
+            this.simpleNote(reaction.message, note, this.msgType.MUSIC);
+          }
+        }).
+        catch((err) => this.simpleNote(reaction.message, err, this.msgType.FAIL));
+    });
   }
 
   openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
@@ -136,7 +129,7 @@ class ChatService {
     // Build choose menu.
     msg.channel.send(this.buildSelectionPage(songs, page)).
       // Add reactions for page navigation.
-      then((menuMsg) => menuMsg.react("⏪").then(() => menuMsg.react("⏩").then(() => {
+      then((menuMsg) => this.postReactionEmojis(menuMsg, ["⏪", "⏩"]).then(() => {
         // Add listeners to reactions.
         const nextReaction = menuMsg.createReactionCollector(
           (reaction, user) => reaction.emoji.name === "⏩" && user.id === msg.author.id,
@@ -168,7 +161,7 @@ class ChatService {
           }).
           // Timeout or error.
           catch(() => menuMsg.delete());
-      })));
+      }));
   }
 
   buildSelectionPage(songs, pageNo) {
