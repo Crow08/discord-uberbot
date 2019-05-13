@@ -15,8 +15,9 @@ const LoadPLCommand = require("./cmd/Command_PL_Load");
 const ListSongsCommand = require("./cmd/Command_List_Songs");
 const NowPlayingCommand = require("./cmd/Command_NowPlaying");
 const PauseCommand = require("./cmd/Command_Pause");
-const PlayerService = require("./PlayerService");
 const PlayCommand = require("./cmd/Command_Play");
+const PlayerService = require("./PlayerService");
+const PlayNextCommand = require("./cmd/Command_PlayNext");
 const QueueService = require("./QueueService");
 const RatingService = require("./RatingService");
 const RemoveCommand = require("./cmd/Command_Remove");
@@ -57,7 +58,7 @@ class MusicClient {
       {"bitRate": this.bitRate, "defVolume": this.defVolume}, this.baseClient,
       this.youtubeService, this.soundCloudService, this.spotifyService
     );
-    
+
     this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService, this.ratingService);
     console.log("services loaded!\n>");
     this.loadCommands();
@@ -84,6 +85,7 @@ class MusicClient {
       new NowPlayingCommand(this.chatService, this.queueService, this.ratingService),
       new PauseCommand(this.playerService),
       new PlayCommand(this.chatService, this.playerService, this.searchService),
+      new PlayNextCommand(this.chatService, this.queueService),
       new RemoveCommand(this.chatService, this.queueService),
       new RemovePLCommand(this.chatService, this.dbService),
       new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService),

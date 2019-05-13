@@ -1,15 +1,13 @@
 const Command = require("./Command.js");
 
-class TestCommand extends Command {
-  constructor(chatService, queueService, discord, dbService) {
-    super("test");
-    super.help = "for testing - duh!";
-    super.usage = "<prefix>test";
-    super.alias = ["test"];
+class PlayNextCommand extends Command {
+  constructor(chatService, queueService) {
+    super("playnext");
+    super.help = "moves song at given position to top";
+    super.usage = "<prefix>playnext <queueposition>";
+    super.alias = ["playnext", "pn"];
     this.chatService = chatService;
     this.queueService = queueService;
-    this.discord = discord;
-    this.dbService = dbService;
   }
 
   run(payload, msg) {
@@ -22,6 +20,9 @@ class TestCommand extends Command {
         if (this.queueService.queue[count].title.toLowerCase().indexOf(payload.toLowerCase()) >= 0) {
           this.chatService.simpleNote(msg, this.queueService.prioritizeSong(count), this.chatService.msgType.MUSIC);
           return;
+        } else if (this.queueService.queue[count].artist.toLowerCase().indexOf(payload.toLowerCase()) >= 0) {
+          this.chatService.simpleNote(msg, this.queueService.prioritizeSong(count), this.chatService.msgType.MUSIC);
+          return;
         }
       }
       this.chatService.simpleNote(msg, `${payload} not found`, this.chatService.msgType.FAIL);
@@ -31,4 +32,4 @@ class TestCommand extends Command {
     }
   }
 }
-module.exports = TestCommand;
+module.exports = PlayNextCommand;

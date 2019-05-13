@@ -13,11 +13,10 @@
 	- maybe extend addSong
 - implement requester
 - search playlist
-- plload shuffled
 
 ##### Queue ##### 
 - loop with options (song / queue / none)
-- place desired song on top of the queue
+- shuffle playback (useful for autoplaylists, which cant be shuffled)
 
 ##### Play song ##### 
 - raw-MP3-support
