@@ -124,7 +124,7 @@ class QueueService {
     console.log(`shuffle song nr. ${songnumber} to top`);
     if (this.queue.length === 0) {
       message = "Editing a non-existing queue, smart move!";
-    } else if (songnumber >= this.queue.length) {
+    } else if (songnumber >= this.queue.length || songnumber <= 0) {
       message = "Maybe try with a number that exists, will ya?";
     } else if (songnumber === 0) {
       message = `${this.queue[0].title} will allready play next`;

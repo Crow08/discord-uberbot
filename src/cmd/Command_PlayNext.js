@@ -11,9 +11,12 @@ class PlayNextCommand extends Command {
   }
 
   run(payload, msg) {
-    console.log("testing");
+    if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length > 1) {
+      this.chatService.simpleNote(msg, "What are you doing?", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+      return;
+    }
     if (isNaN(payload)) {
-
       for (let count = 0; count < this.queueService.queue.length; count++) {
         console.log("%d: %s", count, this.queueService.queue[count].title);
         console.log(this.queueService.queue[count].title.toLowerCase().indexOf(payload.toLowerCase()));
