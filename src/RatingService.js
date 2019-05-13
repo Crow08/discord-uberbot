@@ -45,7 +45,7 @@ class RateingService {
     });
   }
 
-  getUserCdForSong(user, song) {
+  getUserCdForSong(song, user) {
     if (Object.prototype.hasOwnProperty.call(song.ratingLog, user)) {
       const ratedDeltaTime = Date.now() - song.ratingLog[user];
       if (ratedDeltaTime < this.ratingCooldown) {
