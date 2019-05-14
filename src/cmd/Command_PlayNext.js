@@ -30,8 +30,8 @@ class PlayNextCommand extends Command {
       }
       this.chatService.simpleNote(msg, `${payload} not found`, this.chatService.msgType.FAIL);
     } else {
-      // eslint-disable-next-line max-len
-      this.chatService.simpleNote(msg, this.queueService.prioritizeSong(parseInt(payload, 10) - 1), this.chatService.msgType.MUSIC);
+      const index = parseInt(payload, 10) - 1;
+      this.chatService.simpleNote(msg, this.queueService.prioritizeSong(index), this.chatService.msgType.MUSIC);
     }
   }
 }
