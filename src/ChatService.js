@@ -9,14 +9,6 @@ class ChatService {
     };
   }
 
-  plainText(msg, text) {
-    this.debugPrint(text);
-    if (typeof msg.channel === "undefined") {
-      return false;
-    }
-    return msg.channel.send(text);
-  }
-
   simpleNote(msg, text, type) {
     this.debugPrint(text);
     if (typeof msg.channel === "undefined") {
@@ -38,15 +30,16 @@ class ChatService {
 
   // RichEmbed-Wiki -> https://anidiots.guide/first-bot/using-embeds-in-messages
   // Previewer -> https://leovoel.github.io/embed-visualizer/
-  richNote(msg, embed) {
-    this.debugPrint(embed);
+  send(msg, content) {
+    this.debugPrint(content);
     if (typeof msg.channel === "undefined") {
       return false;
     }
-    return msg.channel.send(embed);
+    return msg.channel.send(content);
   }
 
   pagedContent(msg, pages) {
+    this.debugPrint(pages);
     if (typeof msg.channel === "undefined") {
       return;
     }
@@ -64,6 +57,7 @@ class ChatService {
           (reaction, user) => reaction.emoji.name === "⏪" && user.id === msg.author.id,
           {"time": 120000}
         );
+        // Handle reactions.
         nextReaction.on("collect", (reaction) => {
           reaction.remove(msg.author);
           if ((page + 1) < pages.length) {
@@ -82,6 +76,7 @@ class ChatService {
   }
 
   displaySong(msg, song, processRating) {
+    this.debugPrint(song);
     if (typeof msg.channel === "undefined") {
       return;
     }
@@ -103,6 +98,7 @@ class ChatService {
             (reaction, user) => (reaction.emoji.name === "💩" && (!user.bot)),
             {"time": 300000}
           );
+          // Handle reactions.
           upReaction.on("collect", (reaction) => {
             this.handleRatingReaction(reaction, song, 1, processRating);
           });
@@ -122,6 +118,7 @@ class ChatService {
       msg.react(emojiList.shift()).
         then(() => {
           if (emojiList.length > 0) {
+            // Send all reactions recursively.
             this.postReactionEmojis(msg, emojiList).
               then(resolve).
               catch(reject);
@@ -148,6 +145,10 @@ class ChatService {
   }
 
   openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
+    this.debugPrint(songs);
+    if (typeof msg.channel === "undefined") {
+      return;
+    }
     let page = 0;
     // Build choose menu.
     msg.channel.send(this.buildSelectionPage(songs, page)).
@@ -162,6 +163,7 @@ class ChatService {
           (reaction, user) => reaction.emoji.name === "⏪" && user.id === msg.author.id,
           {"time": 120000}
         );
+        // Handle reactions.
         nextReaction.on("collect", (reaction) => {
           reaction.remove(msg.author);
           if ((page + 1) * 10 <= songs.length) {
@@ -214,13 +216,13 @@ class ChatService {
     return embed;
   }
 
-  debugPrint(text) {
-    if (text instanceof Error) {
-      console.log("\x1b[31m%s\x1b[0m", text.stack);
-    } else if (typeof text === "object") {
-      console.log("\x1b[36m%s\x1b[0m", JSON.stringify(text, null, 4));
+  debugPrint(content) {
+    if (content instanceof Error) {
+      console.log("\x1b[31m%s\x1b[0m", content.stack);
+    } else if (typeof content === "object") {
+      console.log("\x1b[36m%s\x1b[0m", JSON.stringify(content, null, 4).replace(/\\n/gu, "\n"));
     } else {
-      console.log("\x1b[36m%s\x1b[0m", text);
+      console.log("\x1b[36m%s\x1b[0m", content);
     }
   }
 }
