@@ -10,7 +10,7 @@ class SkipCommand extends Command {
   }
 
   run(payload, msg) {
-    this.playerService.next(msg);
+    this.playerService.skip(msg);
   }
 }
 

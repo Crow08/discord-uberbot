@@ -8,39 +8,36 @@ class PlayerService {
     this.ratingService = ratingService;
   }
 
-  handleSongEnd(reason, msg) {
+  handleSongEnd(reason, msg, startTime) {
     if (reason === "ignore") {
       return;
     }
-    this.queueService.getNextSong(msg).
-      then((song) => {
-        this.playNow(song, msg);
-      }).
-      catch((err) => {
-        console.log(err);
-        this.chatService.simpleNote(msg, "Playback finished!", this.chatService.msgType.MUSIC);
-        this.voiceService.disconnectVoiceConnection(msg);
-      });
+    // TODO: remove.
+    const delta = (new Date()) - startTime;
+    this.chatService.simpleNote(msg, `>>> Debug: Song was playing for : ${delta}ms <<<`, this.chatService.msgType.INFO);
+    this.chatService.simpleNote(msg, `>>> Debug: Song ended with reason: ${reason} <<<`, this.chatService.msgType.INFO);
+    this.playNext(msg);
   }
 
-  handleError(error, msg) {
-    this.chatService.simpleNote(msg, "Error while playback!", this.chatService.msgType.FAIL);
-    console.log(error);
+  handleError(err, msg) {
+    this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL);
   }
 
   playNow(song, msg) {
     if (this.audioDispatcher) {
       this.audioDispatcher.end("ignore");
     }
-    this.voiceService.playStream(song, msg).then((dispatcher) => {
-      this.queueService.addSongToHistory(song);
-      this.audioDispatcher = dispatcher;
-      this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
-      this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
-      this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
-      const ratingFunc = (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd);
-      this.chatService.displaySong(msg, song, ratingFunc);
-    }).
+    this.voiceService.playStream(song, msg).
+      then((dispatcher) => {
+        this.queueService.addSongToHistory(song);
+        this.audioDispatcher = dispatcher;
+        const startTime = new Date();
+        this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg, startTime));
+        this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
+        this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
+        const ratingFunc = (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd);
+        this.chatService.displaySong(msg, song, ratingFunc);
+      }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 
@@ -55,13 +52,25 @@ class PlayerService {
     }
   }
 
+  playNext(msg) {
+    this.queueService.getNextSong().
+      then((song) => {
+        if (song === null) {
+          this.chatService.simpleNote(msg, "Queue is empty, playback finished!", this.chatService.msgType.MUSIC);
+          this.voiceService.disconnectVoiceConnection(msg);
+        } else {
+          this.playNow(song, msg);
+        }
+      }).
+      catch((err) => {
+        this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL);
+        this.voiceService.disconnectVoiceConnection(msg);
+      });
+  }
+
   play(msg) {
     if (!this.audioDispatcher || this.audioDispatcher.destroyed) {
-      this.queueService.getNextSong().
-        then((song) => {
-          this.playNow(song, msg);
-        }).
-        catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
+      this.playNext(msg);
     } else if (this.audioDispatcher.paused) {
       this.audioDispatcher.resume();
       this.chatService.simpleNote(msg, "Now playing!", this.chatService.msgType.MUSIC);
@@ -91,7 +100,7 @@ class PlayerService {
     this.chatService.simpleNote(msg, "Playback stopped!", this.chatService.msgType.MUSIC);
   }
 
-  next(msg) {
+  skip(msg) {
     if (!this.audioDispatcher) {
       this.chatService.simpleNote(msg, "Audiostream not found!", this.chatService.msgType.FAIL);
       return;
@@ -104,11 +113,12 @@ class PlayerService {
     if (this.audioDispatcher) {
       this.audioDispatcher.end("ignore");
     }
-    this.voiceService.playStream(this.queueService.getHistorySong(0), msg, position).then((dispatcher) => {
-      this.audioDispatcher = dispatcher;
-      this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
-      this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
-    }).
+    this.voiceService.playStream(this.queueService.getHistorySong(0), msg, position).
+      then((dispatcher) => {
+        this.audioDispatcher = dispatcher;
+        this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
+        this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
+      }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
