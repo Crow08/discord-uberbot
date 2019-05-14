@@ -4,7 +4,7 @@ class AddQueueToPLCommand extends Command {
   constructor(chatService, queueService, dbService) {
     super("addqueuetopl");
     super.help = "adds queue to given playlist";
-    super.usage = "<prefix>addqueuetopl";
+    super.usage = "<prefix>addqueuetopl <playlist>";
     super.alias = ["addqueuetopl", "aq2pl", "aq2p"];
     this.chatService = chatService;
     this.queueService = queueService;
