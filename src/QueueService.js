@@ -84,7 +84,7 @@ class QueueService {
     return new Promise((resolve, reject) => {
       this.dbService.getPlaylist(plName).
         then((songs) => {
-          this.queue = songs;
+          this.queue = shuffle(songs);
           resolve();
         }).
         catch((error) => reject(error));
