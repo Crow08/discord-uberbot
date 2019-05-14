@@ -29,7 +29,7 @@ class RateingService {
       // If downvote and song has a playlist and rating is lower than -1.
       } else if (delta < 0 && song.playlist !== "-" && (song.rating + delta) < -1) {
         song.rating += delta;
-        this.removeFromPL().
+        this.removeFromPL(song).
           then(resolve).
           catch(reject);
       // If song has no playlist.
