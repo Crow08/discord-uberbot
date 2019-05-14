@@ -165,7 +165,7 @@ class DBService {
     return new Promise((resolve, reject) => {
       this.db.collection(source).find().
         forEach((song) => {
-          this.db.collection(target).insert(song);
+          this.db.collection(target).insertOne(song);
         }).
         then(resolve).
         catch(reject);
