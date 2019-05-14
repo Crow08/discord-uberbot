@@ -41,6 +41,10 @@ class DBService {
     });
   }
 
+  isConnected() {
+    return this.client !== null && this.client.isConnected();
+  }
+
   disconnectDB() {
     return new Promise((resolve, reject) => {
       this.client.close().

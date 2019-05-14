@@ -8,7 +8,10 @@ class Song {
     this.ratingLog = {};
     this.url = "";
     this.playlist = "";
-    this.srcType = {
+  }
+
+  static get srcType() {
+    return {
       "SC": "sc",
       "SP": "sp",
       "YT": "yt"

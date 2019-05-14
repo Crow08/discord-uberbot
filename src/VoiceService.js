@@ -1,3 +1,5 @@
+const Song = require("./Song");
+
 class VoiceService {
   constructor(options, client, youtubeService, soundCloudService, spotifyService) {
     this.bitRate = options.bitRate;
@@ -11,21 +13,21 @@ class VoiceService {
   playStream(song, msg, seek) {
     return new Promise((resolve, reject) => {
       switch (song.src) {
-      case song.srcType.YT:
+      case Song.srcType.YT:
         this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
           this.youtubeService.getStream(song.url),
           {"bitrate": this.bitRate, "passes": 5, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
         ))).
           catch((error) => reject(error));
         break;
-      case song.srcType.SC:
+      case Song.srcType.SC:
         this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
           this.soundCloudService.getStream(song.url),
           {"bitrate": this.bitRate, "passes": 5, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
         ))).
           catch((error) => reject(error));
         break;
-      case song.srcType.SP:
+      case Song.srcType.SP:
         reject(new Error("No implementation to get stream from Spotify!"));
         break;
       default:

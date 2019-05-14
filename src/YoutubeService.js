@@ -19,7 +19,7 @@ class YoutubeService {
         song.title = info.title;
         song.url = info.video_url;
         song.artist = info.author.name;
-        song.src = song.srcType.YT;
+        song.src = Song.srcType.YT;
         return resolve([song]);
       });
     });
@@ -41,7 +41,7 @@ class YoutubeService {
           song.title = info.title;
           song.url = info.url_simple;
           song.artist = info.author.name;
-          song.src = song.srcType.YT;
+          song.src = Song.srcType.YT;
           songs.push(song);
         });
         return resolve(songs);
@@ -77,7 +77,7 @@ class YoutubeService {
             song.title = result[index].snippet.title;
             song.url = `https://www.youtube.com/watch?v=${result[index].id.videoId}`;
             song.artist = result[index].snippet.channelTitle;
-            song.src = song.srcType.YT;
+            song.src = Song.srcType.YT;
             songs.push(song);
           }
           return resolve(songs);

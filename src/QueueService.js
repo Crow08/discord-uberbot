@@ -35,7 +35,7 @@ class QueueService {
         resolve(song);
       } else {
         if (this.autoPL === null) {
-          reject(new Error("Queue is empty!"));
+          resolve(null);
           return;
         }
         this.dbService.getRandomSong(this.autoPL).

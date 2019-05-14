@@ -28,7 +28,7 @@ class SoundCloudService {
           song.title = data.tracks.items[0].name;
           song.url = data.tracks.items[0].uri;
           song.artist = data.tracks.items[0].artists[0].name;
-          song.src = song.srcType.SP;
+          song.src = Song.srcType.SP;
         }
         return resolve(songs);
       });

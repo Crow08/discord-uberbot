@@ -25,7 +25,7 @@ class NowPlayingCommand extends Command {
             (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd)
           );
         }
-        this.chatService.richNote(msg, embed);
+        this.chatService.send(msg, embed);
       });
   }
 }

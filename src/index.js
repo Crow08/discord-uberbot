@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const MusicClient = require("./MusicClient.js");
 const readline = require("readline");
 
-console.log("\x1b[32m%s\x1b[0m", "------- UberBot is charging! -------\n");
+console.log("\x1b[32m%s\x1b[0m", "--------    UberBot is charging!    --------\n");
 
 if (typeof settings === "undefined" ||
   (typeof settings.scClientId === "undefined" || settings.scClientId === "SOUNDCLOUD_CLIENT_ID") ||
@@ -52,7 +52,18 @@ baseClient.on("messageUpdate", (oldMsg, newMsg) => {
 });
 
 baseClient.on("ready", () => {
-  console.log("\x1b[32m%s\x1b[0m", "------- UberBot is fully charged! -------\n");
+  const endTime = new Date().getTime + 2000;
+  const interval = 100;
+  const checkCondition = function checkCondition() {
+    if (musicClient.dbService.isConnected()) {
+      console.log("\x1b[32m%s\x1b[0m", "-------- UberBot is fully charged!  --------\n");
+    } else if (new Date().getTime < endTime) {
+      setTimeout(checkCondition, interval);
+    } else {
+      throw new Error("DB connection timed out!");
+    }
+  };
+  checkCondition();
 });
 
 // DEBUG STUFF:

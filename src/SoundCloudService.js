@@ -22,7 +22,7 @@ class SoundCloudService {
           song.title = info.title;
           song.url = info.stream_url;
           song.artist = info.user.username;
-          song.src = song.srcType.SC;
+          song.src = Song.srcType.SC;
           return resolve([song]);
         }
       );
@@ -55,7 +55,7 @@ class SoundCloudService {
               song.title = result[index].title;
               song.url = result[index].stream_url;
               song.artist = result[index].user.username;
-              song.src = song.srcType.SC;
+              song.src = Song.srcType.SC;
               songs.push(song);
             }
           }
