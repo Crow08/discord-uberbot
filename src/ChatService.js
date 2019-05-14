@@ -119,10 +119,16 @@ class ChatService {
 
   postReactionEmojis(msg, emojiList) {
     return new Promise((resolve, reject) => {
-      const promisses = [];
-      emojiList.forEach((emoji) => promisses.push(msg.react(emoji)));
-      Promise.all(promisses).
-        then(resolve).
+      msg.react(emojiList.shift()).
+        then(() => {
+          if (emojiList.length > 0) {
+            this.postReactionEmojis(msg, emojiList).
+              then(resolve).
+              catch(reject);
+          } else {
+            resolve();
+          }
+        }).
         catch(reject);
     });
   }
