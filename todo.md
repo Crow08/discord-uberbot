@@ -13,6 +13,7 @@
 	- maybe extend addSong
 - implement requester
 - search playlist
+- paging for list_songs (.ls <playlist>)
 
 ##### Queue ##### 
 - loop with options (song / queue / none)
@@ -21,8 +22,9 @@
 ##### Play song ##### 
 - raw-MP3-support
 
-##### Playlists #####
+##### Misc #####
 - add doSth-Command start (load playlist and play - just sth to start the music in a lazy way)
+- sort commands in services alphabetical
 
 ---
 

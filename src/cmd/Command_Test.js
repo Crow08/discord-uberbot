@@ -15,7 +15,8 @@ class TestCommand extends Command {
     console.log("testing");
     const source = payload.split(" ")[0];
     const target = payload.split(" ")[1];
-    this.chatService.send(msg, this.dbService.mergePlaylists(source, target));
+    this.dbService.mergePlaylists(source, target);
+    this.chatService.send(msg, `copied ${source} into ${target}`);
   }
 }
 module.exports = TestCommand;

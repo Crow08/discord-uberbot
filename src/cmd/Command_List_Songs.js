@@ -19,7 +19,6 @@ class ListSongsCommand extends Command {
       embed.setTitle(`Playlist: ${payload}`);
       embed.setColor(48769);
       songs.forEach((song) => {
-        console.log(song);
         songlist += `\`\`\`${count}. ${song.title} - ${song.artist}\`\`\`\n`;
         count++;
       });
