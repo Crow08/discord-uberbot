@@ -11,45 +11,30 @@ class ShowQueueCommand extends Command {
   }
 
   run(payload, msg) {
-    console.log("displaying queue:");
-    let songlist = "";
-    let count = 1;
-    const embed = new this.chatService.DiscordRichEmbed();
-    // Get queue
-    const {queue} = this.queueService;
-    console.log(queue);
-    // Empty variable to store output
-    embed.setTitle("Queue");
-    embed.setColor(48769);
-    // Iterate over queue to fill songlist
-    queue.forEach((entry) => {
-      songlist += `\`\`\` ${count}. ${entry.title} - ${entry.artist}\`\`\`\n`;
-      count++;
+    const pages = [];
+    let queueText = "";
+    this.queueService.queue.forEach((entry, index) => {
+      queueText += `\`\`\` ${index + 1}. ${entry.title} - ${entry.artist}\`\`\`\n`;
+      if ((index + 1) % 10 === 0) {
+        queueText += `Page ${pages.length + 1} / ${Math.ceil(this.queueService.queue.length / 10)}`;
+        const embed = new this.chatService.DiscordRichEmbed();
+        embed.setTitle("Queue");
+        embed.setColor(48769);
+        embed.setDescription(queueText);
+        pages.push(embed);
+        queueText = "";
+      }
     });
-    embed.setDescription(songlist);
-    console.log(embed);
-    this.chatService.richNote(msg, embed);
+    if (this.queueService.queue.length % 10 !== 0) {
+      queueText += `Page ${pages.length + 1} / ${Math.ceil(this.queueService.queue.length / 10)}`;
+      const embed = new this.chatService.DiscordRichEmbed();
+      embed.setTitle("Queue");
+      embed.setColor(48769);
+      embed.setDescription(queueText);
+      pages.push(embed);
+    }
+    this.chatService.pagedContent(msg, pages);
   }
 }
 
 module.exports = ShowQueueCommand;
-
-
-/*
-Song {
-  title: 'Despacito',
-  artist: 'Luis Fonsi',
-  src: 'sc',
-  requester: '',
-  rating: 0,
-  url: 'https://api.soundcloud.com/tracks/301157784/stream',
-  srcType: { YT: 'yt', SC: 'sc', SP: 'sp' } }
-Song {
-  title: 'Defqwop - Heart Afire (feat. Strix) [NCS Release]',
-  artist: 'NCS',
-  src: 'sc',
-  requester: '',
-  rating: 0,
-  url: 'https://api.soundcloud.com/tracks/265534576/stream',
-  srcType: { YT: 'yt', SC: 'sc', SP: 'sp' } }
-*/

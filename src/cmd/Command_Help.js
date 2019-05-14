@@ -16,20 +16,18 @@ class HelpCommand extends Command {
     // Add some fancy stuff
     // (More syntax highlighting: https://gist.github.com/Almeeida/41a664d8d5f3a8855591c2f1e0e07b19)
     const pages = [];
-    let count = 0;
     let helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
-    this.commands.forEach((command) => {
+    this.commands.forEach((command, index) => {
       const {help, name, usage, alias} = command;
       // Ignrore undefined commands
       if (typeof name !== "undefined") {
-        ++count;
         helpText += this.buildLine(`Name:   ${name}`);
         helpText += this.buildLine(`Usage:  ${usage.replace("<prefix>", this.prefix)}`);
         helpText += this.buildLine(`About:  ${help}`);
         if (alias.length > 1) {
           helpText += this.buildLine(`Alias:  ${alias.join(", ")}`);
         }
-        if (count % 5 === 0) {
+        if ((index + 1) % 5 === 0) {
           const pageing = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
           helpText += `+------------------------- ${pageing} -------------------------+\n\`\`\``;
           pages.push(helpText);
@@ -39,7 +37,7 @@ class HelpCommand extends Command {
         }
       }
     });
-    if (count % 5 !== 0) {
+    if (this.commands.length % 5 !== 0) {
       helpText = helpText.substr(0, helpText.length - 65);
       const pageing = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
       helpText += `+------------------------- ${pageing} -------------------------+\n\`\`\``;
