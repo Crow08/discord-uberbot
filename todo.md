@@ -21,6 +21,9 @@
 ##### Play song ##### 
 - raw-MP3-support
 
+##### Playlists #####
+- add doSth-Command start (load playlist and play - just sth to start the music in a lazy way)
+
 ---
 
 #### Known Bugs: #### 

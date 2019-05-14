@@ -13,21 +13,9 @@ class TestCommand extends Command {
 
   run(payload, msg) {
     console.log("testing");
-    if (isNaN(payload)) {
-
-      for (let count = 0; count < this.queueService.queue.length; count++) {
-        console.log("%d: %s", count, this.queueService.queue[count].title);
-        console.log(this.queueService.queue[count].title.toLowerCase().indexOf(payload.toLowerCase()));
-        if (this.queueService.queue[count].title.toLowerCase().indexOf(payload.toLowerCase()) >= 0) {
-          this.chatService.simpleNote(msg, this.queueService.prioritizeSong(count), this.chatService.msgType.MUSIC);
-          return;
-        }
-      }
-      this.chatService.simpleNote(msg, `${payload} not found`, this.chatService.msgType.FAIL);
-    } else {
-      const index = parseInt(payload, 10) - 1;
-      this.chatService.simpleNote(msg, this.queueService.prioritizeSong(index), this.chatService.msgType.MUSIC);
-    }
+    const source = payload.split(" ")[0];
+    const target = payload.split(" ")[1];
+    this.chatService.send(msg, this.dbService.mergePlaylists(source, target));
   }
 }
 module.exports = TestCommand;
