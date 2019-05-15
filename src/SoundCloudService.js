@@ -46,7 +46,7 @@ class SoundCloudService {
             return reject(new Error("Something went wrong. Try again!"));
           }
           if (result.length < 1) {
-            return reject(new Error("No results!"));
+            return reject(new Error(`No results for Query: "${query}"!`));
           }
           const songs = [];
           for (let index = 0; index < result.length; index++) {
