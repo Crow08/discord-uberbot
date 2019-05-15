@@ -14,7 +14,7 @@ class NowPlayingCommand extends Command {
   run(payload, msg) {
     this.queueService.getCurrentSong().
       then((nowplaying) => {
-        const embed = new this.chatService.DiscordRichEmbed();
+        const embed = new this.chatService.DiscordMessageEmbed();
         console.log(nowplaying);
         if (typeof nowplaying === "undefined") {
           embed.setColor(13632027);

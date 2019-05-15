@@ -64,7 +64,8 @@ class SearchCommand extends Command {
           song.requester = msg.author.username;
           return song;
         });
-        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC).
+          then((infoMsg) => infoMsg.delete({"timeout": 5000}));
         this.chatService.openSelectionMenu(
           eSongs, msg, isSelectionCmd,
           (col) => processSelectionCmd(col, eSongs, this.playerService, this.queueService, this.chatService)

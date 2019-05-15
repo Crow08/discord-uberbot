@@ -14,16 +14,16 @@ class VoiceService {
     return new Promise((resolve, reject) => {
       switch (song.src) {
       case Song.srcType.YT:
-        this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
+        this.getVoiceConnection(msg).then((conn) => resolve(conn.play(
           this.youtubeService.getStream(song.url),
-          {"bitrate": this.bitRate, "passes": 5, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
+          {"bitrate": this.bitRate, "passes": 3, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
         ))).
           catch((error) => reject(error));
         break;
       case Song.srcType.SC:
-        this.getVoiceConnection(msg).then((conn) => resolve(conn.playStream(
+        this.getVoiceConnection(msg).then((conn) => resolve(conn.play(
           this.soundCloudService.getStream(song.url),
-          {"bitrate": this.bitRate, "passes": 5, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
+          {"bitrate": this.bitRate, "passes": 3, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
         ))).
           catch((error) => reject(error));
         break;
@@ -39,7 +39,7 @@ class VoiceService {
 
   disconnectVoiceConnection(msg) {
     const serverId = msg.guild.id;
-    this.client.voiceConnections.forEach((conn) => {
+    this.client.voice.connections.forEach((conn) => {
       if (conn.channel.guild.id === serverId) {
         conn.disconnect();
       }
@@ -51,12 +51,12 @@ class VoiceService {
       return new Promise((resolve, reject) => reject(new Error("Unable to find discord server!")));
     }
     const serverId = msg.guild.id;
-    const {voiceChannel} = msg.member;
+    const voiceChannel = msg.member.voice.channel;
     return new Promise((resolve, reject) => {
       // Search for etablished connection with this server.
-      const voiceConnection = this.client.voiceConnections.find((val) => val.channel.guild.id === serverId);
+      const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === serverId);
       // If not already connected try to join.
-      if (voiceConnection === null) {
+      if (typeof voiceConnection === "undefined") {
         if (voiceChannel && voiceChannel.joinable) {
           voiceChannel.join().
             then((connection) => {

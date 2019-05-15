@@ -14,7 +14,7 @@ if (typeof settings === "undefined" ||
 }
 
 const baseClient = new Discord.Client();
-const musicClient = new MusicClient(baseClient, Discord.RichEmbed, {
+const musicClient = new MusicClient(baseClient, Discord.MessageEmbed, {
   "bitRate": typeof settings.bitRate === "undefined" ? 96000 : parseInt(settings.bitRate, 10),
   "botPrefix": typeof settings.botPrefix === "undefined" ? "!" : settings.botPrefix,
   "defVolume": typeof settings.defVolume === "undefined" ? 50 : parseInt(settings.defVolume, 10),
@@ -25,9 +25,8 @@ const musicClient = new MusicClient(baseClient, Discord.RichEmbed, {
   "youtubeApiKey": settings.youtubeApiKey
 });
 
-if (!process.argv.includes("no_dc")) {
-  baseClient.login(settings.token);
-}
+baseClient.login(settings.token).
+  catch((err) => console.log(err));
 
 const processMsg = function processMsg(msg) {
   if (msg.author.bot && !settings.botTalk) {
@@ -79,5 +78,11 @@ rl.on("line", (input) => {
     const cmd = message.substr(settings.botPrefix.length).split(" ", 1)[0];
     const payload = message.substr(cmd.length + settings.botPrefix.length + 1);
     musicClient.execute(cmd, payload, {"author": {"username": "debug_console"}});
+  }
+});
+
+baseClient.on("debug", (info) => {
+  if (process.argv.includes("debug")) {
+    console.log(info);
   }
 });

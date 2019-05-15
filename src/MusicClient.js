@@ -40,12 +40,12 @@ const YouTubeService = require("./YouTubeService");
 
 
 class MusicClient {
-  constructor(client, DiscordRichEmbed, opt) {
+  constructor(client, DiscordMessageEmbed, opt) {
     this.commands = [];
     this.baseClient = client;
     this.botPrefix = opt.botPrefix;
     console.log("\x1b[35m%s\x1b[0m", "> Loading services\n> ...");
-    this.chatService = new ChatService(DiscordRichEmbed);
+    this.chatService = new ChatService(DiscordMessageEmbed);
     this.youtubeService = new YouTubeService(opt.youtubeApiKey);
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);

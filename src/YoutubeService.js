@@ -69,7 +69,7 @@ class YoutubeService {
           }
           const result = JSON.parse(body).items;
           if (result.length < 1) {
-            return reject(new Error("No results!"));
+            return reject(new Error(`No results for Query: "${searchstring}"!`));
           }
           const songs = [];
           for (let index = 0; index < result.length; index++) {

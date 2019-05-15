@@ -6,16 +6,18 @@ class PlayerService {
     this.queueService = queueService;
     this.chatService = chatService;
     this.ratingService = ratingService;
+
+    this.ignoreStreamEnd = false;
   }
 
-  handleSongEnd(reason, msg, startTime) {
-    if (reason === "ignore") {
+  handleSongEnd(msg, startTime) {
+    if (this.ignoreStreamEnd) {
       return;
     }
     // TODO: remove.
     const delta = (new Date()) - startTime;
-    this.chatService.simpleNote(msg, `>>> Debug: Song was playing for : ${delta}ms <<<`, this.chatService.msgType.INFO);
-    this.chatService.simpleNote(msg, `>>> Debug: Song ended with reason: ${reason} <<<`, this.chatService.msgType.INFO);
+    this.chatService.simpleNote(msg, `>>> Debug: Song was playing for : ${delta}ms <<<`, this.chatService.msgType.INFO).
+      then((debugmsg) => debugmsg.delete({"timeout": 5000}));
     this.playNext(msg);
   }
 
@@ -25,20 +27,24 @@ class PlayerService {
 
   playNow(song, msg) {
     if (this.audioDispatcher) {
-      this.audioDispatcher.end("ignore");
+      this.ignoreStreamEnd = true;
+      this.audioDispatcher.end();
     }
     this.voiceService.playStream(song, msg).
       then((dispatcher) => {
         this.queueService.addSongToHistory(song);
         this.audioDispatcher = dispatcher;
         const startTime = new Date();
-        this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg, startTime));
+        this.audioDispatcher.on("finish", () => this.handleSongEnd(msg, startTime));
         this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
         this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
         const ratingFunc = (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd);
         this.chatService.displaySong(msg, song, ratingFunc);
       }).
-      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL)).
+      finally(() => {
+        this.ignoreStreamEnd = false;
+      });
   }
 
   playMultipleNow(songs, msg) {
@@ -69,7 +75,7 @@ class PlayerService {
   }
 
   play(msg) {
-    if (!this.audioDispatcher || this.audioDispatcher.destroyed) {
+    if (!this.audioDispatcher) {
       this.playNext(msg);
     } else if (this.audioDispatcher.paused) {
       this.audioDispatcher.resume();
@@ -95,8 +101,11 @@ class PlayerService {
       this.chatService.simpleNote(msg, "Audiostream not found!", this.chatService.msgType.FAIL);
       return;
     }
-    this.audioDispatcher.end("ignore");
-    this.audioDispatcher.destroyed = true;
+    this.ignoreStreamEnd = true;
+    this.audioDispatcher.end(() => setTimeout(() => {
+      this.ignoreStreamEnd = false;
+    }, 100));
+    this.audioDispatcher = null;
     this.chatService.simpleNote(msg, "Playback stopped!", this.chatService.msgType.MUSIC);
   }
 
@@ -106,20 +115,25 @@ class PlayerService {
       return;
     }
     this.chatService.simpleNote(msg, "Skipping song!", this.chatService.msgType.MUSIC);
-    this.audioDispatcher.end("skip");
+    this.audioDispatcher.end();
   }
 
   seek(position, msg) {
     if (this.audioDispatcher) {
-      this.audioDispatcher.end("ignore");
+      this.ignoreStreamEnd = true;
+      this.audioDispatcher.end();
     }
     this.voiceService.playStream(this.queueService.getHistorySong(0), msg, position).
       then((dispatcher) => {
         this.audioDispatcher = dispatcher;
-        this.audioDispatcher.on("end", (reason) => this.handleSongEnd(reason, msg));
+        const startTime = new Date();
+        this.audioDispatcher.on("finish", () => this.handleSongEnd(msg, startTime));
         this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
       }).
-      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL)).
+      finally(() => {
+        this.ignoreStreamEnd = false;
+      });
   }
 }
 module.exports = PlayerService;
