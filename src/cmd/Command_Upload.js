@@ -26,16 +26,20 @@ class UploadCommand extends Command {
       }
       const lines = body.split("\n");
       if (typeof payload === "undefined" || payload.length === 0) {
-        this.addToQueueRecursive(lines, msg, 0);
+        this.chatService.simpleNote(msg, "0 songs added to queue.", this.chatService.msgType.MUSIC).
+          then((infoMsg) => this.addToQueueRecursive(lines, msg, 0, infoMsg));
       } else {
-        this.addToPlaylistRecursive(lines, msg, payload, 0);
+        this.chatService.simpleNote(msg, `0 songs added to playlist: ${payload}.`, this.chatService.msgType.MUSIC).
+          then((infoMsg) => this.addToPlaylistRecursive(lines, msg, payload, 0, infoMsg));
       }
     }));
   }
 
-  addToQueueRecursive(lines, msg, count) {
+  addToQueueRecursive(lines, msg, count, statusMsg) {
     if (lines.length <= 0) {
-      this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
+      statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
+      this.chatService.simpleNote(msg, "Import successful!", this.chatService.msgType.INFO);
+      return;
     }
     this.searchService.search(lines.pop()).
       then(({note, songs}) => {
@@ -53,17 +57,22 @@ class UploadCommand extends Command {
           this.queueService.addToQueue(songs[0], msg);
           ++newCount;
         }
-        this.addToQueueRecursive(lines, msg, newCount);
+        this.addToQueueRecursive(lines, msg, newCount, statusMsg);
         if (newCount % 10 === 0) {
-          this.chatService.simpleNote(msg, "Working on import please be patient!", this.chatService.msgType.Info);
+          statusMsg.edit(statusMsg.content.replace(/\d+/u, newCount));
         }
       }).
-      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
+      catch((error) => {
+        this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
+        this.addToQueueRecursive(lines, msg, count, statusMsg);
+      });
   }
 
-  addToPlaylistRecursive(lines, msg, plName, count) {
+  addToPlaylistRecursive(lines, msg, plName, count, statusMsg) {
     if (lines.length <= 0) {
-      this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
+      statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
+      this.chatService.simpleNote(msg, "Import successful!", this.chatService.msgType.INFO);
+      return;
     }
     this.searchService.search(lines.pop()).
       then(({note, songs}) => {
@@ -83,12 +92,15 @@ class UploadCommand extends Command {
           this.dBService.addSong(songs[0], plName);
           ++newCount;
         }
-        this.addToPlaylistRecursive(lines, msg, plName, newCount);
+        this.addToPlaylistRecursive(lines, msg, plName, newCount, statusMsg);
         if (newCount % 10 === 0) {
-          this.chatService.simpleNote(msg, "Working on import please be patient!", this.chatService.msgType.Info);
+          statusMsg.edit(statusMsg.content.replace(/\d+/u, newCount));
         }
       }).
-      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
+      catch((error) => {
+        this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
+        this.addToPlaylistRecursive(lines, msg, count, statusMsg);
+      });
   }
 }
 
