@@ -14,7 +14,7 @@ class ListSongsCommand extends Command {
     console.log(`Listing songs of ${payload}:`);
     this.dbService.getPlaylist(payload).then((songs) => {
       let count = 1;
-      const embed = new this.chatService.DiscordRichEmbed();
+      const embed = new this.chatService.DiscordMessageEmbed();
       let songlist = "";
       embed.setTitle(`Playlist: ${payload}`);
       embed.setColor(48769);

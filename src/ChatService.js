@@ -1,6 +1,6 @@
 class ChatService {
-  constructor(DiscordRichEmbed) {
-    this.DiscordRichEmbed = DiscordRichEmbed;
+  constructor(DiscordMessageEmbed) {
+    this.DiscordMessageEmbed = DiscordMessageEmbed;
     this.msgType = {
       "FAIL": "fail",
       "INFO": "info",
@@ -59,14 +59,14 @@ class ChatService {
         );
         // Handle reactions.
         nextReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
+          reaction.users.remove(msg.author);
           if ((page + 1) < pages.length) {
             ++page;
             curPage.edit(pages[page]);
           }
         });
         backReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
+          reaction.users.remove(msg.author);
           if (page > 0) {
             --page;
             curPage.edit(pages[page]);
@@ -132,7 +132,7 @@ class ChatService {
 
   handleRatingReaction(reaction, song, delta, processRating, ignoreCd = false) {
     reaction.users.filter((user) => !user.bot).forEach((user) => {
-      reaction.remove(user);
+      reaction.users.remove(user);
       processRating(song, user, delta, ignoreCd).
         then((note) => {
           reaction.message.edit(this.buildSongEmbed(song));
@@ -165,14 +165,14 @@ class ChatService {
         );
         // Handle reactions.
         nextReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
+          reaction.users.remove(msg.author);
           if ((page + 1) * 10 <= songs.length) {
             ++page;
             menuMsg.edit(this.buildSelectionPage(songs, page));
           }
         });
         backReaction.on("collect", (reaction) => {
-          reaction.remove(msg.author);
+          reaction.users.remove(msg.author);
           if (page > 0) {
             --page;
             menuMsg.edit(this.buildSelectionPage(songs, page));
@@ -200,7 +200,7 @@ class ChatService {
   }
 
   buildSongEmbed(song) {
-    const embed = new this.DiscordRichEmbed();
+    const embed = new this.DiscordMessageEmbed();
     for (const key in song) {
       if (song[key] === "") {
         song[key] = "-";

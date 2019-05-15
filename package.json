@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "npm install",
-    "debug": "node ./src/index.js no_dc",
+    "debug": "node ./src/index.js debug",
     "start": "node ./src/index.js"
   },
   "private": true,
@@ -16,18 +16,22 @@
     "url": "git+https://github.com/Crow08/discord-uberbot.git"
   },
   "dependencies": {
-    "bufferutil": "^4.0.0",
-    "discord.js": "^11.5.0",
+    "@discordjs/uws": "^11.149.1",
+    "bufferutil": "^4.0.1",
+    "discord.js": "github:discordjs/discord.js",
     "erlpack": "github:discordapp/erlpack",
     "ffmpeg-binaries": "^4.0.0",
-    "libsodium-wrappers": "^0.7.3",
+    "ffmpeg-static": "^2.4.0",
+    "libsodium-wrappers": "^0.7.4",
     "mongodb": "^3.2.4",
-    "node-opus": "^0.2.7",
+    "node-opus": "^0.3.1",
     "node-spotify-api": "^1.1.1",
     "opusscript": "^0.0.6",
     "request": "^2.88.0",
-    "@discordjs/uws": "^10.149.0",
+    "sodium": "^3.0.2",
     "ytdl-core": "^0.29.2",
-    "ytpl": "^0.1.14"
+    "ytpl": "^0.1.14",
+    "zlib-sync": "^0.1.4",
+    "zucc": "^0.1.2"
   }
 }

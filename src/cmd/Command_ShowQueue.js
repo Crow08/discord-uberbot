@@ -17,7 +17,7 @@ class ShowQueueCommand extends Command {
       queueText += `\`\`\` ${index + 1}. ${entry.title} - ${entry.artist}\`\`\`\n`;
       if ((index + 1) % 10 === 0) {
         queueText += `Page ${pages.length + 1} / ${Math.ceil(this.queueService.queue.length / 10)}`;
-        const embed = new this.chatService.DiscordRichEmbed();
+        const embed = new this.chatService.DiscordMessageEmbed();
         embed.setTitle("Queue");
         embed.setColor(48769);
         embed.setDescription(queueText);
@@ -27,7 +27,7 @@ class ShowQueueCommand extends Command {
     });
     if (this.queueService.queue.length % 10 !== 0) {
       queueText += `Page ${pages.length + 1} / ${Math.ceil(this.queueService.queue.length / 10)}`;
-      const embed = new this.chatService.DiscordRichEmbed();
+      const embed = new this.chatService.DiscordMessageEmbed();
       embed.setTitle("Queue");
       embed.setColor(48769);
       embed.setDescription(queueText);
