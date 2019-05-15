@@ -18,7 +18,8 @@ class PlayCommand extends Command {
     }
     this.searchService.search(payload).
       then(({note, songs}) => {
-        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC).
+          then((infoMsg) => infoMsg.delete({"timeout": 5000}));
         if (songs.length > 1) {
           const enrichedSongs = songs.map((song) => {
             song.requester = msg.author.username;

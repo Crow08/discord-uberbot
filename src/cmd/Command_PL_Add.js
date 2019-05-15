@@ -21,7 +21,8 @@ class AddPLCommand extends Command {
     const query = payload.substr(plName.length + 1);
     this.searchService.search(query).
       then(({note, songs}) => {
-        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+        this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC).
+          then((infoMsg) => infoMsg.delete({"timeout": 5000}));
         if (songs.length > 1) {
           const enrichedSongs = songs.map((song) => {
             song.playlist = plName;

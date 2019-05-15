@@ -14,8 +14,10 @@ class PlayerService {
     }
     // TODO: remove.
     const delta = (new Date()) - startTime;
-    this.chatService.simpleNote(msg, `>>> Debug: Song was playing for : ${delta}ms <<<`, this.chatService.msgType.INFO);
-    this.chatService.simpleNote(msg, `>>> Debug: Song ended with reason: ${reason} <<<`, this.chatService.msgType.INFO);
+    this.chatService.simpleNote(msg, `>>> Debug: Song was playing for : ${delta}ms <<<`, this.chatService.msgType.INFO).
+      then((debugmsg) => debugmsg.delete({"timeout": 5000}));
+    this.chatService.simpleNote(msg, `>>> Debug: Song ended with reason: ${reason} <<<`, this.chatService.msgType.INFO).
+      then((debugmsg) => debugmsg.delete({"timeout": 5000}));
     this.playNext(msg);
   }
 
