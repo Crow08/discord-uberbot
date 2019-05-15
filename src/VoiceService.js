@@ -16,14 +16,14 @@ class VoiceService {
       case Song.srcType.YT:
         this.getVoiceConnection(msg).then((conn) => resolve(conn.play(
           this.youtubeService.getStream(song.url),
-          {"bitrate": this.bitRate, "passes": 5, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
+          {"bitrate": this.bitRate, "passes": 3, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
         ))).
           catch((error) => reject(error));
         break;
       case Song.srcType.SC:
         this.getVoiceConnection(msg).then((conn) => resolve(conn.play(
           this.soundCloudService.getStream(song.url),
-          {"bitrate": this.bitRate, "passes": 5, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
+          {"bitrate": this.bitRate, "passes": 3, "seek": seek ? seek : 0, "volume": (this.volume / 100)}
         ))).
           catch((error) => reject(error));
         break;
