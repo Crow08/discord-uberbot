@@ -4,7 +4,7 @@ class AddSongToPlCommand extends Command {
   constructor(chatService, queueService, dbService) {
     super("addsongtopl");
     super.help = "adds current song to given playlist";
-    super.usage = "<prefix>addsongtopl";
+    super.usage = "<prefix>addsongtopl <playlist>";
     super.alias = ["addsongtopl", "as2pl", "as2p"];
     this.chatService = chatService;
     this.queueService = queueService;
