@@ -99,7 +99,7 @@ class UploadCommand extends Command {
       }).
       catch((error) => {
         this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
-        this.addToPlaylistRecursive(lines, msg, count, statusMsg);
+        this.addToPlaylistRecursive(lines, msg, plName, count, statusMsg);
       });
   }
 }
