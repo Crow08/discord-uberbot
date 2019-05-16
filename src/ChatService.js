@@ -12,7 +12,7 @@ class ChatService {
   simpleNote(msg, text, type) {
     this.debugPrint(text);
     if (typeof msg.channel === "undefined") {
-      return false;
+      return new Promise((resolve) => resolve({"delete": () => null}));
     }
     switch (type) {
     case this.msgType.INFO:
@@ -28,12 +28,12 @@ class ChatService {
     }
   }
 
-  // RichEmbed-Wiki -> https://anidiots.guide/first-bot/using-embeds-in-messages
+  // MessageEmbed API -> https://discord.js.org/#/docs/main/master/class/MessageEmbed
   // Previewer -> https://leovoel.github.io/embed-visualizer/
   send(msg, content) {
     this.debugPrint(content);
     if (typeof msg.channel === "undefined") {
-      return false;
+      return new Promise((resolve) => resolve({"delete": () => null}));
     }
     return msg.channel.send(content);
   }
