@@ -94,6 +94,14 @@ class DBService {
     });
   }
 
+  renamePL(plName, newName) {
+    return new Promise((resolve, reject) => {
+      this.db.collection(plName).rename(newName).
+        then(resolve).
+        catch(reject);
+    });
+  }
+
   findSong(song, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
