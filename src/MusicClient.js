@@ -12,6 +12,7 @@ const HelpCommand = require("./cmd/Command_Help");
 const LeaveCommand = require("./cmd/Command_Leave");
 const ListPLCommand = require("./cmd/Command_PL_List");
 const LoadPLCommand = require("./cmd/Command_PL_Load");
+const MergePLCommand = require("./cmd/Command_PL_Merge");
 const ListSongsCommand = require("./cmd/Command_List_Songs");
 const NowPlayingCommand = require("./cmd/Command_NowPlaying");
 const PauseCommand = require("./cmd/Command_Pause");
@@ -80,6 +81,7 @@ class MusicClient {
       new ListPLCommand(this.chatService, this.dbService),
       new ListSongsCommand(this.chatService, this.dbService),
       new LoadPLCommand(this.chatService, this.queueService),
+      new MergePLCommand(this.chatService, this.dbService),
       new NowPlayingCommand(this.chatService, this.queueService, this.ratingService),
       new PauseCommand(this.playerService),
       new PlayCommand(this.chatService, this.playerService, this.searchService),
