@@ -18,8 +18,6 @@ class PlayNextCommand extends Command {
     }
     if (isNaN(payload)) {
       for (let count = 0; count < this.queueService.queue.length; count++) {
-        console.log("%d: %s", count, this.queueService.queue[count].title);
-        console.log(this.queueService.queue[count].title.toLowerCase().indexOf(payload.toLowerCase()));
         if (this.queueService.queue[count].title.toLowerCase().indexOf(payload.toLowerCase()) >= 0) {
           this.chatService.simpleNote(msg, this.queueService.prioritizeSong(count), this.chatService.msgType.MUSIC);
           return;

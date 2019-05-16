@@ -11,7 +11,6 @@ class ListPLCommand extends Command {
   }
 
   run(payload, msg) {
-    console.log("Listing all playlists:");
     this.dbService.listPlaylists().then((plNames) => {
       const embed = new this.chatService.DiscordMessageEmbed();
       embed.setColor(890629);

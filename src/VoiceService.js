@@ -60,7 +60,6 @@ class VoiceService {
         if (voiceChannel && voiceChannel.joinable) {
           voiceChannel.join().
             then((connection) => {
-              console.log("use new voice");
               resolve(connection);
             }).
             catch(() => {
@@ -70,7 +69,6 @@ class VoiceService {
           reject(new Error("Unable to join your voice channel!"));
         }
       } else {
-        console.log("reuse voice");
         resolve(voiceConnection);
       }
     });

@@ -16,7 +16,6 @@ class AddQueueToPLCommand extends Command {
       this.chatService.simpleNote(msg, "falscher Syntax!", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
     }
-    console.log("adding queue:");
     // Get queue
     const {queue} = this.queueService;
     let count = 0;

@@ -65,7 +65,7 @@ class DBService {
           resolve();
           this.db.collection(plName).
             createIndex("title").
-            catch((err) => console.log(err));
+            catch(reject);
         }).
         catch(reject);
     });
@@ -79,7 +79,7 @@ class DBService {
           resolve();
           this.db.collection(plName).
             createIndex("title").
-            catch((err) => console.log(err));
+            catch(reject);
         }).
         catch(reject);
     });

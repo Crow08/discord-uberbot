@@ -11,7 +11,6 @@ class ListSongsCommand extends Command {
   }
 
   run(payload, msg) {
-    console.log(`Listing songs of ${payload}:`);
     this.dbService.getPlaylist(payload).then((songs) => {
       let count = 1;
       const embed = new this.chatService.DiscordMessageEmbed();
@@ -19,7 +18,6 @@ class ListSongsCommand extends Command {
       embed.setTitle(`Playlist: ${payload}`);
       embed.setColor(48769);
       songs.forEach((song) => {
-        console.log(song);
         songlist += `\`\`\`${count}. ${song.title} - ${song.artist}\`\`\`\n`;
         count++;
       });

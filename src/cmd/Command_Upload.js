@@ -22,7 +22,8 @@ class UploadCommand extends Command {
 
     msg.attachments.array().forEach((element) => request(element.url, (err, response, body) => {
       if (err) {
-        console.log(err);
+        this.chatService.simpleNote(msg, new Error("Unable to download attached file!"), this.chatService.msgType.FAIL);
+        return;
       }
       const lines = body.split("\n");
       if (typeof payload === "undefined" || payload.length === 0) {

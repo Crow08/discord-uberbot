@@ -121,13 +121,12 @@ class QueueService {
 
   prioritizeSong(songnumber) {
     let message = "";
-    console.log(`shuffle song nr. ${songnumber} to top`);
     if (this.queue.length === 0) {
       message = "Editing a non-existing queue, smart move!";
     } else if (songnumber >= this.queue.length || songnumber <= 0) {
       message = "Maybe try with a number that exists, will ya?";
     } else if (songnumber === 0) {
-      message = `${this.queue[0].title} will allready play next`;
+      message = `${this.queue[0].title} will already play next`;
     } else {
       this.queue.splice(0, 0, this.queue.splice(songnumber, 1)[0]);
       message = `Next up: ${this.queue[0].title} - ${this.queue[0].artist}`;
