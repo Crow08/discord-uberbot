@@ -52,9 +52,9 @@ class PlayerService {
       this.chatService.simpleNote(msg, "No songs Found!", this.chatService.msgType.FAIL);
       return;
     }
-    this.playNow(songs[0]);
+    this.playNow(songs[0], msg);
     if (songs.length > 1) {
-      this.queueService.addMultipleToQueue(this.queueService.queueSongs(songs.splice(0, 1)));
+      this.queueService.addMultipleToQueue(songs.splice(0, 1));
     }
   }
 
