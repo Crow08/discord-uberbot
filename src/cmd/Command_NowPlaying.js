@@ -15,7 +15,6 @@ class NowPlayingCommand extends Command {
     this.queueService.getCurrentSong().
       then((nowplaying) => {
         const embed = new this.chatService.DiscordMessageEmbed();
-        console.log(nowplaying);
         if (typeof nowplaying === "undefined") {
           embed.setColor(13632027);
           embed.addField("Are you deaf?", "Go check your ears, there is clearly nothing playing right now!", true);

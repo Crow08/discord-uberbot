@@ -31,10 +31,9 @@ class SoundCloudService {
 
   getSongsViaSearchQuery(searchstring, count = 1) {
     return new Promise((resolve, reject) => {
-      const query = encodeURIComponent(searchstring);
       request(
         "https://api.soundcloud.com/tracks?" +
-        `q=${query}&` +
+        `q=${encodeURIComponent(searchstring)}&` +
         `limit=${count}&` +
         `client_id=${this.clientId}`,
         (error, response, body) => {
@@ -43,10 +42,10 @@ class SoundCloudService {
           }
           const result = JSON.parse(body);
           if (!result) {
-            return reject(new Error("Something went wrong. Try again!"));
+            return reject(new Error("Something went wrong. Try again! [SC]"));
           }
           if (result.length < 1) {
-            return reject(new Error(`No results for Query: "${query}"!`));
+            return reject(new Error(`No results for Query: "${searchstring}"! [SC]`));
           }
           const songs = [];
           for (let index = 0; index < result.length; index++) {

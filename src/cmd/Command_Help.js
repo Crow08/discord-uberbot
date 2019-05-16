@@ -12,7 +12,7 @@ class HelpCommand extends Command {
   }
 
   run(payload, msg) {
-    console.log("Anyone called for a medic?\n>");
+    this.chatService.send("Anyone called for a medic?\n>");
     // Add some fancy stuff
     // (More syntax highlighting: https://gist.github.com/Almeeida/41a664d8d5f3a8855591c2f1e0e07b19)
     const pages = [];

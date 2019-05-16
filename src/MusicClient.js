@@ -108,7 +108,9 @@ class MusicClient {
     console.log("\x1b[35m%s\x1b[0m", "> Connecting to DB\n> ...");
     this.dbService.connectDB().
       then(() => console.log("\x1b[35m%s\x1b[0m", "> DB Connected!\n")).
-      catch((err) => console.log(err));
+      catch((err) => {
+        throw err;
+      });
   }
 
   execute(cmd, payload, msg) {

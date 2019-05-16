@@ -11,7 +11,6 @@ class RemovePLCommand extends Command {
   }
 
   run(payload, msg) {
-    console.log("Removing Song");
     if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length < 2) {
       this.chatService.simpleNote(msg, "falscher Syntax!", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
@@ -20,7 +19,6 @@ class RemovePLCommand extends Command {
     const plName = payload.split(" ")[0];
     const songName = payload.substr(plName.length + 1);
     this.dbService.removeSong(songName, plName).then((info) => {
-      console.log(info.result);
       if (info.deletedCount === 0) {
         const note = `"${songName}" wurde nicht in ${plName} gefunden`;
         this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);

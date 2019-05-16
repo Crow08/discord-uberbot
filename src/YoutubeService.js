@@ -55,7 +55,7 @@ class YoutubeService {
         "https://www.googleapis.com/youtube/v3/search?" +
         "part=snippet&" +
         "type=video&" +
-        "videoCategoryId=10&" +
+        "videoCategoryId=10&" + // https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=DE&key=
         "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
         `maxResults=${count}&` +
         `q=${encodeURIComponent(searchstring)}&` +
@@ -65,11 +65,11 @@ class YoutubeService {
             return reject(error);
           }
           if (typeof body === "undefined" || typeof JSON.parse(body).items === "undefined") {
-            return reject(new Error("Something went wrong. Try again!"));
+            return reject(new Error("Something went wrong. Try again! [YT]"));
           }
           const result = JSON.parse(body).items;
           if (result.length < 1) {
-            return reject(new Error(`No results for Query: "${searchstring}"!`));
+            return reject(new Error(`No results for Query: "${searchstring}"! [YT]`));
           }
           const songs = [];
           for (let index = 0; index < result.length; index++) {
