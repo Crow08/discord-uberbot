@@ -51,18 +51,30 @@ baseClient.on("messageUpdate", (oldMsg, newMsg) => {
 });
 
 baseClient.on("ready", () => {
-  const endTime = new Date().getTime + 2000;
-  const interval = 100;
-  const checkCondition = function checkCondition() {
+  // Disconnect from any voice channels currently connected to.
+  baseClient.guilds.forEach((guild) => {
+    guild.channels.forEach((channel) => {
+      if (channel.type === "voice") {
+        channel.members.forEach((member) => {
+          if (member.id === guild.me.id) {
+            channel.join().then(() => channel.leave());
+          }
+        });
+      }
+    });
+  });
+  // Poll for DB connection.
+  const timeout = new Date().getTime + 2000;
+  const checkDBConnection = () => {
     if (musicClient.dbService.isConnected()) {
       console.log("\x1b[32m%s\x1b[0m", "-------- UberBot is fully charged!  --------\n");
-    } else if (new Date().getTime < endTime) {
-      setTimeout(checkCondition, interval);
+    } else if (new Date().getTime < timeout) {
+      setTimeout(checkDBConnection, 100);
     } else {
       throw new Error("DB connection timed out!");
     }
   };
-  checkCondition();
+  checkDBConnection();
 });
 
 // DEBUG STUFF:
