@@ -12,9 +12,11 @@ class HelpCommand extends Command {
   }
 
   run(payload, msg) {
-    this.chatService.send("Anyone called for a medic?\n>");
-    // Add some fancy stuff
-    // (More syntax highlighting: https://gist.github.com/Almeeida/41a664d8d5f3a8855591c2f1e0e07b19)
+    const embed = new this.chatService.DiscordMessageEmbed();
+    embed.setDescription("⠀\n⠀\n***Anyone called for a medic?***");
+    embed.setColor("RED");
+    embed.setThumbnail("https://cdn.discordapp.com/avatars/543844387835215873/baeabaa2290c3b584b4f771bf86ed5ca.png");
+    this.chatService.send(msg, embed);
     const pages = [];
     let helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
     this.commands.forEach((command, index) => {
