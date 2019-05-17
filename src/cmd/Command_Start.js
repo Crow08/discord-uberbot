@@ -3,7 +3,7 @@ const Command = require("./Command.js");
 class StartCommand extends Command {
   constructor(playerService, searchService, chatService, queueService) {
     super("start");
-    super.help = "loads a playlist shuffles it and starts playling.";
+    super.help = "loads a playlist shuffles it and starts playing.";
     super.usage = "<prefix>start <pl name>";
     super.alias = ["start"];
     this.playerService = playerService;

@@ -17,7 +17,7 @@ class PlayerService {
     // TODO: remove.
     const delta = (new Date()) - startTime;
     this.chatService.simpleNote(msg, `>>> Debug: Song was playing for : ${delta}ms <<<`, this.chatService.msgType.INFO).
-      then((debugmsg) => debugmsg.delete({"timeout": 5000}));
+      then((debugMsg) => debugMsg.delete({"timeout": 5000}));
     this.playNext(msg);
   }
 
@@ -87,7 +87,7 @@ class PlayerService {
 
   pause(msg) {
     if (!this.audioDispatcher) {
-      this.chatService.simpleNote(msg, "Audiostream not found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
     } else if (this.audioDispatcher.paused) {
       this.chatService.simpleNote(msg, "Playback already paused!", this.chatService.msgType.FAIL);
     } else {
@@ -98,7 +98,7 @@ class PlayerService {
 
   stop(msg) {
     if (!this.audioDispatcher) {
-      this.chatService.simpleNote(msg, "Audiostream not found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
       return;
     }
     this.ignoreStreamEnd = true;
@@ -111,7 +111,7 @@ class PlayerService {
 
   skip(msg) {
     if (!this.audioDispatcher) {
-      this.chatService.simpleNote(msg, "Audiostream not found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
       return;
     }
     this.chatService.simpleNote(msg, "Skipping song!", this.chatService.msgType.MUSIC);

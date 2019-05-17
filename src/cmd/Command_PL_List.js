@@ -3,7 +3,7 @@ const Command = require("./Command.js");
 class ListPLCommand extends Command {
   constructor(chatService, dbService) {
     super("pllist");
-    super.help = "lists avaliable playlists";
+    super.help = "lists available playlists";
     super.usage = "<prefix>pllist";
     super.alias = ["pllist", "l"];
     this.chatService = chatService;
@@ -15,13 +15,13 @@ class ListPLCommand extends Command {
       const embed = new this.chatService.DiscordMessageEmbed();
       embed.setColor(890629);
       embed.setTitle("Playlists:");
-      const promisses = [];
+      const promises = [];
       plNames.forEach((playlist) => {
-        promisses.push(this.dbService.getPlaylist(playlist));
+        promises.push(this.dbService.getPlaylist(playlist));
       });
 
-      Promise.all(promisses).then((allplSongs) => {
-        allplSongs.forEach((plSongs, index) => {
+      Promise.all(promises).then((allPlSongs) => {
+        allPlSongs.forEach((plSongs, index) => {
           const plLength = plSongs.length;
           embed.addField(plNames[index], `${plLength} Songs`, true);
         });

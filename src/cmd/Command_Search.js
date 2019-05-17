@@ -58,7 +58,7 @@ class SearchCommand extends Command {
       this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
-    this.searchService.querySearch(payload, 50, "YT").
+    this.searchService.querySearch(payload, 50).
       then(({note, songs}) => {
         const eSongs = songs.map((song) => {
           song.requester = msg.author.username;

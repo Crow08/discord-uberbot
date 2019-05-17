@@ -22,8 +22,7 @@ class QueueService {
 
   getCurrentSong() {
     return new Promise((resolve, reject) => {
-      const nowplaying = this.history[0];
-      resolve(nowplaying).catch(reject);
+      resolve(this.history[0]).catch(reject);
     });
   }
 
@@ -108,7 +107,7 @@ class QueueService {
   getAutoPL() {
     return new Promise((resolve, reject) => {
       if (this.autoPL === null) {
-        reject(new Error("Autoplaylist not set!"));
+        reject(new Error("Auto playlist not set!"));
       } else {
         resolve(this.autoPL);
       }
@@ -119,16 +118,16 @@ class QueueService {
     this.autoPL = null;
   }
 
-  prioritizeSong(songnumber) {
+  prioritizeSong(songNumber) {
     let message = "";
     if (this.queue.length === 0) {
       message = "Editing a non-existing queue, smart move!";
-    } else if (songnumber >= this.queue.length || songnumber <= 0) {
+    } else if (songNumber >= this.queue.length || songNumber <= 0) {
       message = "Maybe try with a number that exists, will ya?";
-    } else if (songnumber === 0) {
+    } else if (songNumber === 0) {
       message = `${this.queue[0].title} will already play next`;
     } else {
-      this.queue.splice(0, 0, this.queue.splice(songnumber, 1)[0]);
+      this.queue.splice(0, 0, this.queue.splice(songNumber, 1)[0]);
       message = `Next up: ${this.queue[0].title} - ${this.queue[0].artist}`;
     }
     return (message);

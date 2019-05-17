@@ -13,14 +13,14 @@ class NowPlayingCommand extends Command {
 
   run(payload, msg) {
     this.queueService.getCurrentSong().
-      then((nowplaying) => {
+      then((nowPlaying) => {
         const embed = new this.chatService.DiscordMessageEmbed();
-        if (typeof nowplaying === "undefined") {
+        if (typeof nowPlaying === "undefined") {
           embed.setColor(13632027);
           embed.addField("Are you deaf?", "Go check your ears, there is clearly nothing playing right now!", true);
         } else {
           this.chatService.displaySong(
-            msg, nowplaying,
+            msg, nowPlaying,
             (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd)
           );
         }

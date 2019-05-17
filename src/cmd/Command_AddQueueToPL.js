@@ -13,7 +13,7 @@ class AddQueueToPLCommand extends Command {
 
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
-      this.chatService.simpleNote(msg, "falscher Syntax!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, "Wrong syntax!", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
     }
     // Get queue

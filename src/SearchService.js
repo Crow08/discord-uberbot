@@ -3,115 +3,116 @@ class SearchService {
     this.youtubeService = youtubeService;
     this.soundCloudService = soundCloudService;
     this.spotifyService = spotifyService;
+    this.defaultSrc = "SP";
   }
 
-  search(payload, count = 1, preferedSrc = "YT") {
+  search(payload, count = 1, preferredSrc = this.defaultSrc) {
     return new Promise((resolve, reject) => {
-      let searchstring = payload.trim();
-      if (searchstring.includes("soundcloud.com")) {
+      let searchString = payload.trim();
+      if (searchString.includes("soundcloud.com")) {
         // SoundCloud url detected:
-        this.soundCloudService.getSongViaUrl(searchstring).
-          then((songs) => resolve({"note": "Get song from SounCloud url~", songs})).
+        this.soundCloudService.getSongViaUrl(searchString).
+          then((songs) => resolve({"note": "Get song from SoundCloud url~", songs})).
           catch(reject);
-      } else if (searchstring.includes("spotify.com")) {
+      } else if (searchString.includes("spotify.com")) {
         // Spotify url detected:
-        this.spotifyService.getSongViaUrl(searchstring).
+        this.spotifyService.getSongViaUrl(searchString).
           // Spotify can only be used for searching => delegate to query search.
           then((preSongs) => this.querySearch(
             `${preSongs[0].title} ${preSongs[0].artist}`,
-            count, preferedSrc === "SP" ? "YT" : preferedSrc
+            count, preferredSrc === "SP" ? "YT" : preferredSrc
           ).
             then(({note, songs}) => resolve({"note": `Get song from Spotify url~\n${note}`, songs})).
             catch(reject)).
           catch(reject);
-      } else if (searchstring.includes("youtu.be/") || searchstring.includes("youtube.com/")) {
+      } else if (searchString.includes("youtu.be/") || searchString.includes("youtube.com/")) {
         // YouTube url detected:
-        if (searchstring.includes("&")) {
-          searchstring = searchstring.split("&")[0];
+        if (searchString.includes("&")) {
+          searchString = searchString.split("&")[0];
         }
-        if (searchstring.includes("watch") || searchstring.includes("youtu.be/")) {
+        if (searchString.includes("watch") || searchString.includes("youtu.be/")) {
           // YouTube video url detected:
-          this.youtubeService.getSongViaUrl(searchstring).
+          this.youtubeService.getSongViaUrl(searchString).
             then((songs) => resolve({"note": "Get song from YouTube url~", songs})).
             catch(reject);
-        } else if (searchstring.includes("playlist")) {
+        } else if (searchString.includes("playlist")) {
           // Youtube playlist url detected:
-          this.youtubeService.getSongsViaPlaylistUrl(searchstring).
+          this.youtubeService.getSongsViaPlaylistUrl(searchString).
             then((songs) => resolve({"note": "Get songs from YouTube playlist url~", songs})).
             catch(reject);
         }
       } else {
-        this.querySearch(payload, count, preferedSrc).
+        this.querySearch(payload, count, preferredSrc).
           then(resolve).
           catch(reject);
       }
     });
   }
 
-  querySearch(payload, count = 1, preferedSrc = "YT") {
+  querySearch(payload, count = 1, preferredSrc = this.defaultSrc) {
     return new Promise((resolve, reject) => {
-      const searchstring = payload.trim();
-      switch (preferedSrc) {
+      const searchString = payload.trim();
+      switch (preferredSrc) {
       case "YT":
-        this.getSongsFromYTthenSC(searchstring, count).
+        this.getSongsFromYTthenSC(searchString, count).
           then(resolve).
           catch(reject);
         break;
       case "SC":
-        this.getSongsFromSCthenYT(searchstring, count).
+        this.getSongsFromSCthenYT(searchString, count).
           then(resolve).
           catch(reject);
         break;
       case "SP":
-        this.getSongsFromSPthenYTthenSC(searchstring, count).
+        this.getSongsFromSPthenYTthenSC(searchString, count).
           then(resolve).
           catch(reject);
         break;
       default:
-        reject(new Error("Unkonown song Provider!"));
+        reject(new Error("Unknown song Provider!"));
         break;
       }
     });
   }
 
-  getSongsFromYTthenSC(searchstring, count) {
+  getSongsFromYTthenSC(searchString, count) {
     return new Promise((resolve, reject) => {
       let note = "Get songs from YouTube search query~";
-      this.youtubeService.getSongsViaSearchQuery(searchstring, count).
+      this.youtubeService.getSongsViaSearchQuery(searchString, count).
         then((songs) => resolve({note, songs})).
         catch((err) => {
           // Fallback on soundcloud query search:
           note = "Get songs from SoundCloud search query~";
-          this.soundCloudService.getSongsViaSearchQuery(searchstring, count).
+          this.soundCloudService.getSongsViaSearchQuery(searchString, count).
             then((songs) => resolve({"note": `${err}\n${note}`, songs})).
             catch((err2) => reject(new Error(`${err}\n${err2}`)));
         });
     });
   }
 
-  getSongsFromSCthenYT(searchstring, count) {
+  getSongsFromSCthenYT(searchString, count) {
     return new Promise((resolve, reject) => {
       let note = "Get songs from SoundCloud search query~";
-      this.soundCloudService.getSongsViaSearchQuery(searchstring, count).
+      this.soundCloudService.getSongsViaSearchQuery(searchString, count).
         then((songs) => resolve({note, songs})).
         catch((err) => {
           // Fallback on youtube query search:
           note = "Get songs from YouTube search query~";
-          this.youtubeService.getSongsViaSearchQuery(searchstring, count).
+          this.youtubeService.getSongsViaSearchQuery(searchString, count).
             then((songs) => resolve({"note": `${err}\n${note}`, songs})).
             catch((err2) => reject(new Error(`${err}\n${err2}`)));
         });
     });
   }
 
-  getSongsFromSPthenYTthenSC(searchstring, count) {
+  getSongsFromSPthenYTthenSC(searchString, count) {
     return new Promise((resolve, reject) => {
       const preNote = "Get song title and artist from Spotify~";
-      this.spotifyService.getSongsViaSearchQuery(searchstring).
+      this.spotifyService.getSongsViaSearchQuery(searchString).
         then((song) => this.getSongsFromYT_SP(`${song.title} ${song.artist}`, count).
           then(({note, songs}) => resolve({"note": `${preNote}\n${note}`, songs})).
           catch((err2) => reject(new Error(`${preNote}\n${err2}`)))).
-        catch((err) => this.getSongsFromYT_SP(searchstring, count).
+        catch((err) => this.getSongsFromYT_SP(searchString, count).
           then(({note, songs}) => resolve({"note": `${err}\n${note}`, songs})).
           catch((err2) => reject(new Error(`${err}\n${err2}`))));
     });
