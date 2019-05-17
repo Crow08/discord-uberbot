@@ -64,7 +64,7 @@ class DBService {
         then(() => {
           resolve();
           this.db.collection(plName).
-            createIndex("title").
+            createIndex("title", {"unique": true}).
             catch(reject);
         }).
         catch(reject);
@@ -78,7 +78,7 @@ class DBService {
         then(() => {
           resolve();
           this.db.collection(plName).
-            createIndex("title").
+            createIndex("title", {"unique": true}).
             catch(reject);
         }).
         catch(reject);
