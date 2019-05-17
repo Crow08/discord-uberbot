@@ -3,9 +3,10 @@ class SearchService {
     this.youtubeService = youtubeService;
     this.soundCloudService = soundCloudService;
     this.spotifyService = spotifyService;
+    this.defaultSrc = "SP";
   }
 
-  search(payload, count = 1, preferredSrc = "YT") {
+  search(payload, count = 1, preferredSrc = this.defaultSrc) {
     return new Promise((resolve, reject) => {
       let searchString = payload.trim();
       if (searchString.includes("soundcloud.com")) {
@@ -48,7 +49,7 @@ class SearchService {
     });
   }
 
-  querySearch(payload, count = 1, preferredSrc = "YT") {
+  querySearch(payload, count = 1, preferredSrc = this.defaultSrc) {
     return new Promise((resolve, reject) => {
       const searchString = payload.trim();
       switch (preferredSrc) {

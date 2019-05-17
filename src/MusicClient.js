@@ -19,6 +19,7 @@ const PauseCommand = require("./cmd/Command_Pause");
 const PlayCommand = require("./cmd/Command_Play");
 const PlayerService = require("./PlayerService");
 const PlayNextCommand = require("./cmd/Command_PlayNext");
+const PreferredSrcCommand = require("./cmd/Command_PreferredSrc");
 const QueueService = require("./QueueService");
 const RatingService = require("./RatingService");
 const RemoveCommand = require("./cmd/Command_Remove");
@@ -87,6 +88,7 @@ class MusicClient {
       new PauseCommand(this.playerService),
       new PlayCommand(this.chatService, this.playerService, this.searchService),
       new PlayNextCommand(this.chatService, this.queueService),
+      new PreferredSrcCommand(this.chatService, this.searchService),
       new RemoveCommand(this.chatService, this.queueService),
       new RemovePLCommand(this.chatService, this.dbService),
       new RenamePLCommand(this.chatService, this.dbService),
