@@ -14,14 +14,14 @@ class ListSongsCommand extends Command {
     this.dbService.getPlaylist(payload).then((songs) => {
       let count = 1;
       const embed = new this.chatService.DiscordMessageEmbed();
-      let songlist = "";
+      let songList = "";
       embed.setTitle(`Playlist: ${payload}`);
       embed.setColor(48769);
       songs.forEach((song) => {
-        songlist += `\`\`\`${count}. ${song.title} - ${song.artist}\`\`\`\n`;
+        songList += `\`\`\`${count}. ${song.title} - ${song.artist}\`\`\`\n`;
         count++;
       });
-      embed.setDescription(songlist);
+      embed.setDescription(songList);
       this.chatService.send(msg, embed);
     });
   }

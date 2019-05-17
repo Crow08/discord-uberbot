@@ -16,7 +16,7 @@ class SoundCloudService {
           }
           const info = JSON.parse(body);
           if (!info.streamable) {
-            return reject(new Error("Song is not Streamable from SoundCloud!"));
+            return reject(new Error("Song is not streamable from SoundCloud!"));
           }
           const song = new Song();
           song.title = info.title;
@@ -29,11 +29,11 @@ class SoundCloudService {
     });
   }
 
-  getSongsViaSearchQuery(searchstring, count = 1) {
+  getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {
       request(
         "https://api.soundcloud.com/tracks?" +
-        `q=${encodeURIComponent(searchstring)}&` +
+        `q=${encodeURIComponent(searchString)}&` +
         `limit=${count}&` +
         `client_id=${this.clientId}`,
         (error, response, body) => {
@@ -45,7 +45,7 @@ class SoundCloudService {
             return reject(new Error("Something went wrong. Try again! [SC]"));
           }
           if (result.length < 1) {
-            return reject(new Error(`No results for Query: "${searchstring}"! [SC]`));
+            return reject(new Error(`No results for Query: "${searchString}"! [SC]`));
           }
           const songs = [];
           for (let index = 0; index < result.length; index++) {

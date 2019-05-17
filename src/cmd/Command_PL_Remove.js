@@ -12,7 +12,7 @@ class RemovePLCommand extends Command {
 
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length < 2) {
-      this.chatService.simpleNote(msg, "falscher Syntax!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, "Wrong syntax!", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
@@ -20,10 +20,10 @@ class RemovePLCommand extends Command {
     const songName = payload.substr(plName.length + 1);
     this.dbService.removeSong(songName, plName).then((info) => {
       if (info.deletedCount === 0) {
-        const note = `"${songName}" wurde nicht in ${plName} gefunden`;
+        const note = `"${songName}" not found in ${plName}!`;
         this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
       } else {
-        this.chatService.simpleNote(msg, `Song aus ${plName} entfernt`, this.chatService.msgType.INFO);
+        this.chatService.simpleNote(msg, `Song removed from ${plName}!`, this.chatService.msgType.INFO);
       }
     });
   }

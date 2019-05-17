@@ -9,7 +9,7 @@ class DBService {
   }
 
   connectDB() {
-    // If client conncetion exists.
+    // If client connection exists.
     if (this.client !== null) {
       // Disconnect first before opening a new connection.
       return new Promise((resolve, reject) => {

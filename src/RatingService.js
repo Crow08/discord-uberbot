@@ -1,4 +1,4 @@
-class RateingService {
+class RatingService {
   constructor(ratingCooldown, dbService, queueService) {
     this.ratingCooldown = ratingCooldown * 1000;
     this.dbService = dbService;
@@ -62,7 +62,7 @@ class RateingService {
           this.dbService.addSong(song, autoPL).
             then(() => {
               song.playlist = autoPL;
-              resolve(`${song.title} added to autoplaylist ${autoPL}!`);
+              resolve(`${song.title} added to auto playlist ${autoPL}!`);
             }).
             catch(reject);
         }).
@@ -95,4 +95,4 @@ class RateingService {
     });
   }
 }
-module.exports = RateingService;
+module.exports = RatingService;

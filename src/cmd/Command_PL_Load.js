@@ -3,7 +3,7 @@ const Command = require("./Command.js");
 class LoadPLCommand extends Command {
   constructor(chatService, queueService) {
     super("plload");
-    super.help = "load a playlist replaceing the current queue.";
+    super.help = "load a playlist replacing the current queue.";
     super.usage = "<prefix>plload <pl name>";
     super.alias = ["plload"];
     this.chatService = chatService;

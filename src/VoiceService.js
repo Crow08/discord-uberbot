@@ -53,7 +53,7 @@ class VoiceService {
     const serverId = msg.guild.id;
     const voiceChannel = msg.member.voice.channel;
     return new Promise((resolve, reject) => {
-      // Search for etablished connection with this server.
+      // Search for established connection with this server.
       const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === serverId);
       // If not already connected try to join.
       if (typeof voiceConnection === "undefined") {

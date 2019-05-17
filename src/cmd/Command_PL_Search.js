@@ -13,7 +13,7 @@ class SearchPLCommand extends Command {
 
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length < 2) {
-      this.chatService.simpleNote(msg, "falscher Syntax!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, "Wrong syntax!", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
     }
@@ -21,7 +21,7 @@ class SearchPLCommand extends Command {
     const songName = payload.substr(plName.length + 1);
     this.dbService.findSong(songName, plName).then((song) => {
       if (song === "null") {
-        const note = `"${songName}" wurde nicht in ${plName} gefunden`;
+        const note = `"${songName}" not found in ${plName}!`;
         this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
       } else {
         const ratingFunc = (rSong, usr, delta, ignoreCd) => this.ratingService.rateSong(rSong, usr, delta, ignoreCd);

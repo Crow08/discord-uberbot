@@ -9,13 +9,13 @@ class SoundCloudService {
     });
   }
 
-  getSongViaUrl(searchstring) {
+  getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
-      if (!searchstring.includes("track/")) {
+      if (!searchString.includes("track/")) {
         reject(new Error("Spotify url is not invalid, only track urls are supported!"));
         return;
       }
-      const trackId = searchstring.split("track/")[1].split("/")[0].split("?")[0];
+      const trackId = searchString.split("track/")[1].split("/")[0].split("?")[0];
       this.spotify.
         request(`https://api.spotify.com/v1/tracks/${trackId}`).
         then((data) => {
@@ -33,9 +33,9 @@ class SoundCloudService {
     });
   }
 
-  getSongsViaSearchQuery(searchstring, count = 1) {
+  getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {
-      this.spotify.search({"limit": count, "query": searchstring, "type": "track"}).
+      this.spotify.search({"limit": count, "query": searchString, "type": "track"}).
         then((err, data) => {
           if (err) {
             return reject(new Error(err));
@@ -45,7 +45,7 @@ class SoundCloudService {
             return reject(new Error("Something went wrong. Try again! [SP]"));
           }
           if (data.tracks.items.length < 1) {
-            return reject(new Error(`No results for Query: "${searchstring}"! [SP]`));
+            return reject(new Error(`No results for Query: "${searchString}"! [SP]`));
           }
           const songs = [];
           for (let index = 0; index < data.tracks.items.length; index++) {

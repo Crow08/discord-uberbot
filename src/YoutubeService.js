@@ -9,9 +9,9 @@ class YoutubeService {
     this.apiKey = apiKey;
   }
 
-  getSongViaUrl(searchstring) {
+  getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
-      ytdl.getBasicInfo(searchstring, {}, (err, info) => {
+      ytdl.getBasicInfo(searchString, {}, (err, info) => {
         if (err) {
           return reject(new Error("Something went wrong fetching the song!"));
         }
@@ -25,10 +25,10 @@ class YoutubeService {
     });
   }
 
-  getSongsViaPlaylistUrl(searchstring) {
-    const playid = searchstring.toString().split("list=")[1];
+  getSongsViaPlaylistUrl(searchString) {
+    const playId = searchString.toString().split("list=")[1];
     return new Promise((resolve, reject) => {
-      ytpl(playid, (err, playlist) => {
+      ytpl(playId, (err, playlist) => {
         if (err) {
           return reject(new Error("Something went wrong fetching that playlist!"));
         }
@@ -49,7 +49,7 @@ class YoutubeService {
     });
   }
 
-  getSongsViaSearchQuery(searchstring, count = 1) {
+  getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {
       request(
         "https://www.googleapis.com/youtube/v3/search?" +
@@ -58,7 +58,7 @@ class YoutubeService {
         "videoCategoryId=10&" + // https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=DE&key=
         "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
         `maxResults=${count}&` +
-        `q=${encodeURIComponent(searchstring)}&` +
+        `q=${encodeURIComponent(searchString)}&` +
         `key=${this.apiKey}`,
         (error, response, body) => {
           if (error) {
@@ -69,7 +69,7 @@ class YoutubeService {
           }
           const result = JSON.parse(body).items;
           if (result.length < 1) {
-            return reject(new Error(`No results for Query: "${searchstring}"! [YT]`));
+            return reject(new Error(`No results for Query: "${searchString}"! [YT]`));
           }
           const songs = [];
           for (let index = 0; index < result.length; index++) {

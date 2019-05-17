@@ -21,7 +21,7 @@ class HelpCommand extends Command {
     let helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
     this.commands.forEach((command, index) => {
       const {help, name, usage, alias} = command;
-      // Ignrore undefined commands
+      // Ignore undefined commands
       if (typeof name !== "undefined") {
         helpText += this.buildLine(`Name:   ${name}`);
         helpText += this.buildLine(`Usage:  ${usage.replace("<prefix>", this.prefix)}`);
@@ -30,8 +30,8 @@ class HelpCommand extends Command {
           helpText += this.buildLine(`Alias:  ${alias.join(", ")}`);
         }
         if ((index + 1) % 5 === 0) {
-          const pageing = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
-          helpText += `+------------------------- ${pageing} -------------------------+\n\`\`\``;
+          const paging = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
+          helpText += `+------------------------- ${paging} -------------------------+\n\`\`\``;
           pages.push(helpText);
           helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
         } else {
@@ -41,8 +41,8 @@ class HelpCommand extends Command {
     });
     if (this.commands.length % 5 !== 0) {
       helpText = helpText.substr(0, helpText.length - 65);
-      const pageing = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
-      helpText += `+------------------------- ${pageing} -------------------------+\n\`\`\``;
+      const paging = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
+      helpText += `+------------------------- ${paging} -------------------------+\n\`\`\``;
       pages.push(helpText);
     }
     this.chatService.pagedContent(msg, pages);
@@ -50,12 +50,12 @@ class HelpCommand extends Command {
 
   buildLine(text) {
     let line = "";
-    let firstSubline = true;
-    const sublines = text.split("\n");
-    sublines.forEach((rawSubLine) => {
+    let firstSubLine = true;
+    const subLines = text.split("\n");
+    subLines.forEach((rawSubLine) => {
       this.wordWrap(rawSubLine, 60).forEach((subLine) => {
-        if (firstSubline) {
-          firstSubline = false;
+        if (firstSubLine) {
+          firstSubLine = false;
           line += `| ${subLine.padEnd(60, " ")} |\n`;
         } else {
           line += `|         ${subLine.padEnd(52, " ")} |\n`;

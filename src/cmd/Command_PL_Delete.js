@@ -3,7 +3,7 @@ const Command = require("./Command.js");
 class DeletePLCommand extends Command {
   constructor(chatService, dBService) {
     super("pldelete");
-    super.help = "delets a playlist permanently.";
+    super.help = "deletes a playlist permanently.";
     super.usage = "<prefix>pldelete <pl name>";
     super.alias = ["pldelete"];
     this.chatService = chatService;
