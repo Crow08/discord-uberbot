@@ -3,6 +3,7 @@ const ytpl = require("ytpl");
 const request = require("request");
 const Song = require("./Song");
 
+/** Class representing a YouTube service. */
 class YoutubeService {
 
   constructor(apiKey) {

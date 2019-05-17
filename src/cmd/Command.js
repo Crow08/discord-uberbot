@@ -1,3 +1,4 @@
+/** Abstract Class representing a Command. */
 class Command {
   constructor(name) {
     this.name = name;

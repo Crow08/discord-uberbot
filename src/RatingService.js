@@ -1,3 +1,4 @@
+/** Class representing a rating service. */
 class RatingService {
   constructor(ratingCooldown, dbService, queueService) {
     this.ratingCooldown = ratingCooldown * 1000;

@@ -41,7 +41,7 @@ const UploadCommand = require("./cmd/Command_Upload");
 const VoiceService = require("./VoiceService");
 const YouTubeService = require("./YouTubeService");
 
-
+/** Class representing the music bot. */
 class MusicClient {
   constructor(client, DiscordMessageEmbed, opt) {
     this.commands = [];

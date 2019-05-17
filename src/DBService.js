@@ -1,5 +1,6 @@
 const {MongoClient} = require("mongodb");
 
+/** Class representing a database service. */
 class DBService {
   constructor(mongoUrl, username, password) {
     this.url = mongoUrl ? `mongodb+srv://${username}:${password}@${mongoUrl}` : "mongodb://localhost:27017";

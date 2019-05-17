@@ -11,6 +11,7 @@ const shuffle = function shuffle(array) {
   return array;
 };
 
+/** Class representing a queue service. */
 class QueueService {
   constructor(historyLength, dbService) {
     this.dbService = dbService;

@@ -1,3 +1,4 @@
+/** Class representing a song object. */
 class Song {
   constructor() {
     this.title = "";

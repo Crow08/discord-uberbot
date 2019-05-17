@@ -1,6 +1,7 @@
 const request = require("request");
 const Song = require("./Song");
 
+/** Class representing a SoundCloud service. */
 class SoundCloudService {
   constructor(clientId) {
     this.clientId = clientId;

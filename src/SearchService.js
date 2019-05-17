@@ -1,3 +1,4 @@
+/** Class representing a search service. */
 class SearchService {
   constructor(youtubeService, soundCloudService, spotifyService) {
     this.youtubeService = youtubeService;

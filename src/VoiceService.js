@@ -1,5 +1,6 @@
 const Song = require("./Song");
 
+/** Class representing a voice service. */
 class VoiceService {
   constructor(options, client, youtubeService, soundCloudService, spotifyService) {
     this.bitRate = options.bitRate;

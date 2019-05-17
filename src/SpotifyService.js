@@ -1,6 +1,7 @@
 const Spotify = require("node-spotify-api");
 const Song = require("./Song");
 
+/** Class representing a Spotify service. */
 class SoundCloudService {
   constructor(spotifyClientId, spotifyClientSecret) {
     this.spotify = new Spotify({
