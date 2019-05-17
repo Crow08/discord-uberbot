@@ -33,7 +33,11 @@ class ShowQueueCommand extends Command {
       embed.setDescription(queueText);
       pages.push(embed);
     }
-    this.chatService.pagedContent(msg, pages);
+    if (pages.length === 0) {
+      this.chatService.simpleNote(msg, "Queue is empty!", this.chatService.msgType.INFO);
+    } else {
+      this.chatService.pagedContent(msg, pages);
+    }
   }
 }
 
