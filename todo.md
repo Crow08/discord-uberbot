@@ -12,7 +12,7 @@
 
 ##### Queue ##### 
 - loop with options (song / queue / none)
-- shuffle playback (useful for autoplaylists, which cant be shuffled)
+- shuffle playback (useful for auto playlists, which cant be shuffled)
 
 #### History ####
 - show history
