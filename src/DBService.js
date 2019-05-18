@@ -130,7 +130,12 @@ class DBService {
       this.db.collection(plName).
         find({}).
         toArray().
-        then(resolve).
+        then((result) => {
+          if (result) {
+            reject(new Error("Playlist doesn't exist or is empty."));
+          }
+          resolve();
+        }).
         catch(reject);
     });
   }

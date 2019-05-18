@@ -72,7 +72,6 @@
 		- .p tried again, couldn't reproduce O_o
 
 ##### needs reporting #####
-- plload not found (no error at all, despite non-existant pl)
 
 ##### Strange behavior ##### 
 - sometimes in playback no sound is played while stream seems to be active.
