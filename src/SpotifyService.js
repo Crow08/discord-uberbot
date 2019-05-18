@@ -36,10 +36,7 @@ class SoundCloudService {
   getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {
       this.spotify.search({"limit": count, "query": searchString, "type": "track"}).
-        then((err, data) => {
-          if (err) {
-            return reject(new Error(err));
-          }
+        then((data) => {
           if (typeof data === "undefined" || typeof data.tracks === "undefined" ||
             typeof data.tracks.items === "undefined") {
             return reject(new Error("Something went wrong. Try again! [SP]"));
