@@ -87,7 +87,11 @@ class YoutubeService {
   }
 
   getStream(url) {
-    return ytdl(url, {"filter": "audioonly"});
+    const stream = ytdl(url, {"filter": "audioonly"});
+    if (!stream) {
+      throw new Error(`con not get Stream [url: ${url} stream:${stream}]`);
+    }
+    return stream;
   }
 }
 

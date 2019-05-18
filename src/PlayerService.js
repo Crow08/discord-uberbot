@@ -14,10 +14,15 @@ class PlayerService {
     if (this.ignoreStreamEnd) {
       return;
     }
-    // TODO: remove.
+
     const delta = (new Date()) - startTime;
-    this.chatService.simpleNote(msg, `>>> Debug: Song was playing for : ${delta}ms <<<`, this.chatService.msgType.INFO).
-      then((debugMsg) => debugMsg.delete({"timeout": 5000}));
+    if (delta < 2000) {
+      this.voiceService.disconnectVoiceConnection(msg);
+      this.voiceService.getVoiceConnection(msg).
+        then(() => this.playNext(msg)).
+        catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
+      return;
+    }
     this.playNext(msg);
   }
 
@@ -28,7 +33,7 @@ class PlayerService {
   playNow(song, msg) {
     if (this.audioDispatcher) {
       this.ignoreStreamEnd = true;
-      this.audioDispatcher.end();
+      this.audioDispatcher.destroy();
     }
     this.voiceService.playStream(song, msg).
       then((dispatcher) => {

@@ -5,7 +5,7 @@ class AutoPLCommand extends Command {
     super("autopl");
     super.help = "set a playlist to be the auto playlist.\n(leave playlist name empty to unset auto playlist).";
     super.usage = "<prefix>autopl [<playlist name>]";
-    super.alias = ["autopl"];
+    super.alias = ["autopl", "apl"];
     this.chatService = chatService;
     this.queueService = queueService;
   }
