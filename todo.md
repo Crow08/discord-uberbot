@@ -32,8 +32,6 @@
 - Notify user every time, even after unsuccessful execution.
 
 ##### Report all the Errors ####
-- Error: `Error: [object Object]`
-	- Cause/reproduce: when adding a song
 - Error: `Error [VOICE_PLAY_INTERFACE_BAD_TYPE]: Unknown stream type
     at VoiceConnection.play (E:\Bot\discord-uberbot\node_modules\discord.js\src\client\voice\util\PlayInterface.js:84:11)
     at getVoiceConnection.then (E:\Bot\discord-uberbot\src\VoiceService.js:24:66)
@@ -74,7 +72,6 @@
 		- .p tried again, couldn't reproduce O_o
 
 ##### needs reporting #####
-- autopl not found (is there, but `Cannot send an empty message`)
 - plload not found (no error at all, despite non-existant pl)
 
 ##### Strange behavior ##### 

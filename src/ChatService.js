@@ -24,7 +24,7 @@ class ChatService {
     case this.msgType.FAIL:
       return msg.channel.send(`:x: | ${text}`);
     default:
-      return msg.channel.send(text);
+      return msg.channel.send(`${text}`);
     }
   }
 

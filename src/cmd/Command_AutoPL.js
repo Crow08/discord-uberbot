@@ -19,7 +19,7 @@ class AutoPLCommand extends Command {
     const note = `Auto playlist set to: ${payload}`;
     this.queueService.setAutoPL(payload).
       then(() => this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC)).
-      catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.Fail));
+      catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
   }
 }
 
