@@ -131,10 +131,11 @@ class DBService {
         find({}).
         toArray().
         then((result) => {
-          if (result) {
+          if (result.length === 0) {
             reject(new Error("Playlist doesn't exist or is empty."));
+            return;
           }
-          resolve();
+          resolve(result);
         }).
         catch(reject);
     });

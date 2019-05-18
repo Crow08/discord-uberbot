@@ -16,14 +16,16 @@ class ListPLCommand extends Command {
       embed.setColor(890629);
       embed.setTitle("Playlists:");
       const promises = [];
-      plNames.forEach((playlist) => {
-        promises.push(this.dbService.getPlaylist(playlist));
-      });
-
-      Promise.all(promises).then((allPlSongs) => {
-        allPlSongs.forEach((plSongs, index) => {
-          const plLength = plSongs.length;
-          embed.addField(plNames[index], `${plLength} Songs`, true);
+      const playlists = [];
+      for (let index = 0; index < plNames.length; index++) {
+        promises.push(this.dbService.getPlaylist(plNames[index]).
+          then((playlistSongs) => playlists.push({"name": plNames[index], "songs": playlistSongs})).
+          catch((err) => console.log(err)));
+      }
+      Promise.all(promises).then(() => {
+        playlists.forEach((plSongs) => {
+          const plLength = plSongs.songs.length;
+          embed.addField(plSongs.name, `${plLength} Songs`, true);
         });
         this.chatService.send(msg, embed);
       });
