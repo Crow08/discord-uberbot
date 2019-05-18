@@ -42,6 +42,7 @@
 		- when skipping last song into autoplaylist
 		- .p on active autoplaylist
 		- .s active autoplaylist song
+		-
 - Error: `(node:4764) UnhandledPromiseRejectionWarning: RangeError: Source is too large
     at Uint16Array.set (<anonymous>)
     at OpusScript.encode (E:\Bot\discord-uberbot\node_modules\opusscript\index.js:51:16)
@@ -70,9 +71,10 @@
 	- Cause/reproduce: 
 		- .p dangerous
 		- .p heart afire
+		- .p tried again, couldn't reproduce O_o
 
 ##### needs reporting #####
-- autopl not found
+- autopl not found (is there, but `Cannot send an empty message`)
 - plload not found (no error at all, despite non-existant pl)
 
 ##### Strange behavior ##### 
@@ -82,6 +84,8 @@
 - Stream ends immediately after start
 	- can be solved via retry
 	- hard to reproduce reliable
+- Stream ends, Bot leaves Chat
+	- .p new song on allready playing song
 
 ---
 
