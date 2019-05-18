@@ -109,10 +109,10 @@ class SearchService {
     return new Promise((resolve, reject) => {
       const preNote = "Get song title and artist from Spotify~";
       this.spotifyService.getSongsViaSearchQuery(searchString).
-        then((song) => this.getSongsFromYT_SP(`${song.title} ${song.artist}`, count).
+        then((song) => this.getSongsFromYTthenSC(`${song.title} ${song.artist}`, count).
           then(({note, songs}) => resolve({"note": `${preNote}\n${note}`, songs})).
           catch((err2) => reject(new Error(`${preNote}\n${err2}`)))).
-        catch((err) => this.getSongsFromYT_SP(searchString, count).
+        catch((err) => this.getSongsFromYTthenSC(searchString, count).
           then(({note, songs}) => resolve({"note": `${err}\n${note}`, songs})).
           catch((err2) => reject(new Error(`${err}\n${err2}`))));
     });
