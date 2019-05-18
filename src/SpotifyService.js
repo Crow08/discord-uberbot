@@ -51,6 +51,7 @@ class SoundCloudService {
             song.url = "-";
             song.artist = data.tracks.items[0].artists[0].name;
             song.src = Song.srcType.SP;
+            songs.push(song);
           }
           return resolve(songs);
         }).
