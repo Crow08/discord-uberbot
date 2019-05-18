@@ -14,12 +14,14 @@
 - loop with options (song / queue / none)
 - shuffle playback (useful for autoplaylists, which cant be shuffled)
 
+#### History ####
+- show history
+- replay sth from history
+
 ##### Play song ##### 
 - raw-MP3-support
 
 ##### Misc #####
-- add doSth-Command start (load playlist and play - just sth to start the music in a lazy way)
-- sort commands in services alphabetical
 - add cooldown for ALL commands!
 
 ---
@@ -42,8 +44,6 @@
 - Stream ends immediately after start
 	- can be solved via retry
 	- hard to reproduce reliable
-- Stream ends, Bot leaves Chat
-	- .p new song on allready playing song
 
 ---
 
