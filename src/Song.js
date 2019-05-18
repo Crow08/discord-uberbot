@@ -1,5 +1,9 @@
 /** Class representing a song object. */
 class Song {
+
+  /**
+   * Constructor.
+   */
   constructor() {
     this.title = "";
     this.artist = "";

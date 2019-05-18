@@ -33,5 +33,8 @@
     "ytpl": "^0.1.14",
     "zlib-sync": "^0.1.4",
     "zucc": "^0.1.2"
+  },
+  "devDependencies": {
+    "jsdoc": "^3.6.2"
   }
 }

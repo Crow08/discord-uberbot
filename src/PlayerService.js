@@ -1,5 +1,13 @@
 /** Class representing the music player. */
 class PlayerService {
+
+  /**
+   * Constructor.
+   * @param {VoiceService} voiceService -
+   * @param {QueueService} queueService -
+   * @param {ChatService} chatService -
+   * @param {RatingService} ratingService -
+   */
   constructor(voiceService, queueService, chatService, ratingService) {
     this.audioDispatcher = null;
 

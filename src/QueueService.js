@@ -13,6 +13,12 @@ const shuffle = function shuffle(array) {
 
 /** Class representing a queue service. */
 class QueueService {
+
+  /**
+   * Constructor.
+   * @param {Number} historyLength - max number of songs saved in the history.
+   * @param {DBService} dbService -
+   */
   constructor(historyLength, dbService) {
     this.dbService = dbService;
     this.queue = [];

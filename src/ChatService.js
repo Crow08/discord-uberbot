@@ -1,5 +1,10 @@
 /** Class representing a chat service. */
 class ChatService {
+
+  /**
+   * Constructor.
+   * @param {MessageEmbed} DiscordMessageEmbed - Discord.js MessageEmbed class for creating rich embed messages.
+   */
   constructor(DiscordMessageEmbed) {
     this.DiscordMessageEmbed = DiscordMessageEmbed;
     this.msgType = {

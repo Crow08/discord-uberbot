@@ -1,5 +1,12 @@
 /** Class representing a rating service. */
 class RatingService {
+
+  /**
+   * Constructor.
+   * @param {Number} ratingCooldown - time in seconds for the cooldown for rating the same song again.
+   * @param {DBService} dbService  -
+   * @param {QueueService} queueService -
+   */
   constructor(ratingCooldown, dbService, queueService) {
     this.ratingCooldown = ratingCooldown * 1000;
     this.dbService = dbService;

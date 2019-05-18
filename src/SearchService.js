@@ -1,5 +1,12 @@
 /** Class representing a search service. */
 class SearchService {
+
+  /**
+   * Constructor.
+   * @param {YoutubeService} youtubeService -
+   * @param {SoundCloudService} soundCloudService -
+   * @param {SpotifyService} spotifyService -
+   */
   constructor(youtubeService, soundCloudService, spotifyService) {
     this.youtubeService = youtubeService;
     this.soundCloudService = soundCloudService;

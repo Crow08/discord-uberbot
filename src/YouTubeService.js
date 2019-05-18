@@ -6,6 +6,10 @@ const Song = require("./Song");
 /** Class representing a YouTube service. */
 class YoutubeService {
 
+  /**
+   * Constructor.
+   * @param {String} apiKey - api Key to authenticate YouTube requests.
+   */
   constructor(apiKey) {
     this.apiKey = apiKey;
   }

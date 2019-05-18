@@ -43,6 +43,13 @@ const YouTubeService = require("./YouTubeService");
 
 /** Class representing the music bot. */
 class MusicClient {
+
+  /**
+   * Constructor.
+   * @param {Client} client - Discord.js client object.
+   * @param {MessageEmbed} DiscordMessageEmbed - Discord.js MessageEmbed class for creating rich embed messages.
+   * @param {Object} opt - options and user settings for music client.
+   */
   constructor(client, DiscordMessageEmbed, opt) {
     this.commands = [];
     this.baseClient = client;

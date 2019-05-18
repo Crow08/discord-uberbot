@@ -7,11 +7,11 @@ const Command = require("./Command.js");
 class AddCommand extends Command {
 
   /**
-     * Constructor.
-     * @param {ChatService} chatService - chatService.
-     * @param {QueueService} queueService - queueService.
-     * @param {SearchService} searchService - searchService.
-     */
+   * Constructor.
+   * @param {ChatService} chatService - chatService.
+   * @param {QueueService} queueService - queueService.
+   * @param {SearchService} searchService - searchService.
+   */
   constructor(chatService, queueService, searchService) {
     super("add");
     super.help = "add a song to the current queue by url or query.";
