@@ -29,16 +29,24 @@ class AddPLCommand extends Command {
             song.requester = msg.author.username;
             return song;
           });
-          this.dBService.addSongs(enrichedSongs, plName);
-          const count = enrichedSongs.length();
-          const note2 = `${count} songs added to playlist: ${plName}`;
-          this.chatService.simpleNote(msg, note2, this.chatService.msgType.MUSIC);
+          this.dBService.addSongs(enrichedSongs, plName).then(() => {
+            const count = enrichedSongs.length();
+            const note2 = `${count} songs added to playlist: ${plName}`;
+            this.chatService.simpleNote(msg, note2, this.chatService.msgType.MUSIC);
+          }).
+            catch((error) => {
+              this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
+            });
         } else {
           songs[0].playlist = plName;
           songs[0].requester = msg.author.username;
-          this.dBService.addSong(songs[0], plName);
-          const note2 = `added song: ${songs[0].title} to playlist: ${plName}`;
-          this.chatService.simpleNote(msg, note2, this.chatService.msgType.MUSIC);
+          this.dBService.addSong(songs[0], plName).then(() => {
+            const note2 = `added song: ${songs[0].title} to playlist: ${plName}`;
+            this.chatService.simpleNote(msg, note2, this.chatService.msgType.MUSIC);
+          }).
+            catch((error) => {
+              this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
+            });
         }
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
