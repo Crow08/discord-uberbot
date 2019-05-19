@@ -9,8 +9,7 @@
 	- skip song on downvote (and skip on shit)
 	- add are you sure on poop-emoji
 - paging for list_songs (.ls <playlist>)
-- remove song from playlist by number
-- .start command should clear queue and stop playback
+- .start command should clear queue and stop playback to be used while song is playing
 
 ##### Queue ##### 
 - loop with options (song / queue / none)
@@ -41,21 +40,16 @@
 ##### Report all the Errors ####
 - `Error [VOICE_PLAY_INTERFACE_BAD_TYPE]: Unknown stream type`
 	-recreate:
-		- .p heros mans
-		- .autopl SoBig
-		- .skip
-		-> Crash
-		- kinda random, need multiple tries (.skip on autopl)
-		- might try .start <playlist> for consistent error
+		- try .start <playlist> for consistent error
 - `TypeError: Cannot read property 'src' of undefined`
 	- recreate:
 		- .search
 		- .p rockabye / or any other command like .add
 ##### needs reporting #####
 - .search no feedback when add is used
+
 ##### Strange behavior ##### 
 - .search + >> last page is empty
-- cant remove songs with .plremove (playlist newly created, poop-button works)
 - sometimes in playback no sound is played while stream seems to be active.
 	- can be solved via voice reconnect of the bot.
 	- hard to reproduce reliable

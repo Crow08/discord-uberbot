@@ -8,6 +8,10 @@ class DBService {
     this.db = null;
   }
 
+  escapeRegExp(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/gu, "\\$&");
+  }
+
   connectDB() {
     // If client connection exists.
     if (this.client !== null) {
@@ -88,7 +92,7 @@ class DBService {
   removeSong(title, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
-        deleteOne({title},).
+        deleteOne({"title": {"$options": "$i", "$regex": this.escapeRegExp(title)}}).
         then(resolve).
         catch(reject);
     });

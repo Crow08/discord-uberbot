@@ -17,13 +17,27 @@ class RemovePLCommand extends Command {
       return;
     }
     const plName = payload.split(" ")[0];
-    const songName = payload.substr(plName.length + 1);
+    let songName = payload.substr(plName.length + 1).trim();
+
+    if (!isNaN(songName)) {
+      this.dbService.getPlaylist(plName).then((songs) => {
+        songName = songs[songName - 1].title;
+        console.log(songName);
+        this.handleRemove(songName, plName, msg);
+      });
+      return;
+    }
+    this.handleRemove(songName, plName, msg);
+    console.log(plName);
+  }
+
+  handleRemove(songName, plName, msg) {
     this.dbService.removeSong(songName, plName).then((info) => {
       if (info.deletedCount === 0) {
         const note = `"${songName}" not found in ${plName}!`;
         this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
       } else {
-        this.chatService.simpleNote(msg, `Song removed from ${plName}!`, this.chatService.msgType.INFO);
+        this.chatService.simpleNote(msg, `"${songName}" removed from ${plName}!`, this.chatService.msgType.INFO);
       }
     });
   }
