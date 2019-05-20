@@ -8,21 +8,20 @@
 - add rating
 	- skip song on downvote (and skip on shit)
 	- add are you sure on poop-emoji
-- paging for list_songs (.ls <playlist>)
+- paging for list_songs (.ls &lt;playlist&gt;)
 - .start command should clear queue and stop playback to be used while song is playing
 
-##### Queue ##### 
+##### Queue #####
 - loop with options (song / queue / none)
-- shuffle playback (useful for auto playlists, which cant be shuffled)
 
-#### History ####
+##### History #####
 - show history
 - replay sth from history
 
- #### Search ####
- - add song to playlist
+##### Search #####
+- add song to playlist
 
-##### Play song ##### 
+##### Play song #####
 - raw-MP3-support
 
 ##### Misc #####
@@ -30,17 +29,17 @@
 
 ---
 
-#### Known Bugs: #### 
+#### Known Bugs: ####
 
-##### Error handling ##### 
-- catch all promises and process accordingly. 
+##### Error handling #####
+- catch all promises and process accordingly.
 - catch all fatal errors to prevent bot crash.
 - Notify user every time, even after unsuccessful execution.
 
 ##### Report all the Errors ####
 - `Error [VOICE_PLAY_INTERFACE_BAD_TYPE]: Unknown stream type`
-	-recreate:
-		- try .start <playlist> for consistent error
+	- recreate:
+		- try .start &lt;playlist&gt; for consistent error
 - `TypeError: Cannot read property 'src' of undefined`
 	- recreate:
 		- .search
@@ -48,7 +47,7 @@
 ##### needs reporting #####
 - .search no feedback when add is used
 
-##### Strange behavior ##### 
+##### Strange behavior #####
 - .search + >> last page is empty
 - sometimes in playback no sound is played while stream seems to be active.
 	- can be solved via voice reconnect of the bot.
@@ -61,5 +60,11 @@
 
 ### Misc. ###
 
-##### Availability ##### 
+##### Dependencies #####
+- replace "ytdl-core" with "ytdl-core-discord" https://www.npmjs.com/package/ytdl-core-discord
+- **ffmpeg-binaries@4.0.0** -> **decompress-tarxz@2.1.1** -> lzma-native@3.0.8 -> node-pre-gyp@0.6.39  
+has vulnerabilities because it is bundling outdated modules (needed for encoding non opus codecs)  
+fixed at: lzma-native@>=4.0.0 -> node-pre-gyp@>=0.7.0
+
+##### Deployment #####
 - host Database or DB + Bot. (openshift / heroku)
