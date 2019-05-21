@@ -108,11 +108,11 @@ const setBotEventListeners = () => {
       });
     });
     // Poll for DB connection.
-    const timeout = new Date().getTime + 2000;
+    const timeout = new Date().getTime() + 30000;
     const checkDBConnection = () => {
       if (musicClient.dbService.isConnected()) {
         console.log("\x1b[32m%s\x1b[0m", "-------- UberBot is fully charged!  --------\n");
-      } else if (new Date().getTime < timeout) {
+      } else if (new Date().getTime() < timeout) {
         setTimeout(checkDBConnection, 100);
       } else {
         throw new Error("DB connection timed out!");
@@ -169,6 +169,9 @@ loadSettings().then((json) => {
     "bitRate": typeof settings.bitRate === "undefined" ? 96000 : parseInt(settings.bitRate, 10),
     "botPrefix": typeof settings.botPrefix === "undefined" ? "!" : settings.botPrefix,
     "defVolume": typeof settings.defVolume === "undefined" ? 50 : parseInt(settings.defVolume, 10),
+    "mongodbPassword": settings.mongodbPassword,
+    "mongodbUrl": settings.mongodbUrl,
+    "mongodbUser": settings.mongodbUser,
     "ratingCooldown": typeof settings.ratingCooldown === "undefined" ? 86400 : parseInt(settings.ratingCooldown, 10),
     "scClientId": settings.scClientId,
     "spotifyClientId": settings.spotifyClientId,

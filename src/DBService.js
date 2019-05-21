@@ -1,8 +1,8 @@
 const {MongoClient} = require("mongodb");
 
 class DBService {
-  constructor() {
-    this.url = "mongodb://localhost:27017";
+  constructor(mongoUrl, username, password) {
+    this.url = mongoUrl ? `mongodb+srv://${username}:${password}@${mongoUrl}` : "mongodb://localhost:27017";
     this.dbName = "uberbot";
     this.client = null;
     this.db = null;

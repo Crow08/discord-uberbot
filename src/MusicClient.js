@@ -57,7 +57,7 @@ class MusicClient {
       {"bitRate": opt.bitRate, "defVolume": opt.defVolume}, this.baseClient, this.youtubeService,
       this.soundCloudService, this.spotifyService
     );
-    this.dbService = new DBService();
+    this.dbService = new DBService(opt.mongodbUrl, opt.mongodbUser, opt.mongodbPassword);
     this.queueService = new QueueService(500, this.dbService);
     this.ratingService = new RatingService(opt.ratingCooldown, this.dbService, this.queueService);
     this.playerService = new PlayerService(this.voiceService, this.queueService, this.chatService, this.ratingService);
