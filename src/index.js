@@ -203,3 +203,8 @@ loadSettings().then((json) => {
   catch((err) => {
     console.log("\x1b[31m%s\x1b[0m", err);
   });
+
+http.createServer((request, response) => {
+  response.write("Anyone called for a medic?");
+  response.end();
+}).listen(process.env.PORT || 8080);
