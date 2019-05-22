@@ -25,6 +25,17 @@ process.argv.forEach((arg) => {
   }
 });
 
+// Parsing environment variables.
+if (debug === false && typeof process.env.debug !== "undefined") {
+  debug = typeof process.env.debug;
+}
+if (settingsUrl === "" && typeof process.env.settings_url !== "undefined") {
+  settingsUrl = process.env.settings_url;
+}
+if (settingsPath === "" && typeof process.env.settings_path !== "undefined") {
+  settingsPath = process.env.settings_url;
+}
+
 // Load settings.
 const loadSettings = () => new Promise((resolve, reject) => {
   fs.access(settingsPath, fs.constants.F_OK, (existsErr) => {
