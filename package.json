@@ -8,8 +8,9 @@
   "scripts": {
     "build": "npm install",
     "debug": "node ./src/index.js debug",
-    "start": "node ./src/index.js",
-    "docs": "jsdoc -R README.md -r .\\src"
+    "docs": "jsdoc -R README.md -d docs -r .\\src",
+    "start": "node ./src/index.js"
+   
   },
   "private": true,
   "repository": {

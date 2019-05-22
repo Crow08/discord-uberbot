@@ -11,4 +11,8 @@ jspm_packages/
 .vscode/
 
 # Settings and credentials
-/settings.json
+settings.json
+.env
+
+# Generated docs
+docs/

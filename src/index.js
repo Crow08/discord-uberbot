@@ -205,6 +205,21 @@ loadSettings().then((json) => {
   });
 
 http.createServer((request, response) => {
-  response.write("Anyone called for a medic?");
-  response.end();
+  const path = request.url === "/" ? "./docs/index.html" : `./docs${request.url}`;
+  fs.readFile(path, (err, data) => {
+    if (err) {
+      response.writeHead(404, {"Content-Type": "text/html"});
+      response.write("<link type=\"text/css\" rel=\"stylesheet\" href=\"styles/jsdoc-default.css\">" +
+      "<div style=\"text-align: center;height: 100%;width: 100%;display: table;\">" +
+      "<div style=\"display: table-cell;vertical-align: middle;\">" +
+      `<h1>Error 404 : Not Found</h1>requested path: ${request.url} : [${path}]` +
+      "</div></div>");
+      response.end();
+    } else {
+      const ext = path.substr(path.lastIndexOf(".") + 1);
+      response.writeHead(200, {"Content-Type": `text/${ext}`});
+      response.write(data);
+      response.end();
+    }
+  });
 }).listen(process.env.PORT || 8080);
