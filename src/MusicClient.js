@@ -25,6 +25,7 @@ const RatingService = require("./RatingService");
 const RemoveCommand = require("./cmd/Command_Remove");
 const RemovePLCommand = require("./cmd/Command_PL_Remove");
 const RenamePLCommand = require("./cmd/Command_PL_Rename");
+const RenameSongCommand = require("./cmd/Command_Rename_Song");
 const TestCommand = require("./cmd/Command_Test");
 const SearchCommand = require("./cmd/Command_Search");
 const SearchService = require("./SearchService");
@@ -92,6 +93,7 @@ class MusicClient {
       new RemoveCommand(this.chatService, this.queueService),
       new RemovePLCommand(this.chatService, this.dbService),
       new RenamePLCommand(this.chatService, this.dbService),
+      new RenameSongCommand(this.chatService, this.dbService),
       new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService),
       new SearchPLCommand(this.chatService, this.dbService, this.ratingService),
       new SeekCommand(this.chatService, this.playerService),

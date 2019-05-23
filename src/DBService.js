@@ -106,6 +106,18 @@ class DBService {
     });
   }
 
+  renameSong(plName, song, flag, newName) {
+    return new Promise((resolve, reject) => {
+
+      this.db.collection(plName).findOneAndUpdate(
+        {"artist": song.artist, "title": song.title},
+        {"$set": flag === "a" ? {"artist": newName} : {"title": newName}}
+      ).
+        then(resolve).
+        catch(reject);
+    });
+  }
+
   findSong(song, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
