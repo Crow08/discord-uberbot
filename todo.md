@@ -24,6 +24,9 @@
 ##### Play song #####
 - raw-MP3-support
 
+##### DB #####
+- Implement command to rename a song / artist.
+
 ##### Misc #####
 - add cooldown for ALL commands!
 
