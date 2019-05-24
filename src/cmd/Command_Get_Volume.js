@@ -16,7 +16,6 @@ class GetVolumeCommand extends Command {
       this.chatService.simpleNote(msg, "This method does not take parameters, even if you say please!", this.chatService.msgType.FAIL);
     }
     this.chatService.simpleNote(msg, `Volume is set to ${this.voiceService.volume} right now`, this.chatService.msgType.MUSIC);
-    this.voiceService.volume = payload;
   }
 }
 module.exports = GetVolumeCommand;

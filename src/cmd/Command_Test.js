@@ -16,7 +16,7 @@ class TestCommand extends Command {
     this.voiceService.getVoiceConnection(msg).
       then((conn) => {
         console.log(conn);
-        conn.setVolume(0.5);
+        conn.dispatcher.setVolume(0.5);
         console.log(conn);
       }).
       catch((reject) => {
