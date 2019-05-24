@@ -1,7 +1,7 @@
 const Command = require("./Command.js");
 
 class TestCommand extends Command {
-  constructor(chatService, queueService, dbService) {
+  constructor(chatService, queueService, dbService, voiceService) {
     super("test");
     super.help = "for testing - duh!";
     super.usage = "<prefix>test";
@@ -9,14 +9,19 @@ class TestCommand extends Command {
     this.chatService = chatService;
     this.queueService = queueService;
     this.dbService = dbService;
+    this.voiceService = voiceService;
   }
 
   run(payload, msg) {
-    console.log("testing");
-    const source = payload.split(" ")[0];
-    const target = payload.split(" ")[1];
-    this.dbService.mergePlaylists(source, target);
-    this.chatService.send(msg, `copied ${source} into ${target}`);
+    this.voiceService.getVoiceConnection(msg).
+      then((conn) => {
+        console.log(conn);
+        conn.setVolume(0.5);
+        console.log(conn);
+      }).
+      catch((reject) => {
+        console.log(reject);
+      });
   }
 }
 module.exports = TestCommand;
