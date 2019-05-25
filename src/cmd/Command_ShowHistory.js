@@ -1,13 +1,34 @@
 const Command = require("./Command.js");
 
+const validate = (resp, list) => {
+  const message = resp.content.trim();
+  for (let count = 0, len = list.length; count < len; count++) {
+    if (list[count].command === message) {
+      console.log("geht das? reicht es, wenn die Funktion übergeben wird?");
+      return true;
+    }
+  }
+  return false;
+};
+
+const execute = (resp, list) => {
+  const message = resp.content.trim();
+  for (let count = 0, len = list.length; count < len; count++) {
+    if (list[count].command === message) {
+      list.function();
+    }
+  }
+};
+
 class ShowHistoryCommand extends Command {
-  constructor(chatService, queueService) {
+  constructor(chatService, queueService, commands) {
     super("showhistory");
     super.help = "displays all songs from current history.";
     super.usage = "<prefix>showhistory";
     super.alias = ["showhistory", "h", "history"];
     this.chatService = chatService;
     this.queueService = queueService;
+    this.commands = commands;
   }
 
   run(payload, msg) {
@@ -36,8 +57,17 @@ class ShowHistoryCommand extends Command {
     if (pages.length === 0) {
       this.chatService.simpleNote(msg, "History is empty!", this.chatService.msgType.INFO);
     } else {
+      const list = [
+        {"command": "p", "function": this.playSong},
+        {"command": "pn", "function": this.playNext}
+      ];
       this.chatService.pagedContent(msg, pages);
+      this.chatService.validateInput(((responseMsg) => validate(responseMsg, list)), msg);
     }
+  }
+
+  playSong(payload, msg) {
+    this.commands.play.run(payload, msg);
   }
 }
 

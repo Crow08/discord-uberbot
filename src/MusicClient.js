@@ -100,7 +100,7 @@ class MusicClient {
       new SearchPLCommand(this.chatService, this.dbService, this.ratingService),
       new SeekCommand(this.chatService, this.playerService),
       new ShowHistoryCommand(this.chatService, this.queueService),
-      new ShowQueueCommand(this.chatService, this.queueService),
+      new ShowQueueCommand(this.chatService, this.queueService, this.commands),
       new ShuffleCommand(this.chatService, this.queueService),
       new SkipCommand(this.playerService),
       new StartCommand(this.playerService, this.searchService, this.chatService, this.queueService),

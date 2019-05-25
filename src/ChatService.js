@@ -189,6 +189,17 @@ class ChatService {
       }));
   }
 
+  validateInput(validate, execute, msg) {
+    msg.channel.awaitMessages(validate, {"errors": ["time"], "max": 1, "time": 120000}).
+      then((collected) => {
+        console.log("!!!");
+        execute(collected.message);
+      }).
+      // Timeout or error.
+      catch(() => this.simpleNote(msg.channel, "You`re too slow!", this.msgType.FAIL));
+    console.log();
+  }
+
   buildSelectionPage(songs, pageNo) {
     const first = 10 * pageNo;
     const last = first + 10 > songs.length - 1 ? songs.length - 1 : first + 10;
