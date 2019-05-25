@@ -17,6 +17,7 @@
 ##### History #####
 - show history
 - replay sth from history
+- paging for history
 
 ##### Search #####
 - add song to playlist
@@ -27,7 +28,6 @@
 ##### DB #####
 
 ##### Misc #####
-- add cooldown for ALL commands!
 
 ---
 

@@ -1,7 +1,7 @@
 const Command = require("./Command.js");
 
 class TestCommand extends Command {
-  constructor(chatService, queueService, dbService, voiceService) {
+  constructor(chatService, queueService, dbService, voiceService, playerService) {
     super("test");
     super.help = "for testing - duh!";
     super.usage = "<prefix>test";
@@ -10,18 +10,13 @@ class TestCommand extends Command {
     this.queueService = queueService;
     this.dbService = dbService;
     this.voiceService = voiceService;
+    this.playerService = playerService;
   }
 
   run(payload, msg) {
-    this.voiceService.getVoiceConnection(msg).
-      then((conn) => {
-        console.log(conn);
-        conn.dispatcher.setVolume(0.5);
-        console.log(conn);
-      }).
-      catch((reject) => {
-        console.log(reject);
-      });
+    console.log(this.playerService.audioDispatcher.Volume);
+    this.playerService.audioDispatcher.setVolume(payload);
+    console.log(this.playerService.audioDispatcher.Volume);
   }
 }
 module.exports = TestCommand;

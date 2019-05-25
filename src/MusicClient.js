@@ -8,7 +8,6 @@ const ClearCommand = require("./cmd/Command_Clear");
 const DBService = require("./DBService");
 const DeletePLCommand = require("./cmd/Command_PL_Delete");
 const GetAutoPLCommand = require("./cmd/Command_GetAutoPL.js");
-const GetVolumeCommand = require("./cmd/Command_Get_Volume");
 const HelpCommand = require("./cmd/Command_Help");
 const LeaveCommand = require("./cmd/Command_Leave");
 const ListPLCommand = require("./cmd/Command_PL_List");
@@ -32,7 +31,6 @@ const SearchCommand = require("./cmd/Command_Search");
 const SearchService = require("./SearchService");
 const SearchPLCommand = require("./cmd/Command_PL_Search");
 const SeekCommand = require("./cmd/Command_Seek");
-const SetVolumeCommand = require("./cmd/Command_Set_Volume");
 const ShowQueueCommand = require("./cmd/Command_ShowQueue");
 const ShuffleCommand = require("./cmd/Command_Shuffle");
 const SkipCommand = require("./cmd/Command_Skip");
@@ -42,6 +40,7 @@ const StartCommand = require("./cmd/Command_Start");
 const StopCommand = require("./cmd/Command_Stop");
 const UploadCommand = require("./cmd/Command_Upload");
 const VoiceService = require("./VoiceService");
+const VolumeCommand = require("./cmd/Command_Volume");
 const YouTubeService = require("./YouTubeService");
 
 
@@ -81,7 +80,6 @@ class MusicClient {
       new ClearCommand(this.chatService, this.queueService),
       new DeletePLCommand(this.chatService, this.dbService),
       new GetAutoPLCommand(this.chatService, this.queueService),
-      new GetVolumeCommand(this.chatService, this.voiceService),
       new HelpCommand(this.chatService, this.commands, this.botPrefix),
       new LeaveCommand(this.playerService, this.voiceService),
       new ListPLCommand(this.chatService, this.dbService),
@@ -100,14 +98,14 @@ class MusicClient {
       new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService),
       new SearchPLCommand(this.chatService, this.dbService, this.ratingService),
       new SeekCommand(this.chatService, this.playerService),
-      new SetVolumeCommand(this.chatService, this.voiceService),
       new ShowQueueCommand(this.chatService, this.queueService),
       new ShuffleCommand(this.chatService, this.queueService),
       new SkipCommand(this.playerService),
       new StartCommand(this.playerService, this.searchService, this.chatService, this.queueService),
       new StopCommand(this.playerService),
-      new TestCommand(this.chatService, this.queueService, this.dbService, this.voiceService),
-      new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService)
+      new TestCommand(this.chatService, this.queueService, this.dbService, this.voiceService, this.playerService),
+      new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService),
+      new VolumeCommand(this.chatService, this.voiceService, this.playerService)
     );
     console.log("\x1b[35m%s\x1b[0m", "> Commands loaded!\n");
   }
