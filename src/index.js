@@ -4,9 +4,9 @@ const readline = require("readline");
 const http = require("http");
 const fs = require("fs");
 
-console.log("\x1b[32m%s\x1b[0m", "--------    UberBot is charging!    --------\n");
-
 let debug = false;
+let webOnly = false;
+let botOnly = false;
 let settingsPath = "./settings.json";
 let settingsUrl = "";
 
@@ -18,6 +18,10 @@ let musicClient = null;
 process.argv.forEach((arg) => {
   if (arg === "debug") {
     debug = true;
+  } else if (arg === "web_only") {
+    webOnly = true;
+  } else if (arg === "bot_only") {
+    botOnly = true;
   } else if (arg.match(/^settings_url=.+/u)) {
     settingsUrl = arg.split("=")[1];
   } else if (arg.match(/^settings_path=.+/u)) {
@@ -28,6 +32,12 @@ process.argv.forEach((arg) => {
 // Parsing environment variables.
 if (debug === false && typeof process.env.debug !== "undefined") {
   debug = typeof process.env.debug;
+}
+if (webOnly === false && typeof process.env.web_only !== "undefined") {
+  webOnly = typeof process.env.web_only;
+}
+if (botOnly === false && typeof process.env.bot_only !== "undefined") {
+  botOnly = typeof process.env.bot_only;
 }
 if (settingsUrl === "" && typeof process.env.settings_url !== "undefined") {
   settingsUrl = process.env.settings_url;
@@ -66,9 +76,9 @@ const loadSettings = () => new Promise((resolve, reject) => {
       });
     } else {
       reject(new Error("Failed to load settings file!\n" +
-      "Please provide a settings file at the default location (\"./settings.json\") " +
-      "or set a path through the \"settings_path\" argument.\n" +
-      "Alternatively you can provide \"settings_url\" as argument to refer a remote settings file."));
+        "Please provide a settings file at the default location (\"./settings.json\") " +
+        "or set a path through the \"settings_path\" argument.\n" +
+        "Alternatively you can provide \"settings_url\" as argument to refer a remote settings file."));
     }
   });
 });
@@ -159,67 +169,76 @@ const setConsoleEventListeners = () => {
   });
 };
 
+// Fill in missing settings with default values and validate settings.
+const validateSettings = (() => {
+  // Set default values if necessary.
+  settings.bitRat = typeof settings.bitRate === "undefined" ? 96000 : parseInt(settings.bitRate, 10);
+  settings.botPrefix = typeof settings.botPrefix === "undefined" ? "!" : settings.botPrefix;
+  settings.defVolume = typeof settings.defVolume === "undefined" ? 50 : parseInt(settings.defVolume, 10);
+  settings.ratingCooldown = typeof settings.ratingCooldown === "undefined" ? 86400
+    : parseInt(settings.ratingCooldown, 10);
+  // Check for missing credentials.
+  return ((typeof settings.scClientId !== "undefined" && settings.scClientId !== "SOUNDCLOUD_CLIENT_ID") ||
+    (typeof settings.spotifyClientId !== "undefined" && settings.spotifyClientId !== "SPOTIFY_CLIENT_ID") ||
+    (typeof settings.spotifyClientSecret !== "undefined" && settings.spotifyClientSecret !== "SPOTIFY_CLIENT_SECRET") ||
+    (typeof settings.youtubeApiKey !== "undefined" && settings.youtubeApiKey !== "YOUTUBE_API_KEY"));
+});
+
 // Script starts here:
-loadSettings().then((json) => {
-  settings = json;
-  // Check if all necessary settings are set.
-  if ((typeof settings.scClientId === "undefined" || settings.scClientId === "SOUNDCLOUD_CLIENT_ID") ||
-    (typeof settings.spotifyClientId === "undefined" || settings.spotifyClientId === "SPOTIFY_CLIENT_ID") ||
-    (typeof settings.spotifyClientSecret === "undefined" || settings.spotifyClientSecret === "SPOTIFY_CLIENT_SECRET") ||
-    (typeof settings.youtubeApiKey === "undefined" || settings.youtubeApiKey === "YOUTUBE_API_KEY")) {
-    console.log("\x1b[31m%s\x1b[0m", new Error("Your setting file is missing some necessary information!\n" +
-    "Please check your settings file for missing API credentials.\n" +
-    "Take a look at settings.example.json for reference."));
-    return;
-  }
-
-  // Create base client (discord.js client) and music client (uberbot client).
-  // These provide the main functionality of the bot.
-  baseClient = new Discord.Client();
-  musicClient = new MusicClient(baseClient, Discord.MessageEmbed, {
-    "bitRate": typeof settings.bitRate === "undefined" ? 96000 : parseInt(settings.bitRate, 10),
-    "botPrefix": typeof settings.botPrefix === "undefined" ? "!" : settings.botPrefix,
-    "defVolume": typeof settings.defVolume === "undefined" ? 50 : parseInt(settings.defVolume, 10),
-    "mongodbPassword": settings.mongodbPassword,
-    "mongodbUrl": settings.mongodbUrl,
-    "mongodbUser": settings.mongodbUser,
-    "ratingCooldown": typeof settings.ratingCooldown === "undefined" ? 86400 : parseInt(settings.ratingCooldown, 10),
-    "scClientId": settings.scClientId,
-    "spotifyClientId": settings.spotifyClientId,
-    "spotifyClientSecret": settings.spotifyClientSecret,
-    "youtubeApiKey": settings.youtubeApiKey
-  });
-
-  // Set up event listeners for Discord events like incoming messages.
-  setBotEventListeners();
-
-  // Setup console listeners for debugging purposes.
-  setConsoleEventListeners();
-
-  // Login to Discord.
-  baseClient.login(settings.token).
-    catch((err) => console.log(err));
-}).
-  catch((err) => {
-    console.log("\x1b[31m%s\x1b[0m", err);
-  });
-
-http.createServer((request, response) => {
-  const path = request.url === "/" ? "./docs/index.html" : `./docs${request.url}`;
-  fs.readFile(path, (err, data) => {
-    if (err) {
-      response.writeHead(404, {"Content-Type": "text/html"});
-      response.write("<link type=\"text/css\" rel=\"stylesheet\" href=\"styles/jsdoc-default.css\">" +
-      "<div style=\"text-align: center;height: 100%;width: 100%;display: table;\">" +
-      "<div style=\"display: table-cell;vertical-align: middle;\">" +
-      `<h1>Error 404 : Not Found</h1>requested path: ${request.url} : [${path}]` +
-      "</div></div>");
-      response.end();
-    } else {
-      const ext = path.substr(path.lastIndexOf(".") + 1);
-      response.writeHead(200, {"Content-Type": `text/${ext}`});
-      response.write(data);
-      response.end();
+if (!webOnly) {
+  console.log("\x1b[32m%s\x1b[0m", "--------    UberBot is charging!    --------\n");
+  loadSettings().then((json) => {
+    settings = json;
+    // Check if all necessary settings are set.
+    if (!validateSettings()) {
+      console.log("\x1b[31m%s\x1b[0m", new Error("Your setting file is missing some necessary information!\n" +
+        "Please check your settings file for missing API credentials.\n" +
+        "Take a look at settings.example.json for reference."));
+      return;
     }
-  });
-}).listen(process.env.PORT || 8080);
+
+    // Create base client (discord.js client) and music client (uberbot client).
+    // These provide the main functionality of the bot.
+    baseClient = new Discord.Client();
+    musicClient = new MusicClient(baseClient, Discord.MessageEmbed, settings);
+
+    // Set up event listeners for Discord events like incoming messages.
+    setBotEventListeners();
+
+    // Setup console listeners for debugging purposes.
+    setConsoleEventListeners();
+
+    // Login to Discord.
+    baseClient.login(settings.token).
+      catch((err) => console.log(err));
+  }).
+    catch((err) => {
+      console.log("\x1b[31m%s\x1b[0m", err);
+    });
+}
+
+if (!botOnly) {
+  console.log("\x1b[34m%s\x1b[0m", "--------    WebServer is starting!    --------\n");
+  http.createServer((request, response) => {
+    const path = request.url === "/" ? "./docs/index.html" : `./docs${request.url}`;
+    fs.readFile(path, (err, data) => {
+      if (err) {
+        response.writeHead(404, {"Content-Type": "text/html"});
+        response.write("<link type=\"text/css\" rel=\"stylesheet\" href=\"styles/jsdoc-default.css\">" +
+        "<div style=\"text-align: center;height: 100%;width: 100%;display: table;\">" +
+        "<div style=\"display: table-cell;vertical-align: middle;\">" +
+        `<h1>Error 404 : Not Found</h1>requested path: ${request.url} : [${path}]` +
+        "</div></div>");
+        response.end();
+      } else {
+        const ext = path.substr(path.lastIndexOf(".") + 1);
+        response.writeHead(200, {"Content-Type": `text/${ext}`});
+        response.write(data);
+        response.end();
+      }
+    });
+  }).listen(
+    process.env.PORT || 8080,
+    () => console.log("\x1b[34m%s\x1b[0m", "--------    WebServer successfully started!    --------\n")
+  );
+}

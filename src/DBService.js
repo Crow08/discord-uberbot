@@ -73,7 +73,7 @@ class DBService {
         then(() => {
           resolve();
           this.db.collection(plName).
-            createIndex("title", {"unique": true}).
+            createIndex({"artist": 1, "title": 1}, {"unique": true}).
             catch(reject);
         }).
         catch(reject);
@@ -87,7 +87,7 @@ class DBService {
         then(() => {
           resolve();
           this.db.collection(plName).
-            createIndex("title", {"unique": true}).
+            createIndex({"artist": 1, "title": 1}, {"unique": true}).
             catch(reject);
         }).
         catch(reject);
@@ -111,10 +111,22 @@ class DBService {
     });
   }
 
+  renameSong(plName, song, flag, newName) {
+    return new Promise((resolve, reject) => {
+
+      this.db.collection(plName).findOneAndUpdate(
+        {"artist": song.artist, "title": song.title},
+        {"$set": flag === "a" ? {"artist": newName} : {"title": newName}}
+      ).
+        then(resolve).
+        catch(reject);
+    });
+  }
+
   findSong(song, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
-        findOne({"title": {"$options": "$i", "$regex": song}}).
+        findOne({"title": {"$options": "$i", "$regex": this.escapeRegExp(song)}}).
         then(resolve).
         catch(reject);
     });
@@ -123,7 +135,7 @@ class DBService {
   updateSongRating(song) {
     return new Promise((resolve, reject) => {
       this.db.collection(song.playlist).findOneAndUpdate(
-        {"title": song.title},
+        {"artist": song.artist, "title": song.title},
         {"$set": {
           "rating": song.rating,
           "ratingLog": song.ratingLog

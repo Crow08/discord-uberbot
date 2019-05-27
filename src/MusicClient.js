@@ -25,11 +25,13 @@ const RatingService = require("./RatingService");
 const RemoveCommand = require("./cmd/Command_Remove");
 const RemovePLCommand = require("./cmd/Command_PL_Remove");
 const RenamePLCommand = require("./cmd/Command_PL_Rename");
+const RenameSongCommand = require("./cmd/Command_Rename_Song");
 const TestCommand = require("./cmd/Command_Test");
 const SearchCommand = require("./cmd/Command_Search");
 const SearchService = require("./SearchService");
 const SearchPLCommand = require("./cmd/Command_PL_Search");
 const SeekCommand = require("./cmd/Command_Seek");
+const ShowHistoryCommand = require("./cmd/Command_ShowHistory");
 const ShowQueueCommand = require("./cmd/Command_ShowQueue");
 const ShuffleCommand = require("./cmd/Command_Shuffle");
 const SkipCommand = require("./cmd/Command_Skip");
@@ -39,6 +41,7 @@ const StartCommand = require("./cmd/Command_Start");
 const StopCommand = require("./cmd/Command_Stop");
 const UploadCommand = require("./cmd/Command_Upload");
 const VoiceService = require("./VoiceService");
+const VolumeCommand = require("./cmd/Command_Volume");
 const YouTubeService = require("./YouTubeService");
 
 /** Class representing the music bot. */
@@ -99,16 +102,19 @@ class MusicClient {
       new RemoveCommand(this.chatService, this.queueService),
       new RemovePLCommand(this.chatService, this.dbService),
       new RenamePLCommand(this.chatService, this.dbService),
+      new RenameSongCommand(this.chatService, this.dbService),
       new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService),
       new SearchPLCommand(this.chatService, this.dbService, this.ratingService),
       new SeekCommand(this.chatService, this.playerService),
+      new ShowHistoryCommand(this.chatService, this.queueService),
       new ShowQueueCommand(this.chatService, this.queueService),
       new ShuffleCommand(this.chatService, this.queueService),
       new SkipCommand(this.playerService),
       new StartCommand(this.playerService, this.searchService, this.chatService, this.queueService),
       new StopCommand(this.playerService),
-      new TestCommand(this.chatService, this.queueService, this.dbService),
-      new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService)
+      new TestCommand(this.chatService, this.queueService, this.dbService, this.voiceService, this.playerService),
+      new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService),
+      new VolumeCommand(this.chatService, this.voiceService, this.playerService)
     );
     console.log("\x1b[35m%s\x1b[0m", "> Commands loaded!\n");
   }
