@@ -4,18 +4,24 @@ const validate = (resp, list) => {
   const message = resp.content.trim();
   for (let count = 0, len = list.length; count < len; count++) {
     if (list[count].command === message) {
-      console.log("geht das? reicht es, wenn die Funktion übergeben wird?");
+      console.log("true");
       return true;
     }
   }
   return false;
 };
 
-const execute = (resp, list) => {
-  const message = resp.content.trim();
+const execute = (resp, list, msg) => {
+  const response = resp.array()[0];
+  const message = response.content.trim();
+  console.log("message:");
+  console.log(message);
   for (let count = 0, len = list.length; count < len; count++) {
+    console.log(`started for: ${count}`);
     if (list[count].command === message) {
-      list.function();
+      console.log("command found:");
+      console.log(list[count].command);
+      list[count].function("heart afire", msg);
     }
   }
 };
@@ -33,6 +39,7 @@ class ShowHistoryCommand extends Command {
 
   run(payload, msg) {
     const pages = [];
+    console.log(this.commands);
     let historyText = "";
     this.queueService.history.forEach((entry, index) => {
       historyText += `\`\`\` ${index + 1}. ${entry.title} - ${entry.artist}\`\`\`\n`;
@@ -62,11 +69,13 @@ class ShowHistoryCommand extends Command {
         {"command": "pn", "function": this.playNext}
       ];
       this.chatService.pagedContent(msg, pages);
-      this.chatService.validateInput(((responseMsg) => validate(responseMsg, list)), msg);
+      this.chatService.validateInput(((responseMsg) => validate(responseMsg, list)), execute, msg, list);
     }
   }
 
   playSong(payload, msg) {
+    console.log(payload);
+    console.log(this.commands);
     this.commands.play.run(payload, msg);
   }
 }

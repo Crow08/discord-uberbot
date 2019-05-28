@@ -189,14 +189,13 @@ class ChatService {
       }));
   }
 
-  validateInput(validate, execute, msg) {
+  validateInput(validate, execute, msg, list) {
     msg.channel.awaitMessages(validate, {"errors": ["time"], "max": 1, "time": 120000}).
       then((collected) => {
-        console.log("!!!");
-        execute(collected.message);
+        execute(collected, list, msg);
       }).
       // Timeout or error.
-      catch(() => this.simpleNote(msg.channel, "You`re too slow!", this.msgType.FAIL));
+      catch((err) => this.simpleNote(msg.channel, err, this.msgType.FAIL));
     console.log();
   }
 
