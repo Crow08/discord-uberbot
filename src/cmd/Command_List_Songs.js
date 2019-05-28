@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for list playlist songs command.
+ * @extends Command
+ */
 class ListSongsCommand extends Command {
   constructor(chatService, dbService) {
     super("listsongs");

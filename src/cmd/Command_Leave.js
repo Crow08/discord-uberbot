@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for leave channel command.
+ * @extends Command
+ */
 class LeaveCommand extends Command {
   constructor(playerService, voiceService) {
     super("leave");

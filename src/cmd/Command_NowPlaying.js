@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for display current song command.
+ * @extends Command
+ */
 class NowPlayingCommand extends Command {
   constructor(chatService, queueService, ratingService) {
     super("nowplaying");

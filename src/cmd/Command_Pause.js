@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for pause command.
+ * @extends Command
+ */
 class PauseCommand extends Command {
   constructor(playerService) {
     super("pause");

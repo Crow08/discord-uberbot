@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for get and set the preferred music source command.
+ * @extends Command
+ */
 class PreferredSrcCommand extends Command {
   constructor(chatService, searchService) {
     super("preferdsrc");

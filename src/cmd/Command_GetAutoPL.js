@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for get auto playlist command.
+ * @extends Command
+ */
 class GetAutoPLCommand extends Command {
   constructor(chatService, queueService) {
     super("getautopl");

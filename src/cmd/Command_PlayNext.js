@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for a command to determine the next song to played from queue.
+ * @extends Command
+ */
 class PlayNextCommand extends Command {
   constructor(chatService, queueService) {
     super("playnext");

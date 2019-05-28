@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for shuffle queue command.
+ * @extends Command
+ */
 class ShuffleCommand extends Command {
   constructor(chatService, queueService) {
     super("shuffle");

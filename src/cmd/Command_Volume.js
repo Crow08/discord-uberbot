@@ -1,6 +1,9 @@
-/* eslint-disable max-len */
 const Command = require("./Command.js");
 
+/**
+ * Class for get and set volume command.
+ * @extends Command
+ */
 class VolumeCommand extends Command {
   constructor(chatService, voiceService, playerService) {
     super("volume");
@@ -14,11 +17,14 @@ class VolumeCommand extends Command {
 
   run(payload, msg) {
     if (!payload) {
-      this.chatService.simpleNote(msg, `Volume is set to  ${this.voiceService.volume} right now`, this.chatService.msgType.MUSIC);
+      const note = `Volume is set to  ${this.voiceService.volume} right now`;
+      this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
     } else if (isNaN(payload)) {
-      this.chatService.simpleNote(msg, `What the fuck, are you doing? Ever heard of a volume setting named "${payload}"?`, this.chatService.msgType.FAIL);
+      const note = `What the fuck, are you doing? Ever heard of a volume setting named "${payload}"?`;
+      this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
     } else if (payload > 200 || payload < 0) {
-      this.chatService.simpleNote(msg, "A cheeky one, aren't you? Try with numbers between 0 and 200", this.chatService.msgType.FAIL);
+      const note = "A cheeky one, aren't you? Try with numbers between 0 and 200";
+      this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
     } else {
       this.chatService.simpleNote(msg, `Set Volume to  ${payload}`, this.chatService.msgType.MUSIC);
       this.voiceService.volume = payload;

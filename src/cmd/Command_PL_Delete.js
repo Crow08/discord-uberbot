@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for delete playlist command.
+ * @extends Command
+ */
 class DeletePLCommand extends Command {
   constructor(chatService, dBService) {
     super("pldelete");

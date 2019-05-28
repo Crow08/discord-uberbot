@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for seek in song command.
+ * @extends Command
+ */
 class StopCommand extends Command {
   constructor(chatService, playerService) {
     super("seek");

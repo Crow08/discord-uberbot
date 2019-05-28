@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for show history command.
+ * @extends Command
+ */
 class ShowHistoryCommand extends Command {
   constructor(chatService, queueService) {
     super("showhistory");

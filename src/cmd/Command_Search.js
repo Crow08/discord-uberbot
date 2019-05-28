@@ -1,6 +1,6 @@
 const Command = require("./Command.js");
 
-const isSelectionCmd = function isSelectionCmd(resp) {
+const isSelectionCmd = (resp) => {
   const message = resp.content.trim();
   if (!isNaN(message)) {
     return true;
@@ -15,7 +15,7 @@ const isSelectionCmd = function isSelectionCmd(resp) {
   return false;
 };
 
-const processSelectionCmd = function processSelectionCmd(collected, songs, playerService, queueService, chatService) {
+const processSelectionCmd = (collected, songs, playerService, queueService, chatService) => {
   const response = collected.array()[0];
   const content = response.content.trim();
   if (!isNaN(content)) {
@@ -40,6 +40,10 @@ const processSelectionCmd = function processSelectionCmd(collected, songs, playe
   }
 };
 
+/**
+ * Class for search song command.
+ * @extends Command
+ */
 class SearchCommand extends Command {
   constructor(chatService, playerService, queueService, searchService) {
     super("search");

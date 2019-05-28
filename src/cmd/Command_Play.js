@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for play command.
+ * @extends Command
+ */
 class PlayCommand extends Command {
   constructor(chatService, playerService, searchService) {
     super("play");

@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for add to playlist command.
+ * @extends Command
+ */
 class AddPLCommand extends Command {
   constructor(chatService, dBService, searchService) {
     super("pladd");

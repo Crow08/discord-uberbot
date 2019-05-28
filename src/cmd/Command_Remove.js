@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for remove song from queue command.
+ * @extends Command
+ */
 class RemoveCommand extends Command {
   constructor(chatService, queueService) {
     super("remove");

@@ -27,8 +27,6 @@
 
 ##### DB #####
 
-##### Misc #####
-
 ---
 
 #### Known Bugs: ####
@@ -62,11 +60,11 @@
 
 ### Misc. ###
 
+##### Structure #####
+Combine GetAutoPLCommand and AutoPLCommand.
+
 ##### Dependencies #####
 - replace "ytdl-core" with "ytdl-core-discord" https://www.npmjs.com/package/ytdl-core-discord
 - **ffmpeg-binaries@4.0.0** -> **decompress-tarxz@2.1.1** -> lzma-native@3.0.8 -> node-pre-gyp@0.6.39  
 has vulnerabilities because it is bundling outdated modules (needed for encoding non opus codecs)  
 fixed at: lzma-native@>=4.0.0 -> node-pre-gyp@>=0.7.0
-
-##### Deployment #####
-- host Database or DB + Bot. (openshift / heroku)

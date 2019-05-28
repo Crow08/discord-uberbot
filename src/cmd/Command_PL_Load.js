@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for load saved playlist command.
+ * @extends Command
+ */
 class LoadPLCommand extends Command {
   constructor(chatService, queueService) {
     super("plload");

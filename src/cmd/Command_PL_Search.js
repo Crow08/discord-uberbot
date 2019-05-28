@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for search in playlist command.
+ * @extends Command
+ */
 class SearchPLCommand extends Command {
   constructor(chatService, dbService, ratingService) {
     super("plsearch");

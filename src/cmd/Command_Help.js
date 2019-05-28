@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for help command.
+ * @extends Command
+ */
 class HelpCommand extends Command {
   constructor(chatService, commands, prefix) {
     super("help");

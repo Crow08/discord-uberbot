@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for show queue command.
+ * @extends Command
+ */
 class ShowQueueCommand extends Command {
   constructor(chatService, queueService) {
     super("showqueue");

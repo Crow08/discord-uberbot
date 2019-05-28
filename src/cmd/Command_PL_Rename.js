@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for rename playlist command.
+ * @extends Command
+ */
 class RenamePLCommand extends Command {
   constructor(chatService, dbService) {
     super("rename");

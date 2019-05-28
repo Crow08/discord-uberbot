@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for list all playlists command.
+ * @extends Command
+ */
 class ListPLCommand extends Command {
   constructor(chatService, dbService) {
     super("pllist");

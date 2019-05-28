@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for clear queue command.
+ * @extends Command
+ */
 class ClearCommand extends Command {
   constructor(chatService, queueService) {
     super("clear");

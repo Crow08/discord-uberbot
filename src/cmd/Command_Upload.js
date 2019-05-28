@@ -1,6 +1,10 @@
 const Command = require("./Command.js");
 const request = require("request");
 
+/**
+ * Class for upload songs file command.
+ * @extends Command
+ */
 class UploadCommand extends Command {
   constructor(chatService, queueService, searchService, dBService) {
     super("upload");

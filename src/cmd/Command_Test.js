@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Temporary class for testing commands.
+ * @extends Command
+ */
 class TestCommand extends Command {
   constructor(chatService, queueService, dbService, voiceService, playerService) {
     super("test");

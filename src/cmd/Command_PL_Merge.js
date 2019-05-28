@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for merge two playlists command.
+ * @extends Command
+ */
 class MergePLCommand extends Command {
   constructor(chatService, dbService) {
     super("merge");

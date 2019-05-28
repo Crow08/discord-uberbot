@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for skip song command.
+ * @extends Command
+ */
 class SkipCommand extends Command {
   constructor(playerService) {
     super("skip");

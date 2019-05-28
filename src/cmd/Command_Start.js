@@ -1,5 +1,9 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for the start macro command.
+ * @extends Command
+ */
 class StartCommand extends Command {
   constructor(playerService, searchService, chatService, queueService) {
     super("start");
