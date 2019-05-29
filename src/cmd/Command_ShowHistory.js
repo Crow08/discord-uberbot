@@ -1,29 +1,28 @@
 const Command = require("./Command.js");
 
-const validate = (resp, list) => {
-  const message = resp.content.trim();
-  for (let count = 0, len = list.length; count < len; count++) {
-    if (list[count].command === message) {
-      console.log("true");
-      return true;
-    }
+const filter = (res, list) => {
+  if (res.content.trim().split(" ").length !== 2) {
+    return false;
   }
-  return false;
+  const cmd = res.content.trim().split(" ")[0];
+  const selection = res.content.trim().split(" ")[1];
+  return (list.includes(cmd) && !isNaN(selection));
 };
 
-const execute = (resp, list, msg) => {
-  const response = resp.array()[0];
-  const message = response.content.trim();
-  console.log("message:");
-  console.log(message);
-  for (let count = 0, len = list.length; count < len; count++) {
-    console.log(`started for: ${count}`);
-    if (list[count].command === message) {
-      console.log("command found:");
-      console.log(list[count].command);
-      list[count].function("heart afire", msg);
+const process = (res, commandList, msg, queueService) => {
+  const cmd = res.array()[0].content.trim().split(" ")[0];
+  const selection = res.array()[0].content.trim().split(" ")[1];
+
+  const song = queueService.history[selection - 1];
+
+  let found = false;
+  commandList.forEach((command) => {
+    if (!found && command.alias.includes(cmd)) {
+      console.log("\x1b[33m%s\x1b[0m", `> CMD: ${cmd}\n`);
+      command.run(`${song.title} ${song.artist}`, msg);
+      found = true;
     }
-  }
+  });
 };
 
 class ShowHistoryCommand extends Command {
@@ -39,7 +38,6 @@ class ShowHistoryCommand extends Command {
 
   run(payload, msg) {
     const pages = [];
-    console.log(this.commands);
     let historyText = "";
     this.queueService.history.forEach((entry, index) => {
       historyText += `\`\`\` ${index + 1}. ${entry.title} - ${entry.artist}\`\`\`\n`;
@@ -64,19 +62,13 @@ class ShowHistoryCommand extends Command {
     if (pages.length === 0) {
       this.chatService.simpleNote(msg, "History is empty!", this.chatService.msgType.INFO);
     } else {
-      const list = [
-        {"command": "p", "function": this.playSong},
-        {"command": "pn", "function": this.playNext}
-      ];
       this.chatService.pagedContent(msg, pages);
-      this.chatService.validateInput(((responseMsg) => validate(responseMsg, list)), execute, msg, list);
-    }
-  }
 
-  playSong(payload, msg) {
-    console.log(payload);
-    console.log(this.commands);
-    this.commands.play.run(payload, msg);
+      this.chatService.awaitCommand(
+        msg, (responseMsg) => filter(responseMsg, ["p", "play", "a", "add"]),
+        (res) => process(res, this.commands, msg, this.queueService)
+      );
+    }
   }
 }
 

@@ -144,7 +144,7 @@ class ChatService {
     });
   }
 
-  openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
+  openSelectionMenu(songs, msg, filter, process) {
     this.debugPrint(songs);
     if (typeof msg.channel === "undefined") {
       return;
@@ -179,9 +179,9 @@ class ChatService {
           }
         });
         // Add listener for response Message.
-        msg.channel.awaitMessages(isSelectionCmd, {"errors": ["time"], "max": 1, "time": 120000}).
+        msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
           then((collected) => {
-            processSelectionCmd(collected);
+            process(collected);
             menuMsg.delete();
           }).
           // Timeout or error.
@@ -189,14 +189,11 @@ class ChatService {
       }));
   }
 
-  validateInput(validate, execute, msg, list) {
-    msg.channel.awaitMessages(validate, {"errors": ["time"], "max": 1, "time": 120000}).
-      then((collected) => {
-        execute(collected, list, msg);
-      }).
+  awaitCommand(msg, filter, process) {
+    msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
+      then(process).
       // Timeout or error.
-      catch((err) => this.simpleNote(msg.channel, err, this.msgType.FAIL));
-    console.log();
+      catch(() => null);
   }
 
   buildSelectionPage(songs, pageNo) {
