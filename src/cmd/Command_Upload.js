@@ -30,7 +30,7 @@ class UploadCommand extends Command {
       if (typeof payload === "undefined" || payload.length === 0) {
         this.chatService.simpleNote(msg, "0 songs added to queue.", this.chatService.msgType.MUSIC).
           then((infoMsg) => {
-            if (attachment.filename.endsWith(".csv")) {
+            if (attachment.name.endsWith(".csv")) {
               this.addCSVRecursively(lines, msg, 0, infoMsg);
             } else {
               this.addRecursively(lines, msg, 0, infoMsg);
@@ -39,7 +39,7 @@ class UploadCommand extends Command {
       } else {
         this.chatService.simpleNote(msg, `0 songs added to playlist: ${payload}.`, this.chatService.msgType.MUSIC).
           then((infoMsg) => {
-            if (attachment.filename.endsWith(".csv")) {
+            if (attachment.name.endsWith(".csv")) {
               this.addCSVRecursively(lines, msg, 0, infoMsg, payload);
             } else {
               this.addRecursively(lines, msg, 0, infoMsg, payload);
