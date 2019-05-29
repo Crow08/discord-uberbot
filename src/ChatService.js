@@ -148,7 +148,7 @@ class ChatService {
     });
   }
 
-  openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
+  openSelectionMenu(songs, msg, filter, process) {
     this.debugPrint(songs);
     if (typeof msg.channel === "undefined") {
       return;
@@ -183,14 +183,21 @@ class ChatService {
           }
         });
         // Add listener for response Message.
-        msg.channel.awaitMessages(isSelectionCmd, {"errors": ["time"], "max": 1, "time": 120000}).
+        msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
           then((collected) => {
-            processSelectionCmd(collected);
+            process(collected);
             menuMsg.delete();
           }).
           // Timeout or error.
           catch(() => menuMsg.delete());
       }));
+  }
+
+  awaitCommand(msg, filter, process) {
+    msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
+      then(process).
+      // Timeout or error.
+      catch(() => null);
   }
 
   buildSelectionPage(songs, pageNo) {
