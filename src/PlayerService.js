@@ -6,17 +6,15 @@ class PlayerService {
     this.queueService = queueService;
     this.chatService = chatService;
     this.ratingService = ratingService;
-
-    this.ignoreStreamEnd = false;
   }
 
   handleSongEnd(msg, startTime) {
-    if (this.ignoreStreamEnd) {
-      return;
-    }
-
     const delta = (new Date()) - startTime;
     if (delta < 2000) {
+      // Try to reset everything.
+      this.chatService.simpleNote(msg, "Song ended to quickly: Try to reset voice.", this.chatService.msgType.FAIL);
+      this.audioDispatcher.destroy();
+      this.audioDispatcher = null;
       this.voiceService.disconnectVoiceConnection(msg);
       this.voiceService.getVoiceConnection(msg).
         then(() => this.playNext(msg)).
@@ -32,8 +30,8 @@ class PlayerService {
 
   playNow(song, msg) {
     if (this.audioDispatcher) {
-      this.ignoreStreamEnd = true;
       this.audioDispatcher.destroy();
+      this.audioDispatcher = null;
     }
     this.voiceService.playStream(song, msg).
       then((dispatcher) => {
@@ -46,10 +44,7 @@ class PlayerService {
         const ratingFunc = (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd);
         this.chatService.displaySong(msg, song, ratingFunc);
       }).
-      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL)).
-      finally(() => {
-        this.ignoreStreamEnd = false;
-      });
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 
   playMultipleNow(songs, msg) {
@@ -106,10 +101,7 @@ class PlayerService {
       this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
       return;
     }
-    this.ignoreStreamEnd = true;
-    this.audioDispatcher.end(() => setTimeout(() => {
-      this.ignoreStreamEnd = false;
-    }, 100));
+    this.audioDispatcher.destroy();
     this.audioDispatcher = null;
     this.chatService.simpleNote(msg, "Playback stopped!", this.chatService.msgType.MUSIC);
   }
@@ -125,8 +117,8 @@ class PlayerService {
 
   seek(position, msg) {
     if (this.audioDispatcher) {
-      this.ignoreStreamEnd = true;
-      this.audioDispatcher.end();
+      this.audioDispatcher.destroy();
+      this.audioDispatcher = null;
     }
     this.voiceService.playStream(this.queueService.getHistorySong(0), msg, position).
       then((dispatcher) => {
@@ -135,10 +127,7 @@ class PlayerService {
         this.audioDispatcher.on("finish", () => this.handleSongEnd(msg, startTime));
         this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
       }).
-      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL)).
-      finally(() => {
-        this.ignoreStreamEnd = false;
-      });
+      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 }
 module.exports = PlayerService;

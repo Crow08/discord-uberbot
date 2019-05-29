@@ -14,18 +14,22 @@ class ChatService {
     if (typeof msg.channel === "undefined") {
       return new Promise((resolve) => resolve({"delete": () => null}));
     }
-    switch (type) {
-    case this.msgType.INFO:
-      return msg.channel.send(`:information_source: | ${text}`);
-    case this.msgType.MUSIC:
-      return msg.channel.send(`:musical_note: | ${text}`);
-    case this.msgType.SEARCH:
-      return msg.channel.send(`:mag: | ${text}`);
-    case this.msgType.FAIL:
-      return msg.channel.send(`:x: | ${text}`);
-    default:
-      return msg.channel.send(`${text}`);
-    }
+    text.toString().split("\n").
+      forEach((line) => {
+        switch (type) {
+        case this.msgType.INFO:
+          return msg.channel.send(`:information_source: | ${line}`);
+        case this.msgType.MUSIC:
+          return msg.channel.send(`:musical_note: | ${line}`);
+        case this.msgType.SEARCH:
+          return msg.channel.send(`:mag: | ${line}`);
+        case this.msgType.FAIL:
+          return msg.channel.send(`:x: | ${line}`);
+        default:
+          return msg.channel.send(`${line}`);
+        }
+      });
+    return new Promise((resolve) => resolve({"delete": () => null}));
   }
 
   // MessageEmbed API -> https://discord.js.org/#/docs/main/master/class/MessageEmbed
@@ -144,7 +148,7 @@ class ChatService {
     });
   }
 
-  openSelectionMenu(songs, msg, isSelectionCmd, processSelectionCmd) {
+  openSelectionMenu(songs, msg, filter, process) {
     this.debugPrint(songs);
     if (typeof msg.channel === "undefined") {
       return;
@@ -179,14 +183,21 @@ class ChatService {
           }
         });
         // Add listener for response Message.
-        msg.channel.awaitMessages(isSelectionCmd, {"errors": ["time"], "max": 1, "time": 120000}).
+        msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
           then((collected) => {
-            processSelectionCmd(collected);
+            process(collected);
             menuMsg.delete();
           }).
           // Timeout or error.
           catch(() => menuMsg.delete());
       }));
+  }
+
+  awaitCommand(msg, filter, process) {
+    msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
+      then(process).
+      // Timeout or error.
+      catch(() => null);
   }
 
   buildSelectionPage(songs, pageNo) {
