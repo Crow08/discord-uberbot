@@ -79,7 +79,10 @@ class UploadCommand extends Command {
       this.chatService.simpleNote(msg, "Import successful!", this.chatService.msgType.INFO);
       return;
     }
-    const row = lines.pop().split(";");
+    const row = lines.pop().
+      replace("\n", "").
+      replace("\r", "").
+      split(";");
     if (row.length === 3) {
       const searchQuery = row[0];
       const artist = row[1];
