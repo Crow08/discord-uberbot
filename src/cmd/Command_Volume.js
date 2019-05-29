@@ -5,6 +5,13 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class VolumeCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {VoiceService} voiceService - VoiceService.
+   * @param {PlayerService} playerService - PlayerService.
+   */
   constructor(chatService, voiceService, playerService) {
     super("volume");
     super.help = "sets volume, or returns volume if no parameter given";
@@ -15,6 +22,11 @@ class VolumeCommand extends Command {
     this.playerService = playerService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (!payload) {
       const note = `Volume is set to  ${this.voiceService.volume} right now`;

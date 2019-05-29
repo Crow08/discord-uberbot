@@ -45,6 +45,14 @@ const processSelectionCmd = (collected, songs, playerService, queueService, chat
  * @extends Command
  */
 class SearchCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {PlayerService} playerService - PlayerService.
+   * @param {QueueService} queueService - QueueService.
+   * @param {SearchService} searchService - SearchService.
+   */
   constructor(chatService, playerService, queueService, searchService) {
     super("search");
     super.help = "search for a song and choose from multiple results.";
@@ -56,6 +64,11 @@ class SearchCommand extends Command {
     this.searchService = searchService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
       this.chatService.simpleNote(msg, "No query found!", this.chatService.msgType.FAIL);

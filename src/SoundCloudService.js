@@ -6,7 +6,7 @@ class SoundCloudService {
 
   /**
    * Constructor.
-   * @param {String} clientId - Client id to authenticate SoundCloud requests.
+   * @param {string} clientId - Client id to authenticate SoundCloud requests.
    */
   constructor(clientId) {
     this.clientId = clientId;

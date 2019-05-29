@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class DeletePLCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {DbService} dbService - DbService.
+   */
   constructor(chatService, dBService) {
     super("pldelete");
     super.help = "deletes a playlist permanently.";
@@ -14,6 +20,11 @@ class DeletePLCommand extends Command {
     this.dBService = dBService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
       this.chatService.simpleNote(msg, "No playlist name found!", this.chatService.msgType.FAIL);

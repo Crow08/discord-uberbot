@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class GetAutoPLCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   */
   constructor(chatService, queueService) {
     super("getautopl");
     super.help = "returns name of current auto playlist";
@@ -14,6 +20,11 @@ class GetAutoPLCommand extends Command {
     this.queueService = queueService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     this.queueService.getAutoPL().then((autoPl) => {
       this.chatService.simpleNote(msg, `Current auto playlist: ${autoPl}`, this.chatService.msgType.INFO);

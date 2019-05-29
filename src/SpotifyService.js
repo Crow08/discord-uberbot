@@ -6,8 +6,8 @@ class SoundCloudService {
 
   /**
    * Constructor.
-   * @param {String} spotifyClientId - Client id to authenticate Spotify requests.
-   * @param {String} spotifyClientSecret -Client secret to authenticate Spotify requests.
+   * @param {string} spotifyClientId - Client id to authenticate Spotify requests.
+   * @param {string} spotifyClientSecret -Client secret to authenticate Spotify requests.
    */
   constructor(spotifyClientId, spotifyClientSecret) {
     this.spotify = new Spotify({

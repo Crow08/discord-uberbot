@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class RenamePLCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {DbService} dbService - DbService.
+   */
   constructor(chatService, dbService) {
     super("rename");
     super.help = "renames given playlist";
@@ -14,6 +20,11 @@ class RenamePLCommand extends Command {
     this.dbService = dbService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     const plName = payload.split(" ")[0];
     const newName = payload.split(" ")[1];

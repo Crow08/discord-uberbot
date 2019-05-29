@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class ListSongsCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {DbService} dbService - DbService.
+   */
   constructor(chatService, dbService) {
     super("listsongs");
     super.help = "lists all songs of the specified playlist";
@@ -14,6 +20,11 @@ class ListSongsCommand extends Command {
     this.dbService = dbService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     this.dbService.getPlaylist(payload).then((songs) => {
       let count = 1;

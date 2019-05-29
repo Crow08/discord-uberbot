@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class ListPLCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {DbService} dbService - DbService.
+   */
   constructor(chatService, dbService) {
     super("pllist");
     super.help = "lists available playlists";
@@ -14,6 +20,11 @@ class ListPLCommand extends Command {
     this.dbService = dbService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     this.dbService.listPlaylists().then((plNames) => {
       const embed = new this.chatService.DiscordMessageEmbed();

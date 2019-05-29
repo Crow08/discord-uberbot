@@ -5,6 +5,13 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class HelpCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {Command[]} commands - Array of Command Objects containing all Commands once.
+   * @param {string} prefix - String representing the bot command prefix.
+   */
   constructor(chatService, commands, prefix) {
     super("help");
     super.help = "list all implemented commands";
@@ -15,6 +22,11 @@ class HelpCommand extends Command {
     this.prefix = prefix;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     const embed = new this.chatService.DiscordMessageEmbed();
     embed.setDescription("⠀\n⠀\n***Anyone called for a medic?***");
@@ -27,11 +39,11 @@ class HelpCommand extends Command {
       const {help, name, usage, alias} = command;
       // Ignore undefined commands
       if (typeof name !== "undefined") {
-        helpText += this.buildLine(`Name:   ${name}`);
-        helpText += this.buildLine(`Usage:  ${usage.replace("<prefix>", this.prefix)}`);
-        helpText += this.buildLine(`About:  ${help}`);
+        helpText += this.buildRow(`Name:   ${name}`);
+        helpText += this.buildRow(`Usage:  ${usage.replace("<prefix>", this.prefix)}`);
+        helpText += this.buildRow(`About:  ${help}`);
         if (alias.length > 1) {
-          helpText += this.buildLine(`Alias:  ${alias.join(", ")}`);
+          helpText += this.buildRow(`Alias:  ${alias.join(", ")}`);
         }
         if ((index + 1) % 5 === 0) {
           const paging = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
@@ -52,7 +64,14 @@ class HelpCommand extends Command {
     this.chatService.pagedContent(msg, pages);
   }
 
-  buildLine(text) {
+  /**
+   * Function to build a formatted row for the help text.
+   * Row gets automatically wrapped and indented if its content is too long.
+   * @private
+   * @param {string} text - help text for row.
+   * @returns {string} formatted string for row.
+   */
+  buildRow(text) {
     let line = "";
     let firstSubLine = true;
     const subLines = text.split("\n");
@@ -69,6 +88,13 @@ class HelpCommand extends Command {
     return line;
   }
 
+  /**
+   * Word wrap a String, converting it to an array of strings with a maximum line length.
+   * @private
+   * @param {string} input - String to be wrapped.
+   * @param {number} maxWidth - Maximum number of character per line.
+   * @returns {string[]} String Array representing wrapped lines.
+   */
   wordWrap(input, maxWidth) {
     const result = [];
     let str = input;

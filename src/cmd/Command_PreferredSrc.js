@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class PreferredSrcCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {SearchService} searchService - SearchService.
+   */
   constructor(chatService, searchService) {
     super("preferdsrc");
     super.help = "set a source to be the default source for all searches.\n" +
@@ -17,6 +23,11 @@ class PreferredSrcCommand extends Command {
     this.sources = ["YT", "SC", "SP"];
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
       const {defaultSrc} = this.searchService;

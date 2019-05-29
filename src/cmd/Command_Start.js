@@ -5,6 +5,14 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class StartCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {PlayerService} playerService - PlayerService.
+   * @param {SearchService} searchService - SearchService.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   */
   constructor(playerService, searchService, chatService, queueService) {
     super("start");
     super.help = "loads a playlist shuffles it and starts playing.";
@@ -16,6 +24,11 @@ class StartCommand extends Command {
     this.queueService = queueService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     // Get playlist
     if (typeof payload === "undefined" || payload.length === 0) {

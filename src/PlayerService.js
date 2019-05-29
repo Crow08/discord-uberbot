@@ -3,10 +3,10 @@ class PlayerService {
 
   /**
    * Constructor.
-   * @param {VoiceService} voiceService -
-   * @param {QueueService} queueService -
-   * @param {ChatService} chatService -
-   * @param {RatingService} ratingService -
+   * @param {VoiceService} voiceService - VoiceService.
+   * @param {QueueService} queueService - QueueService.
+   * @param {ChatService} chatService - ChatService.
+   * @param {RatingService} ratingService - RatingService.
    */
   constructor(voiceService, queueService, chatService, ratingService) {
     this.audioDispatcher = null;

@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class RenameSongCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {DbService} dbService - DbService.
+   */
   constructor(chatService, dbService) {
     super("renamesong");
     super.help = "rename title or artist of song";
@@ -14,6 +20,11 @@ class RenameSongCommand extends Command {
     this.dbService = dbService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.split(" ").length < 4 ||
       !["a", "t", "artist", "title"].includes(payload.split(" ")[0]) || isNaN(payload.split(" ")[2])) {

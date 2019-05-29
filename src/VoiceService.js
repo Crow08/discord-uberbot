@@ -7,9 +7,9 @@ class VoiceService {
    * Constructor.
    * @param {Object} options - options and user settings for voice connection.
    * @param {Client} client - Discord.js client object.
-   * @param {YoutubeService} youtubeService -
-   * @param {SoundCloudService} soundCloudService -
-   * @param {SpotifyService} spotifyService -
+   * @param {YoutubeService} youtubeService - YoutubeService.
+   * @param {SoundCloudService} soundCloudService - SoundCloudService.
+   * @param {SpotifyService} spotifyService - SpotifyService.
    */
   constructor(options, client, youtubeService, soundCloudService, spotifyService) {
     this.bitRate = options.bitRate;

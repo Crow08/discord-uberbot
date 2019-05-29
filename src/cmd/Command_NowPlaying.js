@@ -5,6 +5,13 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class NowPlayingCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   * @param {RatingService} ratingService - RatingService.
+   */
   constructor(chatService, queueService, ratingService) {
     super("nowplaying");
     super.help = "returns first song in history (current song)";
@@ -15,6 +22,11 @@ class NowPlayingCommand extends Command {
     this.ratingService = ratingService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     this.queueService.getCurrentSong().
       then((nowPlaying) => {

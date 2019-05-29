@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class RemovePLCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {DbService} dbService - DbService.
+   */
   constructor(chatService, dbService) {
     super("plremove");
     super.help = "remove given song from given playlist";
@@ -14,6 +20,11 @@ class RemovePLCommand extends Command {
     this.dbService = dbService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length < 2) {
       this.chatService.simpleNote(msg, "Wrong syntax!", this.chatService.msgType.FAIL);
@@ -35,6 +46,13 @@ class RemovePLCommand extends Command {
     console.log(plName);
   }
 
+  /**
+   * Remove the song by from the playlist and notify the user.
+   * @private
+   * @param {string} songName - song name (title) to be removed.
+   * @param {string} plName - playlist name to remove the song from.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   handleRemove(songName, plName, msg) {
     this.dbService.removeSong(songName, plName).then((info) => {
       if (info.deletedCount === 0) {

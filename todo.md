@@ -10,6 +10,7 @@
 	- add are you sure on poop-emoji
 - paging for list_songs (.ls &lt;playlist&gt;)
 - .start command should clear queue and stop playback to be used while song is playing
+- remove song from playlist command has to use artist and title. 
 
 ##### Queue #####
 - loop with options (song / queue / none)
@@ -20,7 +21,10 @@
 - paging for history
 
 ##### Search #####
-- add song to playlist
+- search command followup to add song to playlist.
+- improve search for youtube by choosing automatically from a small number for songs
+	- disfavor songs with "cover" / "live" / "remix"
+- rewrite search menu to use pagedContent and awaitCommand instead of openSelectionMenu.
 
 ##### Play song #####
 - raw-MP3-support

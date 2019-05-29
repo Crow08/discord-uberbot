@@ -17,7 +17,7 @@ class QueueService {
   /**
    * Constructor.
    * @param {Number} historyLength - max number of songs saved in the history.
-   * @param {DBService} dbService -
+   * @param {DBService} dbService - DBService.
    */
   constructor(historyLength, dbService) {
     this.dbService = dbService;

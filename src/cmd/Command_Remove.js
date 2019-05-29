@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class RemoveCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   */
   constructor(chatService, queueService) {
     super("remove");
     super.help = "removes a song from the current queue.";
@@ -14,6 +20,11 @@ class RemoveCommand extends Command {
     this.queueService = queueService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0 || isNaN(payload)) {
       this.chatService.simpleNote(msg, "No queue number found!", this.chatService.msgType.FAIL);

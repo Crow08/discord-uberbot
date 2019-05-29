@@ -5,6 +5,9 @@ class DBService {
 
   /**
    * Constructor.
+   * @param {string} mongoUrl - Optional string representing the external mongodb url.
+   * @param {string} username - Optional string representing the external mongodb username.
+   * @param {string} password - Optional string representing the external mongodb password.
    */
   constructor(mongoUrl, username, password) {
     this.url = mongoUrl ? `mongodb+srv://${username}:${password}@${mongoUrl}` : "mongodb://localhost:27017";

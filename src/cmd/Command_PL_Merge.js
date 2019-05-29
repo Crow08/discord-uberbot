@@ -5,6 +5,12 @@ const Command = require("./Command.js");
  * @extends Command
  */
 class MergePLCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {DbService} dbService - DbService.
+   */
   constructor(chatService, dbService) {
     super("merge");
     super.help = "copies one playlist into another!";
@@ -14,6 +20,11 @@ class MergePLCommand extends Command {
     this.dbService = dbService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     const source = payload.split(" ")[0];
     const target = payload.split(" ")[1];

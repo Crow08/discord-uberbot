@@ -3,7 +3,7 @@ class Command {
 
   /**
    * Constructor.
-   * @param {String} name - unique command name.
+   * @param {string} name - unique command name.
    */
   constructor(name) {
     this.name = name;
@@ -15,7 +15,7 @@ class Command {
 
   /**
    * @abstract
-   * @param {String} payload - command payload with with optional parameters dependent on the command implemntation.
+   * @param {string} payload - Command payload with with optional parameters dependent on the command implemntation.
    * @param {Message} msg - Discord.js message which triggered the command.
    */
   run(payload, msg) {

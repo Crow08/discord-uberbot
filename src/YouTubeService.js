@@ -8,7 +8,7 @@ class YoutubeService {
 
   /**
    * Constructor.
-   * @param {String} apiKey - api Key to authenticate YouTube requests.
+   * @param {string} apiKey - api Key to authenticate YouTube requests.
    */
   constructor(apiKey) {
     this.apiKey = apiKey;

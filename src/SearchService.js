@@ -3,9 +3,9 @@ class SearchService {
 
   /**
    * Constructor.
-   * @param {YoutubeService} youtubeService -
-   * @param {SoundCloudService} soundCloudService -
-   * @param {SpotifyService} spotifyService -
+   * @param {YoutubeService} youtubeService - YoutubeService.
+   * @param {SoundCloudService} soundCloudService - SoundCloudService.
+   * @param {SpotifyService} spotifyService - SpotifyService.
    */
   constructor(youtubeService, soundCloudService, spotifyService) {
     this.youtubeService = youtubeService;
