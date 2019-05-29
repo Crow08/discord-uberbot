@@ -12,7 +12,7 @@ class SoundCloudService {
         `http://api.soundcloud.com/resolve?url=${payload}&client_id=${this.clientId}`,
         (error, response, body) => {
           if (error) {
-            return reject(new Error("Something went wrong fetching the song!"));
+            return reject(error);
           }
           const info = JSON.parse(body);
           if (!info.streamable) {
