@@ -28,15 +28,15 @@ class UploadCommand extends Command {
       const lines = body.split("\n");
       if (typeof payload === "undefined" || payload.length === 0) {
         this.chatService.simpleNote(msg, "0 songs added to queue.", this.chatService.msgType.MUSIC).
-          then((infoMsg) => this.addToQueueRecursive(lines, msg, 0, infoMsg));
+          then((infoMsg) => this.addRecursively(lines, msg, 0, infoMsg));
       } else {
         this.chatService.simpleNote(msg, `0 songs added to playlist: ${payload}.`, this.chatService.msgType.MUSIC).
-          then((infoMsg) => this.addToPlaylistRecursive(lines, msg, payload, 0, infoMsg));
+          then((infoMsg) => this.addRecursively(lines, msg, 0, infoMsg, payload));
       }
     }));
   }
 
-  addToQueueRecursive(lines, msg, count, statusMsg) {
+  addRecursively(lines, msg, count, statusMsg, plName) {
     if (lines.length <= 0) {
       statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
       this.chatService.simpleNote(msg, "Import successful!", this.chatService.msgType.INFO);
@@ -49,58 +49,35 @@ class UploadCommand extends Command {
         if (songs.length > 1) {
           const enrichedSongs = songs.map((song) => {
             song.requester = msg.author.username;
+            if (typeof plName === "undefined") {
+              song.playlist = plName;
+            }
             return song;
           });
-          this.queueService.addMultipleToQueue(enrichedSongs, msg);
+          if (typeof plName === "undefined") {
+            this.dBService.addSongs(enrichedSongs, plName);
+          } else {
+            this.queueService.addMultipleToQueue(enrichedSongs);
+          }
           newCount += enrichedSongs.length();
         } else {
           songs[0].requester = msg.author.username;
-          this.queueService.addToQueue(songs[0], msg);
+          if (typeof plName === "undefined") {
+            songs[0].playlist = plName;
+            this.dBService.addSong(songs[0], plName);
+          } else {
+            this.queueService.addToQueue(songs[0], msg);
+          }
           ++newCount;
         }
-        this.addToQueueRecursive(lines, msg, newCount, statusMsg);
+        this.addRecursively(lines, msg, newCount, statusMsg, plName);
         if (newCount % 10 === 0) {
           statusMsg.edit(statusMsg.content.replace(/\d+/u, newCount));
         }
       }).
       catch((error) => {
         this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
-        this.addToQueueRecursive(lines, msg, count, statusMsg);
-      });
-  }
-
-  addToPlaylistRecursive(lines, msg, plName, count, statusMsg) {
-    if (lines.length <= 0) {
-      statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
-      this.chatService.simpleNote(msg, "Import successful!", this.chatService.msgType.INFO);
-      return;
-    }
-    this.searchService.search(lines.pop()).
-      then(({note, songs}) => {
-        console.log(note);
-        let newCount = count;
-        if (songs.length > 1) {
-          const enrichedSongs = songs.map((song) => {
-            song.playlist = plName;
-            song.requester = msg.author.username;
-            return song;
-          });
-          this.dBService.addSongs(enrichedSongs, plName);
-          newCount += enrichedSongs.length();
-        } else {
-          songs[0].playlist = plName;
-          songs[0].requester = msg.author.username;
-          this.dBService.addSong(songs[0], plName);
-          ++newCount;
-        }
-        this.addToPlaylistRecursive(lines, msg, plName, newCount, statusMsg);
-        if (newCount % 10 === 0) {
-          statusMsg.edit(statusMsg.content.replace(/\d+/u, newCount));
-        }
-      }).
-      catch((error) => {
-        this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
-        this.addToPlaylistRecursive(lines, msg, plName, count, statusMsg);
+        this.addRecursively(lines, msg, count, statusMsg, plName);
       });
   }
 }

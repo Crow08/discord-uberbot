@@ -26,7 +26,7 @@ class AddCommand extends Command {
             song.requester = msg.author.username;
             return song;
           });
-          this.queueService.addMultipleToQueue(enrichedSongs, msg);
+          this.queueService.addMultipleToQueue(enrichedSongs);
           const count = enrichedSongs.length();
           this.chatService.simpleNote(msg, `${count}songs added to queue.`, this.chatService.msgType.MUSIC);
         } else {
