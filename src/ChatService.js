@@ -11,25 +11,30 @@ class ChatService {
 
   simpleNote(msg, text, type) {
     this.debugPrint(text);
+    let ret = new Promise((resolve) => resolve({"delete": () => null}));
     if (typeof msg.channel === "undefined") {
-      return new Promise((resolve) => resolve({"delete": () => null}));
+      return ret;
     }
     text.toString().split("\n").
       forEach((line) => {
         switch (type) {
         case this.msgType.INFO:
-          return msg.channel.send(`:information_source: | ${line}`);
+          ret = msg.channel.send(`:information_source: | ${line}`);
+          return;
         case this.msgType.MUSIC:
-          return msg.channel.send(`:musical_note: | ${line}`);
+          ret = msg.channel.send(`:musical_note: | ${line}`);
+          return;
         case this.msgType.SEARCH:
-          return msg.channel.send(`:mag: | ${line}`);
+          ret = msg.channel.send(`:mag: | ${line}`);
+          return;
         case this.msgType.FAIL:
-          return msg.channel.send(`:x: | ${line}`);
+          ret = msg.channel.send(`:x: | ${line}`);
+          return;
         default:
-          return msg.channel.send(`${line}`);
+          ret = msg.channel.send(`${line}`);
         }
       });
-    return new Promise((resolve) => resolve({"delete": () => null}));
+    return ret;
   }
 
   // MessageEmbed API -> https://discord.js.org/#/docs/main/master/class/MessageEmbed

@@ -13,7 +13,7 @@ class YoutubeService {
     return new Promise((resolve, reject) => {
       ytdl.getBasicInfo(searchString, {}, (err, info) => {
         if (err) {
-          return reject(new Error("Something went wrong fetching the song!"));
+          return reject(err);
         }
         const song = new Song();
         song.title = info.title;
@@ -87,11 +87,7 @@ class YoutubeService {
   }
 
   getStream(url) {
-    const stream = ytdl(url, {"filter": "audioonly"});
-    if (!stream) {
-      throw new Error(`con not get Stream [url: ${url} stream:${stream}]`);
-    }
-    return stream;
+    return ytdl(url, {"filter": "audioonly"});
   }
 }
 
