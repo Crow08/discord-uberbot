@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for stop command.
  * @extends Command
+ * @Category Commands
  */
 class StopCommand extends Command {
 

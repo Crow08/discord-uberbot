@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for shuffle queue command.
  * @extends Command
+ * @Category Commands
  */
 class ShuffleCommand extends Command {
 

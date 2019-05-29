@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for a command to determine the next song to played from queue.
  * @extends Command
+ * @Category Commands
  */
 class PlayNextCommand extends Command {
 

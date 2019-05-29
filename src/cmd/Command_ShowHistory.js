@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for show history command.
  * @extends Command
+ * @Category Commands
  */
 class ShowHistoryCommand extends Command {
 

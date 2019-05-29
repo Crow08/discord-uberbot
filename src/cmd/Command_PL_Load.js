@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for load saved playlist command.
  * @extends Command
+ * @Category Commands
  */
 class LoadPLCommand extends Command {
 

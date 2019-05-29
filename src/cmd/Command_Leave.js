@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for leave channel command.
  * @extends Command
+ * @Category Commands
  */
 class LeaveCommand extends Command {
 

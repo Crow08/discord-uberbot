@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for merge two playlists command.
  * @extends Command
+ * @Category Commands
  */
 class MergePLCommand extends Command {
 

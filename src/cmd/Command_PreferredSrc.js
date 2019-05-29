@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for get and set the preferred music source command.
  * @extends Command
+ * @Category Commands
  */
 class PreferredSrcCommand extends Command {
 

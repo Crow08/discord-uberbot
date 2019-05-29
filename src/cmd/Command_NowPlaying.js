@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for display current song command.
  * @extends Command
+ * @Category Commands
  */
 class NowPlayingCommand extends Command {
 

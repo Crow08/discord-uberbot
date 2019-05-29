@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for the start macro command.
  * @extends Command
+ * @Category Commands
  */
 class StartCommand extends Command {
 

@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for delete playlist command.
  * @extends Command
+ * @Category Commands
  */
 class DeletePLCommand extends Command {
 

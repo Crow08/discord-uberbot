@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for skip song command.
  * @extends Command
+ * @Category Commands
  */
 class SkipCommand extends Command {
 

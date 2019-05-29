@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Temporary class for testing commands.
  * @extends Command
+ * @Category Commands
  */
 class TestCommand extends Command {
 

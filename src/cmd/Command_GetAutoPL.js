@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for get auto playlist command.
  * @extends Command
+ * @Category Commands
  */
 class GetAutoPLCommand extends Command {
 

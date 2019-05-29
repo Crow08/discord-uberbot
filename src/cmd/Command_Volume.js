@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for get and set volume command.
  * @extends Command
+ * @Category Commands
  */
 class VolumeCommand extends Command {
 

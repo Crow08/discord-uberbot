@@ -8,9 +8,8 @@
   "scripts": {
     "build": "npm install",
     "debug": "node ./src/index.js debug",
-    "docs": "jsdoc -R README.md -d docs -r .\\src",
+    "docs": "node_modules/.bin/jsdoc -r -c jsdoc.json",
     "start": "node ./src/index.js"
-   
   },
   "private": true,
   "repository": {
@@ -24,8 +23,8 @@
     "ffmpeg-binaries": "^4.0.0",
     "ffmpeg-static": "^2.4.0",
     "libsodium-wrappers": "^0.7.4",
-    "mongodb": "^3.2.5",
-    "node-opus": "^0.3.1",
+    "mongodb": "^3.2.6",
+    "node-opus": "^0.3.2",
     "node-spotify-api": "^1.1.1",
     "opusscript": "^0.0.6",
     "request": "^2.88.0",
@@ -36,6 +35,6 @@
     "zucc": "^0.1.2"
   },
   "devDependencies": {
-    "jsdoc": "^3.6.2"
+    "better-docs": "^1.1.6"
   }
 }

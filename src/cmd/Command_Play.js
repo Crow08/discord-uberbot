@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for play command.
  * @extends Command
+ * @Category Commands
  */
 class PlayCommand extends Command {
 

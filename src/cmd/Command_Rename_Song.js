@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for rename song in playlist command.
  * @extends Command
+ * @Category Commands
  */
 class RenameSongCommand extends Command {
 

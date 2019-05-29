@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for remove song from queue command.
  * @extends Command
+ * @Category Commands
  */
 class RemoveCommand extends Command {
 

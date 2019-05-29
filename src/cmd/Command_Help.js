@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for help command.
  * @extends Command
+ * @Category Commands
  */
 class HelpCommand extends Command {
 

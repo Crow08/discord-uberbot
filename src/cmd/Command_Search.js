@@ -43,6 +43,7 @@ const processSelectionCmd = (collected, songs, playerService, queueService, chat
 /**
  * Class for search song command.
  * @extends Command
+ * @Category Commands
  */
 class SearchCommand extends Command {
 

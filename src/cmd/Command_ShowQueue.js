@@ -3,6 +3,7 @@ const Command = require("./Command.js");
 /**
  * Class for show queue command.
  * @extends Command
+ * @Category Commands
  */
 class ShowQueueCommand extends Command {
 

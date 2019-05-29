@@ -8,7 +8,7 @@ class ChatService {
   constructor(DiscordMessageEmbed) {
     this.DiscordMessageEmbed = DiscordMessageEmbed;
 
-    /** @property Enum - Message Type for simple Note */
+    /** @property {Enum} msgType - Message Type for simple Note */
     this.msgType = {
       "FAIL": "fail",
       "INFO": "info",

@@ -4,6 +4,7 @@ const request = require("request");
 /**
  * Class for upload songs file command.
  * @extends Command
+ * @Category Commands
  */
 class UploadCommand extends Command {
 

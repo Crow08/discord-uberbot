@@ -1,4 +1,7 @@
-/** Abstract Class representing a Command. */
+/**
+ * Abstract Class representing a Command.
+ * @Category Commands
+ */
 class Command {
 
   /**
