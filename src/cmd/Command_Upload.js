@@ -5,7 +5,8 @@ class UploadCommand extends Command {
   constructor(chatService, queueService, searchService, dBService) {
     super("upload");
     super.help = "add a songs from a file to the queue or to a playlist.";
-    super.usage = "<prefix>upload [<playlist name>]\n=> attach file to the message";
+    super.usage = "<prefix>upload [<playlist name>]\n=> attach file to the message\n" +
+    "txt files with a query each row or csv files with 3 columns per row <query>;<artist>;<title>";
     super.alias = ["upload"];
     this.chatService = chatService;
     this.dBService = dBService;
@@ -20,7 +21,7 @@ class UploadCommand extends Command {
       return;
     }
 
-    msg.attachments.array().forEach((element) => request(element.url, (err, response, body) => {
+    msg.attachments.array().forEach((attachment) => request(attachment.url, (err, response, body) => {
       if (err) {
         this.chatService.simpleNote(msg, new Error("Unable to download attached file!"), this.chatService.msgType.FAIL);
         return;
@@ -28,10 +29,22 @@ class UploadCommand extends Command {
       const lines = body.split("\n");
       if (typeof payload === "undefined" || payload.length === 0) {
         this.chatService.simpleNote(msg, "0 songs added to queue.", this.chatService.msgType.MUSIC).
-          then((infoMsg) => this.addRecursively(lines, msg, 0, infoMsg));
+          then((infoMsg) => {
+            if (attachment.filename.endsWith(".csv")) {
+              this.addCSVRecursively(lines, msg, 0, infoMsg);
+            } else {
+              this.addRecursively(lines, msg, 0, infoMsg);
+            }
+          });
       } else {
         this.chatService.simpleNote(msg, `0 songs added to playlist: ${payload}.`, this.chatService.msgType.MUSIC).
-          then((infoMsg) => this.addRecursively(lines, msg, 0, infoMsg, payload));
+          then((infoMsg) => {
+            if (attachment.filename.endsWith(".csv")) {
+              this.addCSVRecursively(lines, msg, 0, infoMsg, payload);
+            } else {
+              this.addRecursively(lines, msg, 0, infoMsg, payload);
+            }
+          });
       }
     }));
   }
@@ -45,40 +58,74 @@ class UploadCommand extends Command {
     this.searchService.search(lines.pop()).
       then(({note, songs}) => {
         console.log(note);
-        let newCount = count;
-        if (songs.length > 1) {
-          const enrichedSongs = songs.map((song) => {
-            song.requester = msg.author.username;
-            if (typeof plName === "undefined") {
-              song.playlist = plName;
-            }
-            return song;
-          });
-          if (typeof plName === "undefined") {
-            this.dBService.addSongs(enrichedSongs, plName);
-          } else {
-            this.queueService.addMultipleToQueue(enrichedSongs);
+        const newCount = count + songs.length;
+        this.processSongs(songs, msg.author.username, plName);
+        for (let processed = count; processed < newCount; processed++) {
+          if (processed % 10 === 0) {
+            statusMsg.edit(statusMsg.content.replace(/\d+/u, newCount));
           }
-          newCount += enrichedSongs.length();
-        } else {
-          songs[0].requester = msg.author.username;
-          if (typeof plName === "undefined") {
-            songs[0].playlist = plName;
-            this.dBService.addSong(songs[0], plName);
-          } else {
-            this.queueService.addToQueue(songs[0], msg);
-          }
-          ++newCount;
         }
         this.addRecursively(lines, msg, newCount, statusMsg, plName);
-        if (newCount % 10 === 0) {
-          statusMsg.edit(statusMsg.content.replace(/\d+/u, newCount));
-        }
       }).
       catch((error) => {
         this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
         this.addRecursively(lines, msg, count, statusMsg, plName);
       });
+  }
+
+  addCSVRecursively(lines, msg, count, statusMsg, plName) {
+    if (lines.length <= 0) {
+      statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
+      this.chatService.simpleNote(msg, "Import successful!", this.chatService.msgType.INFO);
+      return;
+    }
+    const row = lines.pop().split(";");
+    if (row.length === 3) {
+      const searchQuery = row[0];
+      const artist = row[1];
+      const title = row[2];
+      this.searchService.search(searchQuery).
+        then(({note, songs}) => {
+          console.log(note);
+          const newCount = count + 1;
+          songs[0].artist = artist;
+          songs[0].title = title;
+          this.processSongs([songs[0]], msg.author.username, plName);
+          if (newCount % 10 === 0) {
+            statusMsg.edit(statusMsg.content.replace(/\d+/u, newCount));
+          }
+          this.addCSVRecursively(lines, msg, newCount, statusMsg, plName);
+        }).
+        catch((error) => {
+          this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
+          this.addCSVRecursively(lines, msg, count, statusMsg, plName);
+        });
+    } else {
+      const note = "Skipping row: invalid csv!\n3 columns per row <artist>;<title>;<query>";
+      this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
+      this.addCSVRecursively(lines, msg, count, statusMsg, plName);
+    }
+  }
+
+  processSongs(songs, username, plName) {
+    const enrichedSongs = songs.map((song) => {
+      song.requester = username;
+      if (typeof plName === "undefined") {
+        song.playlist = plName;
+      }
+      return song;
+    });
+    if (songs.length > 1) {
+      if (typeof plName === "undefined") {
+        this.queueService.addMultipleToQueue(enrichedSongs);
+      } else {
+        this.dBService.addSongs(enrichedSongs, plName);
+      }
+    } else if (typeof plName === "undefined") {
+      this.queueService.addToQueue(songs[0]);
+    } else {
+      this.dBService.addSong(songs[0], plName);
+    }
   }
 }
 
