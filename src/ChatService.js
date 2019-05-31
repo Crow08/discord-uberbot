@@ -1,4 +1,6 @@
-/** Class representing a chat service. */
+/**
+ * Class representing a chat service.
+ */
 class ChatService {
 
   /**

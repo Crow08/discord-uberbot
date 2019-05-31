@@ -1,4 +1,6 @@
-/** Class representing a rating service. */
+/**
+ * Class representing a rating service.
+ */
 class RatingService {
 
   /**
@@ -13,6 +15,16 @@ class RatingService {
     this.queueService = queueService;
   }
 
+  /**
+   * Rate a song up or down and handle cooldown and other implications like adding or removing the song.
+   * Special cases:
+   * Upvoted and song has no playlist and rating is higher than -2. => add to auto playlist.
+   * Downvoted and song has a playlist and rating is lower than -1. => remove from playlist.
+   * @param {Song} song - Song to be rated.
+   * @param {string} user - User rating the song.
+   * @param {number} delta - delta rating.
+   * @param {boolean} ignoreCd - Ignore user specific cooldown for rating on song.
+   */
   rateSong(song, user, delta, ignoreCd = false) {
     return new Promise((resolve, reject) => {
       if (typeof song.ratingLog === "undefined") {
@@ -53,6 +65,12 @@ class RatingService {
     });
   }
 
+  /**
+   * Get current rating cooldown by song and user.
+   * @private
+   * @param {Song} song - Song to be rated.
+   * @param {string} user - User name rating the song.
+   */
   getUserCdForSong(song, user) {
     if (Object.prototype.hasOwnProperty.call(song.ratingLog, user)) {
       const ratedDeltaTime = Date.now() - song.ratingLog[user];
@@ -63,6 +81,10 @@ class RatingService {
     return 0;
   }
 
+  /**
+   * Add song to auto playlist.
+   * @param {Song} song - Song to be Added.
+   */
   addToAutoPL(song) {
     return new Promise((resolve, reject) => {
       this.queueService.getAutoPL().
@@ -78,6 +100,10 @@ class RatingService {
     });
   }
 
+  /**
+   * Remove Song from its playlist.
+   * @param {Song} song - Song to be removed.
+   */
   removeFromPL(song) {
     return new Promise((resolve, reject) => {
       this.dbService.removeSong(song.title, song.playlist).
@@ -93,6 +119,12 @@ class RatingService {
     });
   }
 
+  /**
+   * Persist rating change in DB.
+   * @param {string} user - User causing the rating change.
+   * @param {Song} song - Rated song.
+   * @param {number} delta - Rating delta.
+   */
   saveRating(user, song, delta) {
     return new Promise((resolve, reject) => {
       song.ratingLog[user] = Date.now();

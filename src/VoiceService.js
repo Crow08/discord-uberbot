@@ -1,6 +1,8 @@
 const Song = require("./Song");
 
-/** Class representing a voice service. */
+/**
+ * Class representing a voice service.
+ */
 class VoiceService {
 
   /**

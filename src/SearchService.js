@@ -1,4 +1,6 @@
-/** Class representing a search service. */
+/**
+ * Class representing a search service.
+ */
 class SearchService {
 
   /**

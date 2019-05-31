@@ -1,4 +1,6 @@
-/** Class representing a song object. */
+/**
+ * Class representing a song object.
+ */
 class Song {
 
   /**
