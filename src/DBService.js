@@ -1,6 +1,18 @@
 const {MongoClient} = require("mongodb");
 
+/**
+ * Class representing a database service.
+ * The playlists ares saved as MongoDB collections with the same name as the playlist.
+ * In the collection the songs are stored as @see {Song} Objects.
+ */
 class DBService {
+
+  /**
+   * Constructor.
+   * @param {string} mongoUrl - Optional string representing the external mongodb url.
+   * @param {string} username - Optional string representing the external mongodb username.
+   * @param {string} password - Optional string representing the external mongodb password.
+   */
   constructor(mongoUrl, username, password) {
     this.url = mongoUrl ? `mongodb+srv://${username}:${password}@${mongoUrl}` : "mongodb://localhost:27017";
     this.dbName = "uberbot";
@@ -8,10 +20,19 @@ class DBService {
     this.db = null;
   }
 
+  /**
+   * Escape all regex characters from string.
+   * @private
+   * @param {string} text - text with with some regex characters.
+   */
   escapeRegExp(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/gu, "\\$&");
   }
 
+  /**
+   * Connection to MongoDB.
+   * If a connection is already established disconnect first.
+   */
   connectDB() {
     // If client connection exists.
     if (this.client !== null) {
@@ -45,10 +66,16 @@ class DBService {
     });
   }
 
+  /**
+   * Check if connection to mongoDB is established.
+   */
   isConnected() {
     return this.client !== null && this.client.isConnected();
   }
 
+  /**
+   * Disconnect from MongoDB.
+   */
   disconnectDB() {
     return new Promise((resolve, reject) => {
       this.client.close().
@@ -61,6 +88,12 @@ class DBService {
     });
   }
 
+  /**
+   * Add a song to a playlist and save it to MongoDB.
+   * If the playlist doesn't exist it will be created.
+   * @param {Song} song - song to be added.
+   * @param {string} plName - playlist name to add to.
+   */
   addSong(song, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
@@ -75,6 +108,13 @@ class DBService {
     });
   }
 
+  /**
+   * Add multiple songs to a playlist and save it to MongoDB.
+   * If the playlist doesn't exist it will be created.
+   * The playlist is represented as a collection with the same name as the playlist.
+   * @param {Song[]} songs - song to be added.
+   * @param {string} plName - playlist name to add to.
+   */
   addSongs(songs, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
@@ -89,6 +129,13 @@ class DBService {
     });
   }
 
+  /**
+   * Remove song from playlist.
+   * If it was the last song of the playlist the playlist and MongoDB collection will be removed.
+   * @param {string} title - title of the song to be removed
+   * @param {string} plName - playlist name to remove from.
+   * TODO: remove song by title and artist and remove regex.
+   */
   removeSong(title, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
@@ -98,6 +145,12 @@ class DBService {
     });
   }
 
+  /**
+   * Rename a playlist with the given names.
+   * The playlist and corresponding MongoDB collection will be removed.
+   * @param {string} plName - playlist name to be renamed.
+   * @param {string} newName - new name for the renamed playlist.
+   */
   renamePL(plName, newName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).rename(newName).
@@ -106,6 +159,13 @@ class DBService {
     });
   }
 
+  /**
+   * Rename the artist or title of a song in a playlist.
+   * @param {string} plName - playlist name to change the name in.
+   * @param {Song} song - Song to be renamed.
+   * @param {"a"|"t"} flag - "a" to rename the artist and "t" to rename the title (defaults to renaming title)
+   * @param {string} newName - new name for artist or title.
+   */
   renameSong(plName, song, flag, newName) {
     return new Promise((resolve, reject) => {
 
@@ -118,6 +178,11 @@ class DBService {
     });
   }
 
+  /**
+   * Find a song by title in a playlist with fuzzy search.
+   * @param {string} song - query to search with.
+   * @param {string} plName - playlist to search in.
+   */
   findSong(song, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
@@ -127,6 +192,10 @@ class DBService {
     });
   }
 
+  /**
+   * Update a songs rating.
+   * @param {Song} song - Song Object with updated Rating information.
+   */
   updateSongRating(song) {
     return new Promise((resolve, reject) => {
       this.db.collection(song.playlist).findOneAndUpdate(
@@ -141,6 +210,11 @@ class DBService {
     });
   }
 
+  /**
+   * Get all songs of a playlist as array.
+   * @param {string} plName - Playlist name to get songs from.
+   * @returns {Songs[]} - Array of all songs
+   */
   getPlaylist(plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
@@ -157,6 +231,11 @@ class DBService {
     });
   }
 
+  /**
+   * Get a random Song from a Playlist.
+   * @param {string} plName - playlist name to get the song from.
+   * @returns {Song} - A random Song from the collection.
+   */
   getRandomSong(plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
@@ -173,6 +252,10 @@ class DBService {
     });
   }
 
+  /**
+   * Delete an entire playlist and the corresponding MongoBD collection.
+   * @param {string} plName - playlist name to be removed.
+   */
   deletePlaylist(plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
@@ -182,6 +265,10 @@ class DBService {
     });
   }
 
+  /**
+   * Gets all playlist names as string.
+   * @returns {string[]} - Array containing all playlist names.
+   */
   listPlaylists() {
     return new Promise((resolve, reject) => {
       this.db.listCollections().
@@ -191,6 +278,11 @@ class DBService {
     });
   }
 
+  /**
+   * Merge two playlists by copying one into the other.
+   * @param {string} source - name of the playlist to be copied from.
+   * @param {string} target - name of the playlist to be merged into.
+   */
   mergePlaylists(source, target) {
     return new Promise((resolve, reject) => {
       this.db.collection(source).find().

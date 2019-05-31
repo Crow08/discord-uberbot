@@ -1,7 +1,20 @@
 const Command = require("./Command.js");
 const request = require("request");
 
+/**
+ * Class for upload songs file command.
+ * @extends Command
+ * @Category Commands
+ */
 class UploadCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   * @param {SearchService} searchService - SearchService.
+   * @param {DbService} dbService - DbService.
+   */
   constructor(chatService, queueService, searchService, dBService) {
     super("upload");
     super.help = "add a songs from a file to the queue or to a playlist.";
@@ -14,6 +27,11 @@ class UploadCommand extends Command {
     this.queueService = queueService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof msg.attachments === "undefined" || msg.attachments.array().length === 0) {
       this.chatService.simpleNote(msg, "No attached file found!", this.chatService.msgType.FAIL);

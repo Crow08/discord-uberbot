@@ -1,6 +1,16 @@
+/**
+ * Class representing a chat service.
+ */
 class ChatService {
+
+  /**
+   * Constructor.
+   * @param {MessageEmbed} DiscordMessageEmbed - Discord.js MessageEmbed class for creating rich embed messages.
+   */
   constructor(DiscordMessageEmbed) {
     this.DiscordMessageEmbed = DiscordMessageEmbed;
+
+    /** @property {Enum} msgType - Message Type for simple Note */
     this.msgType = {
       "FAIL": "fail",
       "INFO": "info",
@@ -9,6 +19,12 @@ class ChatService {
     };
   }
 
+  /**
+   * Send a simple note to Discord with an emoji depending of the given message Type.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {string|Error} text - The text to be displayed in this note (can be of type Error).
+   * @param {string} type - Message type defined by {@link ChatService#msgType}.
+   */
   simpleNote(msg, text, type) {
     this.debugPrint(text);
     let ret = new Promise((resolve) => resolve({"delete": () => null}));
@@ -37,8 +53,13 @@ class ChatService {
     return ret;
   }
 
-  // MessageEmbed API -> https://discord.js.org/#/docs/main/master/class/MessageEmbed
-  // Previewer -> https://leovoel.github.io/embed-visualizer/
+  /**
+   * Send either plain text or a MessageEmbed in markdown style.
+   * @see {@link https://discord.js.org/#/docs/main/master/class/MessageEmbed} MessageEmbed API.
+   * @see {@link https://leovoel.github.io/embed-visualizer/} MessageEmbed previewer.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {string|MessageEmbed} content -The content to be sent as a discord message.
+   */
   send(msg, content) {
     this.debugPrint(content);
     if (typeof msg.channel === "undefined") {
@@ -47,6 +68,11 @@ class ChatService {
     return msg.channel.send(content);
   }
 
+  /**
+   * Display paged content with reaction based navigation.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {string[]|MessageEmbed[]} pages - Pages to be displayed.
+   */
   pagedContent(msg, pages) {
     this.debugPrint(pages);
     if (typeof msg.channel === "undefined") {
@@ -84,6 +110,12 @@ class ChatService {
       }));
   }
 
+  /**
+   * Display a song in pretty markdown and add reaction based user rating.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {Song} song - Song to be displayed.
+   * @param {function} processRating - Function to be invoked if rating was given.
+   */
   displaySong(msg, song, processRating) {
     this.debugPrint(song);
     if (typeof msg.channel === "undefined") {
@@ -122,6 +154,12 @@ class ChatService {
         }));
   }
 
+  /**
+   * React with an array of Emojis to a given message
+   * @private
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {string[]} emojiList Ordered list of emojis to post.
+   */
   postReactionEmojis(msg, emojiList) {
     return new Promise((resolve, reject) => {
       msg.react(emojiList.shift()).
@@ -139,6 +177,15 @@ class ChatService {
     });
   }
 
+  /**
+   * Process reaction based user rating.
+   * @private
+   * @param {MessageReaction} reaction - given user reaction.
+   * @param {Song} song - Song to be rated.
+   * @param {number} delta - Delta rating score.
+   * @param {function} processRating - Function to be invoked if rating was given.
+   * @param {boolean} ignoreCd - Flag to indicate if the cooldown should be ignored.
+   */
   handleRatingReaction(reaction, song, delta, processRating, ignoreCd = false) {
     reaction.users.filter((user) => !user.bot).forEach((user) => {
       reaction.users.remove(user);
@@ -153,6 +200,10 @@ class ChatService {
     });
   }
 
+  /**
+   * @deprecated
+   * TODO: Replace with pagedContent and awaitCommand.
+   */
   openSelectionMenu(songs, msg, filter, process) {
     this.debugPrint(songs);
     if (typeof msg.channel === "undefined") {
@@ -205,6 +256,10 @@ class ChatService {
       catch(() => null);
   }
 
+  /**
+   * @deprecated
+   * TODO: Replace with pagedContent and awaitCommand.
+   */
   buildSelectionPage(songs, pageNo) {
     const first = 10 * pageNo;
     const last = first + 10 > songs.length - 1 ? songs.length - 1 : first + 10;
@@ -215,6 +270,11 @@ class ChatService {
     return page;
   }
 
+  /**
+   * Build a MessageEmbed for a song with markdown.
+   * @private
+   * @param {Song} song - Song to be displayed.
+   */
   buildSongEmbed(song) {
     const embed = new this.DiscordMessageEmbed();
     for (const key in song) {
@@ -232,6 +292,11 @@ class ChatService {
     return embed;
   }
 
+  /**
+   * Print color coded debug information for all chat interactions to console log.
+   * @private
+   * @param {string|MessageEmbed|Error} content Content to be logged.
+   */
   debugPrint(content) {
     if (content instanceof Error) {
       console.log("\x1b[31m%s\x1b[0m", content.stack);

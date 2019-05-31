@@ -1,6 +1,17 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for load saved playlist command.
+ * @extends Command
+ * @Category Commands
+ */
 class LoadPLCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   */
   constructor(chatService, queueService) {
     super("plload");
     super.help = "load a playlist replacing the current queue.";
@@ -10,6 +21,11 @@ class LoadPLCommand extends Command {
     this.queueService = queueService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
       this.chatService.simpleNote(msg, "No playlist name found!", this.chatService.msgType.FAIL);

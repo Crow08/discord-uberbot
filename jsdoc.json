@@ -1,0 +1,33 @@
+{
+  "opts": {
+    "destination": "docs/",
+    "readme": "README.md",
+    "template": "node_modules/better-docs"
+    
+  },
+  "plugins": [
+    "node_modules/better-docs/category"
+  ],
+  "source": {
+    "include": ["./src"]
+  },
+  "tags": {
+    "allowUnknownTags": ["category"]
+  },
+  "templates": {
+    "better-docs": {
+        "name": "UberBot Documentation",
+        "logo": "https://cdn.discordapp.com/avatars/543844387835215873/baeabaa2290c3b584b4f771bf86ed5ca.png",
+        "navigation": [
+            {
+                "label": "Github",
+                "href": "https://github.com/Crow08/discord-uberbot"
+            },
+            {
+                "label": "Web Interface",
+                "href": "https://discord-uberbot.herokuapp.com/"
+            }
+        ]
+    }
+}
+}

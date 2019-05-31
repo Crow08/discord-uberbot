@@ -25,7 +25,18 @@ const process = (res, commandList, msg, queueService) => {
   });
 };
 
+/**
+ * Class for show history command.
+ * @extends Command
+ * @Category Commands
+ */
 class ShowHistoryCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   */
   constructor(chatService, queueService, commands) {
     super("showhistory");
     super.help = "displays all songs from current history.";
@@ -36,6 +47,11 @@ class ShowHistoryCommand extends Command {
     this.commands = commands;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     const pages = [];
     let historyText = "";

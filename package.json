@@ -8,6 +8,7 @@
   "scripts": {
     "build": "npm install",
     "debug": "node ./src/index.js debug",
+    "docs": "node_modules/.bin/jsdoc -r -c jsdoc.json",
     "start": "node ./src/index.js"
   },
   "private": true,
@@ -33,5 +34,8 @@
     "ytpl": "^0.1.14",
     "zlib-sync": "^0.1.4",
     "zucc": "^0.1.2"
+  },
+  "devDependencies": {
+    "better-docs": "^1.1.6"
   }
 }

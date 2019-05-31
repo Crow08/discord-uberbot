@@ -1,6 +1,17 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for a command to determine the next song to played from queue.
+ * @extends Command
+ * @Category Commands
+ */
 class PlayNextCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   */
   constructor(chatService, queueService) {
     super("playnext");
     super.help = "moves song at given position to top";
@@ -10,6 +21,11 @@ class PlayNextCommand extends Command {
     this.queueService = queueService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length > 1) {
       this.chatService.simpleNote(msg, "What are you doing?", this.chatService.msgType.FAIL);

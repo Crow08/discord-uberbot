@@ -10,6 +10,7 @@
 	- add are you sure on poop-emoji
 - paging for list_songs (.ls &lt;playlist&gt;)
 - .start command should clear queue and stop playback to be used while song is playing
+- remove song from playlist command has to use artist and title. 
 
 ##### Queue #####
 - loop with options (song / queue / none)
@@ -20,14 +21,15 @@
 - paging for history
 
 ##### Search #####
-- add song to playlist
+- search command followup to add song to playlist.
+- improve search for youtube by choosing automatically from a small number for songs
+	- disfavor songs with "cover" / "live" / "remix"
+- rewrite search menu to use pagedContent and awaitCommand instead of openSelectionMenu.
 
 ##### Play song #####
 - raw-MP3-support
 
 ##### DB #####
-
-##### Misc #####
 
 ---
 
@@ -62,11 +64,11 @@
 
 ### Misc. ###
 
+##### Structure #####
+Combine GetAutoPLCommand and AutoPLCommand.
+
 ##### Dependencies #####
 - replace "ytdl-core" with "ytdl-core-discord" https://www.npmjs.com/package/ytdl-core-discord
 - **ffmpeg-binaries@4.0.0** -> **decompress-tarxz@2.1.1** -> lzma-native@3.0.8 -> node-pre-gyp@0.6.39  
 has vulnerabilities because it is bundling outdated modules (needed for encoding non opus codecs)  
 fixed at: lzma-native@>=4.0.0 -> node-pre-gyp@>=0.7.0
-
-##### Deployment #####
-- host Database or DB + Bot. (openshift / heroku)

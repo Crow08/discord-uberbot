@@ -1,4 +1,16 @@
+/**
+ * Class representing the music player.
+ * The player is a active entity responsible for managing the playback of songs.
+ */
 class PlayerService {
+
+  /**
+   * Constructor.
+   * @param {VoiceService} voiceService - VoiceService.
+   * @param {QueueService} queueService - QueueService.
+   * @param {ChatService} chatService - ChatService.
+   * @param {RatingService} ratingService - RatingService.
+   */
   constructor(voiceService, queueService, chatService, ratingService) {
     this.audioDispatcher = null;
 
@@ -8,6 +20,12 @@ class PlayerService {
     this.ratingService = ratingService;
   }
 
+  /**
+   * Called when a song has ended. and starting the next song from queue oe auto playlist when available.
+   * @private
+   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {number} startTime - time in ms when the ending song hast been started.
+   */
   handleSongEnd(msg, startTime) {
     const delta = (new Date()) - startTime;
     if (delta < 2000) {
@@ -24,10 +42,21 @@ class PlayerService {
     this.playNext(msg);
   }
 
+  /**
+   * Called when an error has occurred during playback.
+   * @param {Error} err - Error caused by playback.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
   handleError(err, msg) {
     this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL);
   }
 
+  /**
+   * Play the given song immediately.
+   * If another song is already playing it ends immediately.
+   * @param {Song} song - Song to be played.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
   playNow(song, msg) {
     if (this.audioDispatcher) {
       this.audioDispatcher.destroy();
@@ -47,6 +76,12 @@ class PlayerService {
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
 
+  /**
+   * Given a Array of songs, play the first one immediately and queue the rest.
+   * If another song is already playing it ends immediately.
+   * @param {Song[]} songs - Song to be played and queued.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
   playMultipleNow(songs, msg) {
     if (!songs && songs.length === 0) {
       this.chatService.simpleNote(msg, "No songs Found!", this.chatService.msgType.FAIL);
@@ -58,6 +93,11 @@ class PlayerService {
     }
   }
 
+  /**
+   * Play the next song from the queue.
+   * @private
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
   playNext(msg) {
     this.queueService.getNextSong().
       then((song) => {
@@ -74,6 +114,10 @@ class PlayerService {
       });
   }
 
+  /**
+   * Start playing if the playback ist stopped or resume playback if paused.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
   play(msg) {
     if (!this.audioDispatcher) {
       this.playNext(msg);
@@ -85,6 +129,10 @@ class PlayerService {
     }
   }
 
+  /**
+   * Pause playback.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
   pause(msg) {
     if (!this.audioDispatcher) {
       this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
@@ -96,6 +144,10 @@ class PlayerService {
     }
   }
 
+  /**
+   * Stop playback.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
   stop(msg) {
     if (!this.audioDispatcher) {
       this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
@@ -106,6 +158,10 @@ class PlayerService {
     this.chatService.simpleNote(msg, "Playback stopped!", this.chatService.msgType.MUSIC);
   }
 
+  /**
+   * Skip current song.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
   skip(msg) {
     if (!this.audioDispatcher) {
       this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
@@ -115,6 +171,11 @@ class PlayerService {
     this.audioDispatcher.end();
   }
 
+  /**
+   * Play the current song at a given Position in seconds.
+   * @param {number} position number in seconds to restart the current stream at.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
   seek(position, msg) {
     if (this.audioDispatcher) {
       this.audioDispatcher.destroy();

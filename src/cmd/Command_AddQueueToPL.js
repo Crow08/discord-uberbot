@@ -1,6 +1,18 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for add to playlist command.
+ * @extends Command
+ * @Category Commands
+ */
 class AddQueueToPLCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   * @param {DbService} dbService - dbService.
+   */
   constructor(chatService, queueService, dbService) {
     super("addqueuetopl");
     super.help = "adds queue to given playlist";
@@ -11,6 +23,11 @@ class AddQueueToPLCommand extends Command {
     this.dbService = dbService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
       this.chatService.simpleNote(msg, "Wrong syntax!", this.chatService.msgType.FAIL);

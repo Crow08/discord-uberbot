@@ -1,6 +1,18 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for add command.
+ * @extends Command
+ * @Category Commands
+ */
 class AddCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   * @param {SearchService} searchService - searchService.
+   */
   constructor(chatService, queueService, searchService) {
     super("add");
     super.help = "add a song to the current queue by url or query.";
@@ -11,6 +23,11 @@ class AddCommand extends Command {
     this.searchService = searchService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
       this.chatService.simpleNote(msg, "No URL or query found!", this.chatService.msgType.FAIL);

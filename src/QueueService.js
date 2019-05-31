@@ -1,4 +1,4 @@
-const shuffle = function shuffle(array) {
+const shuffle = (array) => {
   let pos1 = 0,
     pos2 = 0,
     tmpVal = 0;
@@ -11,7 +11,18 @@ const shuffle = function shuffle(array) {
   return array;
 };
 
+/**
+ * Class representing a queue service.
+ * This Service is managing the queue of upcoming songs and the history of passed songs.
+ * Also managing the auto playlist.
+ */
 class QueueService {
+
+  /**
+   * Constructor.
+   * @param {Number} historyLength - Max number of songs saved in the history.
+   * @param {DBService} dbService - DBService.
+   */
   constructor(historyLength, dbService) {
     this.dbService = dbService;
     this.queue = [];
@@ -20,12 +31,20 @@ class QueueService {
     this.autoPL = null;
   }
 
+  /**
+   * Get current Song with is position 0 of the history.
+   * @returns {Song} - The current song.
+   */
   getCurrentSong() {
     return new Promise((resolve, reject) => {
       resolve(this.history[0]).catch(reject);
     });
   }
 
+  /**
+   * Get next song which is position 0 of the queue.
+   * @returns {Song} - The next song.
+   */
   getNextSong() {
     return new Promise((resolve, reject) => {
       if (this.queue.length > 0) {
@@ -47,6 +66,11 @@ class QueueService {
     });
   }
 
+  /**
+   * Add a song to the top of the history.
+   * Add a song at position 0 and trim the history if its longer than its max size.
+   * @param {Song} song - The song to be added.
+   */
   addSongToHistory(song) {
     this.history.unshift(song);
     while (this.history.length > this.historyLength) {
@@ -54,31 +78,59 @@ class QueueService {
     }
   }
 
+  /**
+   * Gets a specific song from the history with its position.
+   * 0 ist the song least added to the history.
+   * @param {number} position - Index of history to get song from.
+   * @returns {Song} - The chosen history song.
+   */
   getHistorySong(position) {
     const index = (this.history.length - position) < position ? this.history.length - position : position;
     return this.history[index];
   }
 
+  /**
+   * Add a song to the end of the queue.
+   * @param {Song} song - The song to be added.
+   */
   addToQueue(song) {
     this.queue.push(song);
   }
 
+  /**
+   * Add multiple songs to the end of the queue.
+   * @param {Song[]} songs - Array of songs to be added.
+   */
   addMultipleToQueue(songs) {
     this.queue.concat(songs);
   }
 
+  /**
+   * Clear the current queue.
+   */
   clearQueue() {
     this.queue = [];
   }
 
+  /**
+   * Remove the given position from the queue.
+   * @param {number} position - position to remove.
+   */
   remove(position) {
     this.queue.splice(position, 1);
   }
 
+  /**
+   * Shuffles the current queue.
+   */
   shuffleQueue() {
     this.queue = shuffle(this.queue);
   }
 
+  /**
+   * Replace the current queue with the given playlist form the DB.
+   * @param {string} plName - playlist name to load.
+   */
   loadPlaylist(plName) {
     return new Promise((resolve, reject) => {
       this.dbService.getPlaylist(plName).
@@ -90,6 +142,10 @@ class QueueService {
     });
   }
 
+  /**
+   * Set the current auto playlist.
+   * @param {string} plName - name of the auto playlist.
+   */
   setAutoPL(plName) {
     return new Promise((resolve, reject) => {
       this.dbService.listPlaylists().then((plNames) => {
@@ -104,6 +160,10 @@ class QueueService {
     });
   }
 
+  /**
+   * Gets the current auto playlist name.
+   * @returns {string} - current auto playlist name.
+   */
   getAutoPL() {
     return new Promise((resolve, reject) => {
       if (this.autoPL === null) {
@@ -114,10 +174,17 @@ class QueueService {
     });
   }
 
+  /**
+   * Unset auto playlist.
+   */
   unsetAutoPL() {
     this.autoPL = null;
   }
 
+  /**
+   * Move the given song by index to the top of the queue to play next.
+   * @param {number} songNumber - index in the queue of song to move.
+   */
   prioritizeSong(songNumber) {
     let message = "";
     if (this.queue.length === 0) {
