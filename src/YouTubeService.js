@@ -16,6 +16,11 @@ class YoutubeService {
     this.apiKey = apiKey;
   }
 
+  /**
+   * Get song via url.
+   * @param {string} payload - Url to get song from.
+   * @returns {Song} - Song from url.
+   */
   getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
       ytdl.getBasicInfo(searchString, {}, (err, info) => {
@@ -32,6 +37,11 @@ class YoutubeService {
     });
   }
 
+  /**
+   * Get songs via playlist url.
+   * @param {string} payload - Url to get song from.
+   * @returns {Song[]} - Songs from playlist url.
+   */
   getSongsViaPlaylistUrl(searchString) {
     const playId = searchString.toString().split("list=")[1];
     return new Promise((resolve, reject) => {
@@ -56,6 +66,12 @@ class YoutubeService {
     });
   }
 
+  /**
+   * Get songs via query.
+   * @param {string} payload - Url to get song from.
+   * @param {number} count - Number of songs to be fetched.
+   * @returns {Song[]} - Array of songs from url.
+   */
   getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {
       request(
@@ -93,6 +109,10 @@ class YoutubeService {
     });
   }
 
+  /**
+   * Get audio stream from url.
+   * @param {string} url - Url to get audio stream from.
+   */
   getStream(url) {
     const stream = ytdl(url, {"filter": "audioonly"});
     if (!stream) {

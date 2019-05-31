@@ -18,6 +18,11 @@ class SoundCloudService {
     });
   }
 
+  /**
+   * Get song via url (without url).
+   * @param {string} payload - Url to get song from.
+   * @returns {Song} - Song from url.
+   */
   getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
       if (!searchString.includes("track/")) {
@@ -42,6 +47,12 @@ class SoundCloudService {
     });
   }
 
+  /**
+   * Get songs via query (without url).
+   * @param {string} payload - Url to get song from.
+   * @param {number} count - Number of songs to be fetched.
+   * @returns {Song[]} - Array of songs from url.
+   */
   getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {
       this.spotify.search({"limit": count, "query": searchString, "type": "track"}).
