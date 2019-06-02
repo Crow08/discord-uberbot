@@ -48,6 +48,7 @@
 	- recreate:
 		- .search
 		- .p rockabye / or any other command like .add
+- :x: | Error: input stream: No formats found with custom filter
 ##### needs reporting #####
 - .search no feedback when add is used
 
@@ -59,6 +60,8 @@
 - Stream ends immediately after start
 	- can be solved via retry
 	- hard to reproduce reliable
+- second plload replaces queue
+- add on Upvote doesn't work
 
 ---
 
