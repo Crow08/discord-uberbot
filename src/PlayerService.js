@@ -89,7 +89,8 @@ class PlayerService {
     }
     this.playNow(songs[0], msg);
     if (songs.length > 1) {
-      this.queueService.addMultipleToQueue(songs.splice(0, 1));
+      songs.splice(0, 1);
+      this.queueService.addMultipleToQueue(songs);
     }
   }
 
