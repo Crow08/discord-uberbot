@@ -107,6 +107,8 @@ class ChatService {
             curPage.edit(pages[page]);
           }
         });
+        nextReaction.on("end", () => curPage.reactions.removeAll());
+        backReaction.on("end", () => curPage.reactions.removeAll());
       }));
   }
 
@@ -129,15 +131,15 @@ class ChatService {
         // Add listeners to reactions.
           const upReaction = songMsg.createReactionCollector(
             (reaction, user) => (reaction.emoji.name === "⏫" && (!user.bot)),
-            {"time": 300000}
+            {"time": 600000}
           );
           const downReaction = songMsg.createReactionCollector(
             (reaction, user) => (reaction.emoji.name === "⏬" && (!user.bot)),
-            {"time": 300000}
+            {"time": 600000}
           );
           const poopReaction = songMsg.createReactionCollector(
             (reaction, user) => (reaction.emoji.name === "💩" && (!user.bot)),
-            {"time": 300000}
+            {"time": 600000}
           );
           // Handle reactions.
           upReaction.on("collect", (reaction) => {
@@ -151,7 +153,23 @@ class ChatService {
             this.simpleNote(reaction.message, note, this.msgType.MUSIC);
             this.handleRatingReaction(reaction, song, -1000, processRating, true);
           });
+          upReaction.on("end", () => songMsg.reactions.removeAll());
+          downReaction.on("end", () => songMsg.reactions.removeAll());
+          poopReaction.on("end", () => songMsg.reactions.removeAll());
         }));
+  }
+
+  /**
+   * Create a collector for messages and execute followup commands.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {function} filter - function to filter the collected messages and determine which ones should be processed.
+   * @param {function} process - Function to be invoked if a message passed the filter.
+   */
+  awaitCommand(msg, filter, process) {
+    msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
+      then(process).
+      // Timeout or error.
+      catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
   }
 
   /**
@@ -198,76 +216,6 @@ class ChatService {
         }).
         catch((err) => this.simpleNote(reaction.message, err, this.msgType.FAIL));
     });
-  }
-
-  /**
-   * @deprecated
-   * TODO: Replace with pagedContent and awaitCommand.
-   */
-  openSelectionMenu(songs, msg, filter, process) {
-    this.debugPrint(songs);
-    if (typeof msg.channel === "undefined") {
-      return;
-    }
-    let page = 0;
-    // Build choose menu.
-    msg.channel.send(this.buildSelectionPage(songs, page)).
-      // Add reactions for page navigation.
-      then((menuMsg) => this.postReactionEmojis(menuMsg, ["⏪", "⏩"]).then(() => {
-        // Add listeners to reactions.
-        const nextReaction = menuMsg.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏩" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        const backReaction = menuMsg.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏪" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        // Handle reactions.
-        nextReaction.on("collect", (reaction) => {
-          reaction.users.remove(msg.author);
-          if ((page + 1) * 10 <= songs.length) {
-            ++page;
-            menuMsg.edit(this.buildSelectionPage(songs, page));
-          }
-        });
-        backReaction.on("collect", (reaction) => {
-          reaction.users.remove(msg.author);
-          if (page > 0) {
-            --page;
-            menuMsg.edit(this.buildSelectionPage(songs, page));
-          }
-        });
-        // Add listener for response Message.
-        msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
-          then((collected) => {
-            process(collected);
-            menuMsg.delete();
-          }).
-          // Timeout or error.
-          catch(() => menuMsg.delete());
-      }));
-  }
-
-  awaitCommand(msg, filter, process) {
-    msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
-      then(process).
-      // Timeout or error.
-      catch(() => null);
-  }
-
-  /**
-   * @deprecated
-   * TODO: Replace with pagedContent and awaitCommand.
-   */
-  buildSelectionPage(songs, pageNo) {
-    const first = 10 * pageNo;
-    const last = first + 10 > songs.length - 1 ? songs.length - 1 : first + 10;
-    let page = "";
-    for (let index = first; index < last; index++) {
-      page += `${index + 1}. ${songs[index].title}\n`;
-    }
-    return page;
   }
 
   /**

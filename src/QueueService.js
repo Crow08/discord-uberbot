@@ -102,7 +102,7 @@ class QueueService {
    * @param {Song[]} songs - Array of songs to be added.
    */
   addMultipleToQueue(songs) {
-    this.queue.concat(songs);
+    this.queue = this.queue.concat(songs);
   }
 
   /**

@@ -67,6 +67,15 @@ class UploadCommand extends Command {
     }));
   }
 
+  /**
+   * Add file using every line as query to search with.
+   * @param {string[]} lines - Array of lines still to process.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {number} count - Number of songs already processed.
+   * @param {Message} statusMsg - Message sent by the bot to display the progress of the import
+   * <br>&nbsp;&nbsp;(updated every 10 songs).
+   * @param {string} plName Optional playlist name if unset songs are added to queue instead.
+   */
   addRecursively(lines, msg, count, statusMsg, plName) {
     if (lines.length <= 0) {
       statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
@@ -91,6 +100,15 @@ class UploadCommand extends Command {
       });
   }
 
+  /**
+   * Add .csv files with 3 columns per row <query>;<artist>;<title>
+   * @param {string[]} lines - Array of lines still to process.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {number} count - Number of songs already processed.
+   * @param {Message} statusMsg - Message sent by the bot to display the progress of the import
+   * <br>&nbsp;&nbsp;(updated every 10 songs).
+   * @param {string} plName Optional playlist name if unset songs are added to queue instead.
+   */
   addCSVRecursively(lines, msg, count, statusMsg, plName) {
     if (lines.length <= 0) {
       statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
@@ -128,6 +146,14 @@ class UploadCommand extends Command {
     }
   }
 
+  /**
+   * Process a songs by adding requester and optional playlist fields.
+   * Then add the songs to the playlist or queue.
+   * @private
+   * @param {Song} songs - Song to be processed.
+   * @param {string} username - Requester username.
+   * @param {string} plName - Optional playlist name if unset songs are added to queue instead.
+   */
   processSongs(songs, username, plName) {
     const enrichedSongs = songs.map((song) => {
       song.requester = username;

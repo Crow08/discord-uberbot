@@ -89,7 +89,8 @@ class PlayerService {
     }
     this.playNow(songs[0], msg);
     if (songs.length > 1) {
-      this.queueService.addMultipleToQueue(songs.splice(0, 1));
+      songs.splice(0, 1);
+      this.queueService.addMultipleToQueue(songs);
     }
   }
 
@@ -139,7 +140,7 @@ class PlayerService {
     } else if (this.audioDispatcher.paused) {
       this.chatService.simpleNote(msg, "Playback already paused!", this.chatService.msgType.FAIL);
     } else {
-      this.audioDispatcher.pause();
+      this.audioDispatcher.pause(true);
       this.chatService.simpleNote(msg, "Playback paused!", this.chatService.msgType.MUSIC);
     }
   }

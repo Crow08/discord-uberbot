@@ -36,6 +36,7 @@ class ShowHistoryCommand extends Command {
    * Constructor.
    * @param {ChatService} chatService - ChatService.
    * @param {QueueService} queueService - QueueService.
+   * @param {Command[]} commands - Bot commands.
    */
   constructor(chatService, queueService, commands) {
     super("showhistory");
