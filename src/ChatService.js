@@ -169,7 +169,14 @@ class ChatService {
     msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
       then(process).
       // Timeout or error.
-      catch((err) => this.simpleNote(msg, err, this.msgType.FAIL));
+      catch((err) => {
+        if (err instanceof Error) {
+          this.simpleNote(msg, err, this.msgType.FAIL);
+          return;
+        }
+        const note = "Did you fell asleep? My attention span lasts only for 2 min... oh a kitten :heart_eyes:";
+        this.simpleNote(msg, note, this.msgType.INFO);
+      });
   }
 
   /**
