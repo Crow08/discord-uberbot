@@ -13,10 +13,10 @@ class RenamePLCommand extends Command {
    * @param {DbService} dbService - DbService.
    */
   constructor(chatService, dbService) {
-    super("rename");
+    super("plrename");
     super.help = "renames given playlist";
     super.usage = "<prefix>rename <playlist> <newName>";
-    super.alias = ["rename"];
+    super.alias = ["plrename", "rename"];
     this.chatService = chatService;
     this.dbService = dbService;
   }
