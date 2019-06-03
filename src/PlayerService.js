@@ -140,7 +140,7 @@ class PlayerService {
     } else if (this.audioDispatcher.paused) {
       this.chatService.simpleNote(msg, "Playback already paused!", this.chatService.msgType.FAIL);
     } else {
-      this.audioDispatcher.pause();
+      this.audioDispatcher.pause(true);
       this.chatService.simpleNote(msg, "Playback paused!", this.chatService.msgType.MUSIC);
     }
   }
