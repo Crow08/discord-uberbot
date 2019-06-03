@@ -2,7 +2,7 @@ const Command = require("./Command.js");
 
 const isSelectionCmd = (resp) => {
   const message = resp.content.trim();
-  if (!isNaN(message)) {
+  if (!isNaN(message) && message.length > 0) {
     return true;
   } else if (message === "cancel") {
     return true;
@@ -31,7 +31,7 @@ const processSelectionCmd = (collected, songs, playerService, queueService, chat
     case "add": {
       queueService.addToQueue(song);
       const note = `song added to queue: ${song.title}`;
-      chatService.simpleNote(response.channel, note, chatService.msgType.MUSIC);
+      chatService.simpleNote(response, note, chatService.msgType.MUSIC);
       break;
     }
     default:
