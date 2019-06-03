@@ -135,12 +135,7 @@ class QueueService {
     return new Promise((resolve, reject) => {
       this.dbService.getPlaylist(plName).
         then((songs) => {
-          if (this.queue && this.queue.length) {
-            console.log(songs.length);
-            this.addMultipleToQueue(shuffle(songs));
-          } else {
-            this.queue = shuffle(songs);
-          }
+          this.addMultipleToQueue(shuffle(songs));
           resolve();
         }).
         catch((error) => reject(error));

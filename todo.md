@@ -47,7 +47,6 @@
 - `TypeError: Cannot read property 'src' of undefined`
 	- recreate:
 		- .search
-		- .p rockabye / or any other command like .add
 - `:x: | Error: input stream: No formats found with custom filter`
 
 ##### needs reporting #####
