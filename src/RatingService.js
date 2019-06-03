@@ -18,7 +18,7 @@ class RatingService {
   /**
    * Rate a song up or down and handle cooldown and other implications like adding or removing the song.
    * Special cases:
-   * Upvoted and song has no playlist and rating is higher than -2. => add to auto playlist.
+   * Upvoted and rating is higher than -2. => add to auto playlist.
    * Downvoted and song has a playlist and rating is lower than -1. => remove from playlist.
    * @param {Song} song - Song to be rated.
    * @param {string} user - User rating the song.
@@ -37,8 +37,8 @@ class RatingService {
         reject(new Error(`${user}: Rating for this song is on cooldown. (${cdHours}h ${cdMin}min)`));
         return;
       }
-      // If upvote and song has no playlist and rating is higher than -2.
-      if (delta > 0 && song.playlist === "-" && (song.rating + delta) > -2) {
+      // If upvote and rating is higher than -2.
+      if (delta > 0 && (song.rating + delta) > -2) {
         this.addToAutoPL(song).
           then((note) => {
             this.saveRating(user, song, delta).
