@@ -84,10 +84,40 @@ class SearchCommand extends Command {
         });
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC).
           then((infoMsg) => infoMsg.delete({"timeout": 5000}));
-        this.chatService.openSelectionMenu(
-          eSongs, msg, isSelectionCmd,
-          (col) => processSelectionCmd(col, eSongs, this.playerService, this.queueService, this.chatService)
-        );
+
+
+        const pages = [];
+        let curPage = "";
+        eSongs.forEach((entry, index) => {
+          curPage += `\`\`\` ${index + 1}. ${entry.title} - ${entry.artist}\`\`\`\n`;
+          if ((index + 1) % 10 === 0) {
+            curPage += `Page ${pages.length + 1} / ${Math.ceil(eSongs.length / 10)}`;
+            const embed = new this.chatService.DiscordMessageEmbed();
+            embed.setTitle("search results:");
+            embed.setColor(48769);
+            embed.setDescription(curPage);
+            pages.push(embed);
+            curPage = "";
+          }
+        });
+        if (eSongs.length % 10 !== 0) {
+          curPage += `Page ${pages.length + 1} / ${Math.ceil(eSongs.length / 10)}`;
+          const embed = new this.chatService.DiscordMessageEmbed();
+          embed.setTitle("search results:");
+          embed.setColor(48769);
+          embed.setDescription(curPage);
+          pages.push(embed);
+        }
+        if (pages.length === 0) {
+          this.chatService.simpleNote(msg, "History is empty!", this.chatService.msgType.INFO);
+        } else {
+          this.chatService.pagedContent(msg, pages);
+
+          this.chatService.awaitCommand(
+            msg, isSelectionCmd,
+            (col) => processSelectionCmd(col, eSongs, this.playerService, this.queueService, this.chatService)
+          );
+        }
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }
