@@ -21,7 +21,7 @@ class SearchService {
    * @param {string} payload - Payload containing song url or query.
    * @param {number} count - Count of desired results.
    * @param {"yt"|"sc"|"sp"} preferredSrc - preferred source for searching song when using queries.
-   *                                        "yt" : YouTube | "sc" : SoundCloud |"sp" : Spotify
+   * <br>&nbsp;&nbsp;"yt" : YouTube | "sc" : SoundCloud |"sp" : Spotify
    * @returns {Object} - returns an Object containing a note  and an Array of songs {"note": string, "songs": Song[]}
    */
   search(payload, count = 1, preferredSrc = this.defaultSrc) {
@@ -72,7 +72,7 @@ class SearchService {
    * @param {string} payload - Payload containing song query.
    * @param {number} count - Count of desired results.
    * @param {"yt"|"sc"|"sp"} preferredSrc - preferred source for searching song when using queries.
-   *                                        "yt" : YouTube | "sc" : SoundCloud |"sp" : Spotify
+   * <br>&nbsp;&nbsp;"yt" : YouTube | "sc" : SoundCloud |"sp" : Spotify
    */
   querySearch(payload, count = 1, preferredSrc = this.defaultSrc) {
     return new Promise((resolve, reject) => {
