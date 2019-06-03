@@ -1,11 +1,24 @@
 const request = require("request");
 const Song = require("./Song");
 
+/**
+ * Class representing a SoundCloud service.
+ */
 class SoundCloudService {
+
+  /**
+   * Constructor.
+   * @param {string} clientId - Client id to authenticate SoundCloud requests.
+   */
   constructor(clientId) {
     this.clientId = clientId;
   }
 
+  /**
+   * Get song via url.
+   * @param {string} payload - Url to get song from.
+   * @returns {Song} - Song from url.
+   */
   getSongViaUrl(payload) {
     return new Promise((resolve, reject) => {
       request(
@@ -29,6 +42,12 @@ class SoundCloudService {
     });
   }
 
+  /**
+   * Get songs via query.
+   * @param {string} payload - Url to get song from.
+   * @param {number} count - Number of songs to be fetched.
+   * @returns {Song[]} - Array of songs from url.
+   */
   getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {
       request(
@@ -64,6 +83,10 @@ class SoundCloudService {
     });
   }
 
+  /**
+   * Get audio stream from url.
+   * @param {string} url - Url to get audio stream from.
+   */
   getStream(url) {
     return request(`${url}?client_id=${this.clientId}`);
   }

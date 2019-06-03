@@ -1,7 +1,20 @@
 const Command = require("./Command.js");
 const request = require("request");
 
+/**
+ * Class for upload songs file command.
+ * @extends Command
+ * @Category Commands
+ */
 class UploadCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {QueueService} queueService - QueueService.
+   * @param {SearchService} searchService - SearchService.
+   * @param {DbService} dbService - DbService.
+   */
   constructor(chatService, queueService, searchService, dBService) {
     super("upload");
     super.help = "add a songs from a file to the queue or to a playlist.";
@@ -14,6 +27,11 @@ class UploadCommand extends Command {
     this.queueService = queueService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof msg.attachments === "undefined" || msg.attachments.array().length === 0) {
       this.chatService.simpleNote(msg, "No attached file found!", this.chatService.msgType.FAIL);
@@ -49,6 +67,15 @@ class UploadCommand extends Command {
     }));
   }
 
+  /**
+   * Add file using every line as query to search with.
+   * @param {string[]} lines - Array of lines still to process.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {number} count - Number of songs already processed.
+   * @param {Message} statusMsg - Message sent by the bot to display the progress of the import
+   * <br>&nbsp;&nbsp;(updated every 10 songs).
+   * @param {string} plName Optional playlist name if unset songs are added to queue instead.
+   */
   addRecursively(lines, msg, count, statusMsg, plName) {
     if (lines.length <= 0) {
       statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
@@ -73,13 +100,25 @@ class UploadCommand extends Command {
       });
   }
 
+  /**
+   * Add .csv files with 3 columns per row <query>;<artist>;<title>
+   * @param {string[]} lines - Array of lines still to process.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {number} count - Number of songs already processed.
+   * @param {Message} statusMsg - Message sent by the bot to display the progress of the import
+   * <br>&nbsp;&nbsp;(updated every 10 songs).
+   * @param {string} plName Optional playlist name if unset songs are added to queue instead.
+   */
   addCSVRecursively(lines, msg, count, statusMsg, plName) {
     if (lines.length <= 0) {
       statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
       this.chatService.simpleNote(msg, "Import successful!", this.chatService.msgType.INFO);
       return;
     }
-    const row = lines.pop().split(";");
+    const row = lines.pop().
+      replace("\n", "").
+      replace("\r", "").
+      split(";");
     if (row.length === 3) {
       const searchQuery = row[0];
       const artist = row[1];
@@ -107,6 +146,14 @@ class UploadCommand extends Command {
     }
   }
 
+  /**
+   * Process a songs by adding requester and optional playlist fields.
+   * Then add the songs to the playlist or queue.
+   * @private
+   * @param {Song} songs - Song to be processed.
+   * @param {string} username - Requester username.
+   * @param {string} plName - Optional playlist name if unset songs are added to queue instead.
+   */
   processSongs(songs, username, plName) {
     const enrichedSongs = songs.map((song) => {
       song.requester = username;

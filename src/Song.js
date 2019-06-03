@@ -1,4 +1,11 @@
+/**
+ * Class representing a song object.
+ */
 class Song {
+
+  /**
+   * Constructor.
+   */
   constructor() {
     this.title = "";
     this.artist = "";
@@ -10,6 +17,10 @@ class Song {
     this.playlist = "";
   }
 
+  /**
+   * Source type defining the origin of the song.
+   * @static
+   */
   static get srcType() {
     return {
       "SC": "sc",

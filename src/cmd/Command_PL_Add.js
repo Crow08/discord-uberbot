@@ -1,6 +1,18 @@
 const Command = require("./Command.js");
 
+/**
+ * Class for add to playlist command.
+ * @extends Command
+ * @Category Commands
+ */
 class AddPLCommand extends Command {
+
+  /**
+   * Constructor.
+   * @param {ChatService} chatService - ChatService.
+   * @param {DbService} dbService - DbService.
+   * @param {SearchService} searchService - SearchService.
+   */
   constructor(chatService, dBService, searchService) {
     super("pladd");
     super.help = "add a song to the specified playlist by url or query.";
@@ -11,6 +23,11 @@ class AddPLCommand extends Command {
     this.searchService = searchService;
   }
 
+  /**
+   * Function to execute this command.
+   * @param {String} payload - Payload from the user message with additional information.
+   * @param {Message} msg - User message this function is invoked by.
+   */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length < 2) {
       this.chatService.simpleNote(msg, "No URL or query found!", this.chatService.msgType.FAIL);

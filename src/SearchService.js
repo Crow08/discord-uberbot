@@ -1,4 +1,14 @@
+/**
+ * Class representing a search service.
+ */
 class SearchService {
+
+  /**
+   * Constructor.
+   * @param {YoutubeService} youtubeService - YoutubeService.
+   * @param {SoundCloudService} soundCloudService - SoundCloudService.
+   * @param {SpotifyService} spotifyService - SpotifyService.
+   */
   constructor(youtubeService, soundCloudService, spotifyService) {
     this.youtubeService = youtubeService;
     this.soundCloudService = soundCloudService;
@@ -6,6 +16,14 @@ class SearchService {
     this.defaultSrc = "SP";
   }
 
+  /**
+   * Search for a song using urls or queries on the preferred source and fallbacks.
+   * @param {string} payload - Payload containing song url or query.
+   * @param {number} count - Count of desired results.
+   * @param {"yt"|"sc"|"sp"} preferredSrc - preferred source for searching song when using queries.
+   * <br>&nbsp;&nbsp;"yt" : YouTube | "sc" : SoundCloud |"sp" : Spotify
+   * @returns {Object} - returns an Object containing a note  and an Array of songs {"note": string, "songs": Song[]}
+   */
   search(payload, count = 1, preferredSrc = this.defaultSrc) {
     return new Promise((resolve, reject) => {
       let searchString = payload.trim();
@@ -49,6 +67,13 @@ class SearchService {
     });
   }
 
+  /**
+   * Do a direct query search skipping checks for urls.
+   * @param {string} payload - Payload containing song query.
+   * @param {number} count - Count of desired results.
+   * @param {"yt"|"sc"|"sp"} preferredSrc - preferred source for searching song when using queries.
+   * <br>&nbsp;&nbsp;"yt" : YouTube | "sc" : SoundCloud |"sp" : Spotify
+   */
   querySearch(payload, count = 1, preferredSrc = this.defaultSrc) {
     return new Promise((resolve, reject) => {
       const searchString = payload.trim();
@@ -75,6 +100,12 @@ class SearchService {
     });
   }
 
+  /**
+   * Do Search from Youtube then SoundCloud.
+   * @private
+   * @param {string} payload - Payload containing song query.
+   * @param {number} count - Count of desired results.
+   */
   getSongsFromYTthenSC(searchString, count) {
     return new Promise((resolve, reject) => {
       let note = "Get songs from YouTube search query~";
@@ -90,6 +121,12 @@ class SearchService {
     });
   }
 
+  /**
+   * Do Search from SoundCloud then Youtube.
+   * @private
+   * @param {string} payload - Payload containing song query.
+   * @param {number} count - Count of desired results.
+   */
   getSongsFromSCthenYT(searchString, count) {
     return new Promise((resolve, reject) => {
       let note = "Get songs from SoundCloud search query~";
@@ -105,6 +142,13 @@ class SearchService {
     });
   }
 
+  /**
+   * Do Search from Spotify the Youtube then SoundCloud.
+   * Spotify is only for searching and to get the exact song title and artist.
+   * @private
+   * @param {string} payload - Payload containing song query.
+   * @param {number} count - Count of desired results.
+   */
   getSongsFromSPthenYTthenSC(searchString, count) {
     return new Promise((resolve, reject) => {
       const preNote = "Get song title and artist from Spotify~";
