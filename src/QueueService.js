@@ -128,14 +128,14 @@ class QueueService {
   }
 
   /**
-   * Replace the current queue with the given playlist form the DB.
+   * Adds the given playlist from the DB to the current queue.
    * @param {string} plName - playlist name to load.
    */
   loadPlaylist(plName) {
     return new Promise((resolve, reject) => {
       this.dbService.getPlaylist(plName).
         then((songs) => {
-          this.queue = shuffle(songs);
+          this.addMultipleToQueue(shuffle(songs));
           resolve();
         }).
         catch((error) => reject(error));

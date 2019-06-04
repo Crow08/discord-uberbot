@@ -31,28 +31,15 @@ class VoiceService {
    */
   playStream(song, msg, seek = 0) {
     return new Promise((resolve, reject) => {
-      switch (song.src) {
-      case Song.srcType.YT:
-        this.getVoiceConnection(msg).then((conn) => resolve(conn.play(
-          this.youtubeService.getStream(song.url),
-          {"bitrate": this.bitRate, "passes": 3, seek, "volume": (this.volume / 100)}
-        ))).
-          catch((error) => reject(error));
-        break;
-      case Song.srcType.SC:
-        this.getVoiceConnection(msg).then((conn) => resolve(conn.play(
-          this.soundCloudService.getStream(song.url),
-          {"bitrate": this.bitRate, "passes": 3, seek, "volume": (this.volume / 100)}
-        ))).
-          catch((error) => reject(error));
-        break;
-      case Song.srcType.SP:
-        reject(new Error("No implementation to get stream from Spotify!"));
-        break;
-      default:
-        reject(new Error("song src not valid!"));
-        break;
+      const opt = {"bitrate": this.bitRate, "passes": 3, seek, "volume": (this.volume / 100)};
+      if (song.src === Song.srcType.YT) {
+        opt.type = "opus";
       }
+      this.getVoiceConnection(msg).
+        then((conn) => this.getStream(song).
+          then((stream) => resolve(conn.play(stream, opt))).
+          catch((err) => reject(err))).
+        catch((err) => reject(err));
     });
   }
 
@@ -98,6 +85,24 @@ class VoiceService {
         }
       } else {
         resolve(voiceConnection);
+      }
+    });
+  }
+
+  getStream(song) {
+    return new Promise((resolve, reject) => {
+      switch (song.src) {
+      case Song.srcType.YT:
+        resolve(this.youtubeService.getStream(song.url));
+        break;
+      case Song.srcType.SC:
+        resolve(this.soundCloudService.getStream(song.url));
+        break;
+      case Song.srcType.SP:
+        reject(new Error("No implementation to get stream from Spotify!"));
+        break;
+      default:
+        reject(new Error("song src not valid!"));
       }
     });
   }

@@ -70,7 +70,16 @@ class PlayerService {
         this.audioDispatcher.on("finish", () => this.handleSongEnd(msg, startTime));
         this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
         this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
-        const ratingFunc = (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd);
+        const ratingFunc = (rSong, user, delta, ignoreCd) => new Promise((resolve, reject) => {
+          this.ratingService.rateSong(rSong, user, delta, ignoreCd).
+            then(resolve).
+            catch(reject).
+            finally(() => {
+              if (delta < 0) {
+                this.skip(msg);
+              }
+            });
+        });
         this.chatService.displaySong(msg, song, ratingFunc);
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));

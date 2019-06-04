@@ -1,3 +1,5 @@
+const Song = require("./Song");
+
 /**
  * Class representing a rating service.
  */
@@ -18,7 +20,7 @@ class RatingService {
   /**
    * Rate a song up or down and handle cooldown and other implications like adding or removing the song.
    * Special cases:
-   * Upvoted and song has no playlist and rating is higher than -2. => add to auto playlist.
+   * Upvoted and rating is higher than 0. => add to auto playlist.
    * Downvoted and song has a playlist and rating is lower than -1. => remove from playlist.
    * @param {Song} song - Song to be rated.
    * @param {string} user - User rating the song.
@@ -37,31 +39,30 @@ class RatingService {
         reject(new Error(`${user}: Rating for this song is on cooldown. (${cdHours}h ${cdMin}min)`));
         return;
       }
-      // If upvote and song has no playlist and rating is higher than -2.
-      if (delta > 0 && song.playlist === "-" && (song.rating + delta) > -2) {
-        this.addToAutoPL(song).
-          then((note) => {
-            this.saveRating(user, song, delta).
-              then(() => resolve(note)).
+      song.rating += delta;
+      let note = "";
+      // If upvote and rating is higher than 0 add song To auto playlist.
+      this.checkAndAddToAutoPL(song, delta).
+        then((autoPlNote) => {
+          note = autoPlNote;
+        }).
+        catch((err) => console.log(err)).
+        finally(() => {
+          // If downvote and song has a playlist and rating is lower than -1.
+          if (delta < 0 && song.playlist !== "-" && song.rating < -1) {
+            this.removeFromPL(song).
+              then(resolve).
               catch(reject);
-          }).
-          catch(reject);
-      // If downvote and song has a playlist and rating is lower than -1.
-      } else if (delta < 0 && song.playlist !== "-" && (song.rating + delta) < -1) {
-        song.rating += delta;
-        this.removeFromPL(song).
-          then(resolve).
-          catch(reject);
-      // If song has no playlist.
-      } else if (song.playlist === "-") {
-        song.rating += delta;
-        resolve();
-      // If song has a playlist.
-      } else {
-        this.saveRating(user, song, delta).
-          then(resolve).
-          catch(reject);
-      }
+          // If song has no playlist.
+          } else if (song.playlist === "-") {
+            resolve("Rating is volatile, song has no playlist or auto playlist to save the rating!");
+          // If song has a playlist.
+          } else {
+            this.saveRating(user, song).
+              then((plNote) => resolve(`${note}\n${plNote}`)).
+              catch(reject);
+          }
+        });
     });
   }
 
@@ -83,25 +84,38 @@ class RatingService {
 
   /**
    * Add song to auto playlist.
+   * @private
    * @param {Song} song - Song to be Added.
    */
-  addToAutoPL(song) {
+  checkAndAddToAutoPL(song, delta) {
     return new Promise((resolve, reject) => {
-      this.queueService.getAutoPL().
-        then((autoPL) => {
-          this.dbService.addSong(song, autoPL).
-            then(() => {
-              song.playlist = autoPL;
-              resolve(`${song.title} added to auto playlist ${autoPL}!`);
-            }).
-            catch(reject);
-        }).
-        catch(reject);
+      if (delta > 0 && song.rating > 0) {
+        this.queueService.getAutoPL().
+          then((autoPL) => {
+            const songCopy = new Song();
+            songCopy.title = song.title;
+            songCopy.artist = song.artist;
+            songCopy.src = song.src;
+            songCopy.requester = song.requester;
+            songCopy.url = song.url;
+            songCopy.playlist = autoPL;
+            this.dbService.addSong(songCopy, autoPL).
+              then(() => {
+                song.playlist = song.playlist === "-" ? autoPL : song.playlist;
+                resolve(`${song.title} added to auto playlist ${autoPL}!`);
+              }).
+              catch(reject);
+          }).
+          catch(reject);
+      } else {
+        resolve();
+      }
     });
   }
 
   /**
    * Remove Song from its playlist.
+   * @private
    * @param {Song} song - Song to be removed.
    */
   removeFromPL(song) {
@@ -121,16 +135,15 @@ class RatingService {
 
   /**
    * Persist rating change in DB.
+   * @private
    * @param {string} user - User causing the rating change.
    * @param {Song} song - Rated song.
-   * @param {number} delta - Rating delta.
    */
-  saveRating(user, song, delta) {
+  saveRating(user, song) {
     return new Promise((resolve, reject) => {
       song.ratingLog[user] = Date.now();
-      song.rating += delta;
       this.dbService.updateSongRating(song).
-        then(() => resolve()).
+        then(() => resolve("Rating successfully saved!")).
         catch(reject);
     });
   }

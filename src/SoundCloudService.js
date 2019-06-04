@@ -88,7 +88,7 @@ class SoundCloudService {
    * @param {string} url - Url to get audio stream from.
    */
   getStream(url) {
-    return request(`${url}?client_id=${this.clientId}`);
+    return new Promise((resolve) => resolve(`${url}?client_id=${this.clientId}`));
   }
 }
 

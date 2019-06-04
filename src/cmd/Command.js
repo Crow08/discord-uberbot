@@ -18,7 +18,7 @@ class Command {
 
   /**
    * @abstract
-   * @param {string} payload - Command payload with with optional parameters dependent on the command implemntation.
+   * @param {string} payload - Command payload with with optional parameters dependent on the command implementation.
    * @param {Message} msg - Discord.js message which triggered the command.
    */
   run(payload, msg) {
