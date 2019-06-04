@@ -237,13 +237,21 @@ class ChatService {
         song[key] = "-";
       }
     }
+
+    let source = "unknown source";
+    source = song.src === "yt" ? "YouTube" : source;
+    source = song.src === "sc" ? "SoundCloud" : source;
+    source = song.src === "sp" ? "Spotify" : source;
+    source = song.src === "raw" ? "raw file" : source;
+
     embed.setColor(890629);
-    embed.addField("Title", song.title, true);
-    embed.addField("Artist", song.artist, true);
+    embed.addField("Title", `\`\`\`${song.title}\`\`\``, true);
     embed.addBlankField();
-    embed.addField("Requester", song.requester, true);
-    embed.addField("Rating", song.rating, true);
-    embed.addField("Source", song.src, true);
+    embed.addField("Artist", `\`\`\`${song.artist}\`\`\``, true);
+    embed.addField("Source", `\`\`\`${source}\`\`\``, true);
+    embed.addField("Requester", `\`\`\`${song.requester}\`\`\``, true);
+    embed.addField("Rating", `\`\`\`DIFF\n${song.rating > 0 ? "+" : ""}${song.rating}\`\`\``, true);
+    embed.addField("Playlist", `\`\`\`${song.playlist}\`\`\``, true);
     return embed;
   }
 
