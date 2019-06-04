@@ -4,15 +4,9 @@
         "node": true
     },
     "extends": "eslint:all",
-    "parser": "Esprima",
     "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "jsx": true,
-            "impliedStrict": true,
-            "globalReturn": true
-        }
+        "ecmaVersion": 9,
+        "sourceType": "module"
     },
     "rules": {
         "semi": 2,
