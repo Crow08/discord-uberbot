@@ -1,4 +1,8 @@
 # discord-uberbot
+[![version](https://img.shields.io/github/package-json/v/Crow08/discord-uberbot.svg)](/package.json)
+[![dependencies](https://david-dm.org/Crow08/discord-uberbot.svg)](/package.json)
+[![Known Vulnerabilities](https://snyk.io/test/github/Crow08/discord-uberbot/badge.svg)](https://snyk.io/test/github/Crow08/discord-uberbot)
+[![license](https://img.shields.io/github/license/Crow08/discord-uberbot.svg)](/LICENSE.md)  
 Jet another Discord Musicbot but this one has an attached DB for saving and managing playlists.
 
 ---
