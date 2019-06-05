@@ -29,6 +29,20 @@ class QueueService {
     this.history = [];
     this.historyLength = historyLength;
     this.autoPL = null;
+
+    this.mode = QueueService.queueMode.NORMAL;
+  }
+
+  /**
+   * Source type defining the origin of the song.
+   * @static
+   */
+  static get queueMode() {
+    return {
+      "NORMAL": "n",
+      "REPEAT_ALL": "ra",
+      "REPEAT_ONE": "ro"
+    };
   }
 
   /**
@@ -48,7 +62,17 @@ class QueueService {
   getNextSong() {
     return new Promise((resolve, reject) => {
       if (this.queue.length > 0) {
-        const song = this.queue.shift();
+        const song = this.queue[0];
+        if (this.mode === QueueService.queueMode.NORMAL) {
+          // NORMAL: remove song first song from queue.
+          this.queue.shift();
+        } else if (this.mode === QueueService.queueMode.REPEAT_ALL) {
+          // REPEAT_ALL: remove song first song from queue and reinsert it at the end.
+          this.queue.shift();
+          this.addToQueue(song);
+        }
+        // REPEAT_ONE: Do nothing, leave current song at the top of the queue.
+
         this.addSongToHistory(song);
         resolve(song);
       } else {
