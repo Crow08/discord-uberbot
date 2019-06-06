@@ -60,7 +60,7 @@ class SearchService {
             then((songs) => resolve({"note": "Get songs from YouTube playlist url~", songs})).
             catch(reject);
         }
-      } else if (searchString.includes("http://") || searchString.includes("https://") ) {
+      } else if (searchString.includes("http://") || searchString.includes("https://")) {
         // Unknown url detected:
         this.rawFileService.getSongViaUrl(searchString).
           then((songs) => resolve({"note": "Get song from File url~", songs})).
@@ -85,17 +85,17 @@ class SearchService {
       const searchString = payload.trim();
       switch (preferredSrc) {
       case "YT":
-        this.getSongsFromYTthenSC(searchString, count).
+        this.getSongsFromYtThenSc(searchString, count).
           then(resolve).
           catch(reject);
         break;
       case "SC":
-        this.getSongsFromSCthenYT(searchString, count).
+        this.getSongsFromScThenYt(searchString, count).
           then(resolve).
           catch(reject);
         break;
       case "SP":
-        this.getSongsFromSPthenYTthenSC(searchString, count).
+        this.getSongsFromSpThenYtThenSc(searchString, count).
           then(resolve).
           catch(reject);
         break;
@@ -112,7 +112,7 @@ class SearchService {
    * @param {string} payload - Payload containing song query.
    * @param {number} count - Count of desired results.
    */
-  getSongsFromYTthenSC(searchString, count) {
+  getSongsFromYtThenSc(searchString, count) {
     return new Promise((resolve, reject) => {
       let note = "Get songs from YouTube search query~";
       this.youtubeService.getSongsViaSearchQuery(searchString, count).
@@ -133,7 +133,7 @@ class SearchService {
    * @param {string} payload - Payload containing song query.
    * @param {number} count - Count of desired results.
    */
-  getSongsFromSCthenYT(searchString, count) {
+  getSongsFromScThenYt(searchString, count) {
     return new Promise((resolve, reject) => {
       let note = "Get songs from SoundCloud search query~";
       this.soundCloudService.getSongsViaSearchQuery(searchString, count).
@@ -155,14 +155,14 @@ class SearchService {
    * @param {string} payload - Payload containing song query.
    * @param {number} count - Count of desired results.
    */
-  getSongsFromSPthenYTthenSC(searchString, count) {
+  getSongsFromSpThenYtThenSc(searchString, count) {
     return new Promise((resolve, reject) => {
       const preNote = "Get song title and artist from Spotify~";
       this.spotifyService.getSongsViaSearchQuery(searchString).
-        then((preSongs) => this.getSongsFromYTthenSC(`${preSongs[0].title} ${preSongs[0].artist}`, count).
+        then((preSongs) => this.getSongsFromYtThenSc(`${preSongs[0].title} ${preSongs[0].artist}`, count).
           then(({note, songs}) => resolve({"note": `${preNote}\n${note}`, songs})).
           catch((err2) => reject(new Error(`${preNote}\n${err2}`)))).
-        catch((err) => this.getSongsFromYTthenSC(searchString, count).
+        catch((err) => this.getSongsFromYtThenSc(searchString, count).
           then(({note, songs}) => resolve({"note": `${err}\n${note}`, songs})).
           catch((err2) => reject(new Error(`${err}\n${err2}`))));
     });

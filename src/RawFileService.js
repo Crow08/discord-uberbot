@@ -30,8 +30,7 @@ class RawFileService {
         song.artist = "-";
         song.src = Song.srcType.RAW;
         return resolve([song]);
-      }
-      );
+      });
     });
   }
 
