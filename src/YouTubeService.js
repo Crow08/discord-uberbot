@@ -24,7 +24,7 @@ class YoutubeService {
    */
   getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
-      ytdl.ytdl.getBasicInfo(searchString, {}, (err, info) => {
+      ytdl.getBasicInfo(searchString, {}, (err, info) => {
         if (err) {
           return reject(err);
         }
