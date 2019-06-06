@@ -5,7 +5,6 @@
 ### Features: ###
 
 ##### Playlists #####
-- paging for list_songs (.ls &lt;playlist&gt;)
 - .start command should clear queue and stop playback to be used while song is playing
 - remove song from playlist command has to use artist and title. 
 
