@@ -16,7 +16,7 @@ class SearchPLCommand extends Command {
   constructor(chatService, dbService, ratingService) {
     super("plsearch");
     super.help = "search given song in given playlist";
-    super.usage = "<prefix>plsearch <pl name> <songname>";
+    super.usage = "<prefix>plsearch <pl name> <song name>";
     super.alias = ["plsearch", "pls"];
     this.chatService = chatService;
     this.dbService = dbService;

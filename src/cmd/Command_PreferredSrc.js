@@ -15,8 +15,7 @@ class PreferredSrcCommand extends Command {
   constructor(chatService, searchService) {
     super("preferdsrc");
     super.help = "set a source to be the default source for all searches.\n" +
-    "displays the current preferred source if no source is provided.\n" +
-    "(valid sources are \"yt\":youtube,\"sc\":soundcloud,\"sp\":spotify.)";
+    "(valid sources to set are: \"yt\":youtube,\"sc\":soundcloud,\"sp\":spotify.\nno parameter to get current source)";
     super.usage = "<prefix>preferdsrc [yt|sc|sp]";
     super.alias = ["preferdsrc", "searchsrc", "src"];
     this.chatService = chatService;

@@ -16,7 +16,7 @@ class AddPLCommand extends Command {
   constructor(chatService, dBService, searchService) {
     super("pladd");
     super.help = "add a song to the specified playlist by url or query.";
-    super.usage = "<prefix>pladd <pl name> <url or query>";
+    super.usage = "<prefix>pladd <pl name> <url | query>";
     super.alias = ["pladd"];
     this.chatService = chatService;
     this.dBService = dBService;

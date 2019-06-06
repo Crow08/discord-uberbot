@@ -15,7 +15,7 @@ class RenamePLCommand extends Command {
   constructor(chatService, dbService) {
     super("plrename");
     super.help = "renames given playlist";
-    super.usage = "<prefix>rename <playlist> <newName>";
+    super.usage = "<prefix>rename <playlist> <new name>";
     super.alias = ["plrename", "rename"];
     this.chatService = chatService;
     this.dbService = dbService;

@@ -39,12 +39,12 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 ```prolog
 +----------------------------Commands--------------------------+
 | Name:   add                                                  |
-| Usage:  !add <url or query>                                  |
+| Usage:  !add <url | query>                                   |
 | About:  add a song to the current queue by url or query.     |
 | Alias:  add, a                                               |
 +--------------------------------------------------------------+
 | Name:   pladd                                                |
-| Usage:  !pladd <pl name> <url or query>                      |
+| Usage:  !pladd <pl name> <url | query>                       |
 | About:  add a song to the specified playlist by url or       |
 |         query.                                               |
 +--------------------------------------------------------------+
@@ -119,12 +119,12 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 | About:  pause current playback.                              |
 +--------------------------------------------------------------+
 | Name:   play                                                 |
-| Usage:  !play <url or query>                                 |
+| Usage:  !play <url | query>                                  |
 | About:  play a song by url or query.                         |
 | Alias:  play, p                                              |
 +--------------------------------------------------------------+
 | Name:   playnext                                             |
-| Usage:  !playnext <queueposition>                            |
+| Usage:  !playnext <queue position>                           |
 | About:  moves song at given position to top                  |
 | Alias:  playnext, pn                                         |
 +--------------------------------------------------------------+
@@ -132,9 +132,9 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 | Usage:  !preferdsrc [yt|sc|sp]                               |
 | About:  set a source to be the default source for all        |
 |         searches.                                            |
-|         displays the current preferred source if no source   |
-|         is provided. (valid sources are:                     |
-|         "yt":youtube,"sc":soundcloud,"sp":spotify.)          |
+|         (valid sources to set are:                           |
+|         "yt":youtube,"sc":soundcloud,"sp":spotify.           |
+|         no parameter to get current source)                  |
 | Alias:  preferdsrc, searchsrc, src                           |
 +--------------------------------------------------------------+
 | Name:   remove                                               |
@@ -142,29 +142,29 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 | About:  removes a song from the current queue.               |
 +--------------------------------------------------------------+
 | Name:   plremove                                             |
-| Usage:  !plremove <pl name> <songname>                       |
+| Usage:  !plremove <pl name> <song name>                      |
 | About:  remove given song from given playlist                |
 | Alias:  plremove, plrm                                       |
 +--------------------------------------------------------------+
 | Name:   plrename                                             |
-| Usage:  !rename <playlist> <newName>                         |
+| Usage:  !rename <playlist> <new name>                        |
 | About:  renames given playlist                               |
 | Alias:  plrename, rename                                     |
 +--------------------------------------------------------------+
-| Name:   renamesong                                           |
-| Usage:  !renamesong <t(itle)/a(rtist)> <playlist> <song      |
-|         number> <new name>                                   |
-| About:  rename title or artist of song                       |
-| Alias:  renamesong, rs                                       |
+| Name:   rename                                               |
+| Usage:  !rename <"t"|"a"> <playlist name> <song number>      |
+|         <new name>                                           |
+| About:  rename title or artist of song.                      |
+|         (first parameter "t" for title and "a" for artist.)  |
+| Alias:  rename, renamesong, r                                |
 +--------------------------------------------------------------+
 | Name:   search                                               |
 | Usage:  !search <query>                                      |
-|         =>[play|add] <song number>                           |
-|         => cancel                                            |
+|         => <<"play"|"add" <song number>>|"cancel">           |
 | About:  search for a song and choose from multiple results.  |
 +--------------------------------------------------------------+
 | Name:   plsearch                                             |
-| Usage:  !plsearch <pl name> <songname>                       |
+| Usage:  !plsearch <pl name> <song name>                      |
 | About:  search given song in given playlist                  |
 | Alias:  plsearch, pls                                        |
 +--------------------------------------------------------------+

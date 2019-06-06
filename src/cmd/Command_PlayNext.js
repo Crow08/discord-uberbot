@@ -15,7 +15,7 @@ class PlayNextCommand extends Command {
   constructor(chatService, queueService) {
     super("playnext");
     super.help = "moves song at given position to top";
-    super.usage = "<prefix>playnext <queueposition>";
+    super.usage = "<prefix>playnext <queue position>";
     super.alias = ["playnext", "pn"];
     this.chatService = chatService;
     this.queueService = queueService;

@@ -16,7 +16,7 @@ class PlayCommand extends Command {
   constructor(chatService, playerService, searchService) {
     super("play");
     super.help = "play a song by url or query.";
-    super.usage = "<prefix>play <url or query>";
+    super.usage = "<prefix>play <url | query>";
     super.alias = ["play", "p"];
     this.playerService = playerService;
     this.chatService = chatService;

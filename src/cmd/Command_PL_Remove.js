@@ -15,7 +15,7 @@ class RemovePLCommand extends Command {
   constructor(chatService, dbService) {
     super("plremove");
     super.help = "remove given song from given playlist";
-    super.usage = "<prefix>plremove <pl name> <songname>";
+    super.usage = "<prefix>plremove <pl name> <song name>";
     super.alias = ["plremove", "plrm"];
     this.chatService = chatService;
     this.dbService = dbService;
