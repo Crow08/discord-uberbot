@@ -28,17 +28,33 @@ class ListSongsCommand extends Command {
    */
   run(payload, msg) {
     this.dbService.getPlaylist(payload).then((songs) => {
-      let count = 1;
-      const embed = new this.chatService.DiscordMessageEmbed();
-      let songList = "";
-      embed.setTitle(`Playlist: ${payload}`);
-      embed.setColor(48769);
-      songs.forEach((song) => {
-        songList += `\`\`\`${count}. ${song.title} - ${song.artist}\`\`\`\n`;
-        count++;
+      const pages = [];
+      let listText = "";
+      songs.forEach((entry, index) => {
+        listText += `\`\`\` ${index + 1}. ${entry.title} - ${entry.artist}\`\`\`\n`;
+        if ((index + 1) % 10 === 0) {
+          listText += `Page ${pages.length + 1} / ${Math.ceil(songs.length / 10)}`;
+          const embed = new this.chatService.DiscordMessageEmbed();
+          embed.setTitle(`Playlist: ${payload}`);
+          embed.setColor(48769);
+          embed.setDescription(listText);
+          pages.push(embed);
+          listText = "";
+        }
       });
-      embed.setDescription(songList);
-      this.chatService.send(msg, embed);
+      if (songs.length % 10 !== 0) {
+        listText += `Page ${pages.length + 1} / ${Math.ceil(songs.length / 10)}`;
+        const embed = new this.chatService.DiscordMessageEmbed();
+        embed.setTitle(`Playlist: ${payload}`);
+        embed.setColor(48769);
+        embed.setDescription(listText);
+        pages.push(embed);
+      }
+      if (pages.length === 0) {
+        this.chatService.simpleNote(msg, "Playlist is empty!", this.chatService.msgType.INFO);
+      } else {
+        this.chatService.pagedContent(msg, pages);
+      }
     });
   }
 }

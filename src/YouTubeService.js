@@ -24,7 +24,7 @@ class YoutubeService {
    */
   getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
-      ytdl.ytdl.getBasicInfo(searchString, {}, (err, info) => {
+      ytdl.getBasicInfo(searchString, {}, (err, info) => {
         if (err) {
           return reject(err);
         }
@@ -80,7 +80,7 @@ class YoutubeService {
         "part=snippet&" +
         "type=video&" +
         "videoCategoryId=10&" + // https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=DE&key=
-        "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" +
+        "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" + // Cspell:disable-line
         `maxResults=${count}&` +
         `q=${encodeURIComponent(searchString)}&` +
         `key=${this.apiKey}`,

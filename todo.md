@@ -1,11 +1,10 @@
-### **TODO's:** ###
+### **TODO:** ###
 
 ---
 
 ### Features: ###
 
 ##### Playlists #####
-- paging for list_songs (.ls &lt;playlist&gt;)
 - .start command should clear queue and stop playback to be used while song is playing
 - remove song from playlist command has to use artist and title. 
 
@@ -13,9 +12,6 @@
 - search command followup to add song to playlist.
 - improve search for youtube by choosing automatically from a small number for songs
 	- disfavor songs with "cover" / "live" / "remix"
-
-##### Play song #####
-- raw-MP3-support
 
 ---
 
@@ -43,10 +39,3 @@
 - Stream ends immediately after start
 	- can be solved via retry.
 	- hard to reproduce reliable.
-
----
-
-### Misc. ###
-
-##### Structure #####
-Combine GetAutoPLCommand and AutoPLCommand.

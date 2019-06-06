@@ -14,9 +14,10 @@ class AutoPLCommand extends Command {
    */
   constructor(chatService, queueService) {
     super("autopl");
-    super.help = "set a playlist to be the auto playlist.\n(leave playlist name empty to unset auto playlist).";
-    super.usage = "<prefix>autopl [<playlist name>]";
-    super.alias = ["autopl", "apl"];
+    super.help = "get or set a playlist name to be the auto playlist.\n" +
+    "(playlist name to set, no parameter to get and \"unset\" to unset).";
+    super.usage = "<prefix>autopl [<playlist name>|\"unset\"]";
+    super.alias = ["autopl", "apl", "auto"];
     this.chatService = chatService;
     this.queueService = queueService;
   }
@@ -28,14 +29,24 @@ class AutoPLCommand extends Command {
    */
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
+      // Get auto playlist.
+      this.queueService.getAutoPL().then((autoPl) => {
+        this.chatService.simpleNote(msg, `Current auto playlist: ${autoPl}`, this.chatService.msgType.INFO);
+      }).
+        catch((err) => {
+          this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL);
+        });
+    } else if (payload === "unset") {
+      // Unset auto playlist.
       this.queueService.unsetAutoPL();
       this.chatService.simpleNote(msg, "Auto playlist unset.", this.chatService.msgType.MUSIC);
-      return;
+    } else {
+      // Set auto playlist.
+      const note = `Auto playlist set to: ${payload}`;
+      this.queueService.setAutoPL(payload).
+        then(() => this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC)).
+        catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
     }
-    const note = `Auto playlist set to: ${payload}`;
-    this.queueService.setAutoPL(payload).
-      then(() => this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC)).
-      catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
   }
 }
 

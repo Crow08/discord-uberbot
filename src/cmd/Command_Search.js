@@ -57,7 +57,7 @@ class SearchCommand extends Command {
   constructor(chatService, playerService, queueService, searchService) {
     super("search");
     super.help = "search for a song and choose from multiple results.";
-    super.usage = "<prefix>search <query>\n=>[play|add] <song number>\n=> cancel";
+    super.usage = "<prefix>search <query>\n=> <<\"play\"|\"add\" <song number>>|\"cancel\">";
     super.alias = ["search"];
     this.playerService = playerService;
     this.queueService = queueService;

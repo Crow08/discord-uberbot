@@ -16,7 +16,7 @@ class AddCommand extends Command {
   constructor(chatService, queueService, searchService) {
     super("add");
     super.help = "add a song to the current queue by url or query.";
-    super.usage = "<prefix>add <url or query>";
+    super.usage = "<prefix>add <url | query>";
     super.alias = ["add", "a"];
     this.chatService = chatService;
     this.queueService = queueService;

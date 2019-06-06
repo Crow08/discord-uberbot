@@ -13,13 +13,14 @@ class VoiceService {
    * @param {SoundCloudService} soundCloudService - SoundCloudService.
    * @param {SpotifyService} spotifyService - SpotifyService.
    */
-  constructor(options, client, youtubeService, soundCloudService, spotifyService) {
+  constructor(options, client, youtubeService, soundCloudService, spotifyService, rawFileService) {
     this.bitRate = options.bitRate;
     this.volume = options.defVolume;
     this.client = client;
     this.youtubeService = youtubeService;
     this.soundCloudService = soundCloudService;
     this.spotifyService = spotifyService;
+    this.rawFileService = rawFileService;
   }
 
   /**
@@ -89,6 +90,11 @@ class VoiceService {
     });
   }
 
+  /**
+   * Resolve the streaming source of a Song and get the stream accordingly as a promise.
+   * @private
+   * @param {Song} song song to get the Stream from
+   */
   getStream(song) {
     return new Promise((resolve, reject) => {
       switch (song.src) {
@@ -100,6 +106,9 @@ class VoiceService {
         break;
       case Song.srcType.SP:
         reject(new Error("No implementation to get stream from Spotify!"));
+        break;
+      case Song.srcType.RAW:
+        resolve(this.rawFileService.getStream(song.url));
         break;
       default:
         reject(new Error("song src not valid!"));

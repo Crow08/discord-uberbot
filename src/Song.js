@@ -23,6 +23,7 @@ class Song {
    */
   static get srcType() {
     return {
+      "RAW": "raw",
       "SC": "sc",
       "SP": "sp",
       "YT": "yt"
