@@ -15,7 +15,7 @@ class RenameSongCommand extends Command {
   constructor(chatService, dbService) {
     super("renamesong");
     super.help = "rename title or artist of song";
-    super.usage = "<prefix>renamesong <t(itle)/a(rtist)> <playlist> <song number> <new Name>";
+    super.usage = "<prefix>renamesong <t(itle)/a(rtist)> <playlist> <song number> <new name>";
     super.alias = ["renamesong", "rs"];
     this.chatService = chatService;
     this.dbService = dbService;
