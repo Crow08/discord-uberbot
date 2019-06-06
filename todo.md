@@ -7,11 +7,18 @@
 ##### Playlists #####
 - .start command should clear queue and stop playback to be used while song is playing
 - remove song from playlist command has to use artist and title. 
+- .ls should report if playlist wasn´t found
+	- bonus points: did you mean (closest name - Levenstein/Fuzzy Search)?
 
 ##### Search #####
 - search command followup to add song to playlist.
 - improve search for youtube by choosing automatically from a small number for songs
 	- disfavor songs with "cover" / "live" / "remix"
+- say something, when "cancel" is used
+
+#### Paging ####
+- Last Page + Next Page = First Page
+- First Page + Prev. Page = Last Page
 
 ---
 
@@ -29,7 +36,6 @@
 - `:x: | Error: input stream: No formats found with custom filter`
 
 ##### Strange behavior #####
-- .search + >> last page is empty
 - sometimes in playback no sound is played while stream seems to be active.
 	- can be solved via voice reconnect of the bot.
 	- hard to reproduce reliable.
@@ -39,3 +45,5 @@
 - Stream ends immediately after start
 	- can be solved via retry.
 	- hard to reproduce reliable.
+- Can't play because its "allready playing"
+	- workaround with .stop -> .play
