@@ -77,7 +77,7 @@ class HelpCommand extends Command {
     let firstSubLine = true;
     const subLines = text.split("\n");
     subLines.forEach((rawSubLine) => {
-      this.wordWrap(rawSubLine, 60).forEach((subLine) => {
+      this.wordWrap(rawSubLine, firstSubLine ? 60 : 52).forEach((subLine) => {
         if (firstSubLine) {
           firstSubLine = false;
           line += `| ${subLine.padEnd(60, " ")} |\n`;
