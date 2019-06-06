@@ -49,10 +49,11 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 |         query.                                               |
 +--------------------------------------------------------------+
 | Name:   autopl                                               |
-| Usage:  !autopl [<playlist name>]                            |
-| About:  set a playlist to be the auto playlist.              |
-|         (leave playlist name empty to unset auto playlist).  |
-| Alias:  autopl, apl                                          |
+| Usage:  !autopl [<playlist name>|"unset"]                    |
+| About:  get or set a playlist name to be the auto playlist.  |
+|         (playlist name to set, no parameter to get and       |
+|         "unset" to unset).                                   |
+| Alias:  autopl, apl, auto                                    |
 +--------------------------------------------------------------+
 | Name:   addsongtopl                                          |
 | Usage:  !addsongtopl <playlist>                              |
