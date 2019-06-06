@@ -14,9 +14,6 @@
 - improve search for youtube by choosing automatically from a small number for songs
 	- disfavor songs with "cover" / "live" / "remix"
 
-##### Play song #####
-- raw-MP3-support
-
 ---
 
 #### Known Bugs: ####

@@ -9,11 +9,12 @@ class SearchService {
    * @param {SoundCloudService} soundCloudService - SoundCloudService.
    * @param {SpotifyService} spotifyService - SpotifyService.
    */
-  constructor(youtubeService, soundCloudService, spotifyService) {
+  constructor(defaultSrc, youtubeService, soundCloudService, spotifyService, rawFileService) {
     this.youtubeService = youtubeService;
     this.soundCloudService = soundCloudService;
     this.spotifyService = spotifyService;
-    this.defaultSrc = "SP";
+    this.rawFileService = rawFileService;
+    this.defaultSrc = defaultSrc;
   }
 
   /**
@@ -59,6 +60,11 @@ class SearchService {
             then((songs) => resolve({"note": "Get songs from YouTube playlist url~", songs})).
             catch(reject);
         }
+      } else if (searchString.includes("http://") || searchString.includes("https://") ) {
+        // Unknown url detected:
+        this.rawFileService.getSongViaUrl(searchString).
+          then((songs) => resolve({"note": "Get song from File url~", songs})).
+          catch(reject);
       } else {
         this.querySearch(payload, count, preferredSrc).
           then(resolve).

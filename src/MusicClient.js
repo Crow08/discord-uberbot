@@ -23,6 +23,7 @@ const PlayNextCommand = require("./cmd/Command_PlayNext");
 const PreferredSrcCommand = require("./cmd/Command_PreferredSrc");
 const QueueService = require("./QueueService");
 const RatingService = require("./RatingService");
+const RawFileService = require("./RawFileService");
 const RemoveCommand = require("./cmd/Command_Remove");
 const RemovePLCommand = require("./cmd/Command_PL_Remove");
 const RenamePLCommand = require("./cmd/Command_PL_Rename");
@@ -63,10 +64,14 @@ class MusicClient {
     this.youtubeService = new YouTubeService(opt.youtubeApiKey);
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
-    this.searchService = new SearchService(this.youtubeService, this.soundCloudService, this.spotifyService);
+    this.rawFileService = new RawFileService();
+    this.searchService = new SearchService(
+      "SP", this.youtubeService, this.soundCloudService,
+      this.spotifyService, this.rawFileService
+    );
     this.voiceService = new VoiceService(
       {"bitRate": opt.bitRate, "defVolume": opt.defVolume}, this.baseClient, this.youtubeService,
-      this.soundCloudService, this.spotifyService
+      this.soundCloudService, this.spotifyService, this.rawFileService
     );
     this.dbService = new DBService(opt.mongodbUrl, opt.mongodbUser, opt.mongodbPassword);
     this.queueService = new QueueService(500, this.dbService);
