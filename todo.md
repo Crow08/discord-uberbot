@@ -6,7 +6,6 @@
 
 ##### Playlists #####
 - .start command should clear queue and stop playback to be used while song is playing
-- remove song from playlist command has to use artist and title. 
 
 ##### Search #####
 - Add a "did you mean"-feature for all failed searches with strings (closest name - Levenshtein distance / fuzzy search).

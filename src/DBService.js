@@ -132,14 +132,13 @@ class DBService {
   /**
    * Remove song from playlist.
    * If it was the last song of the playlist the playlist and MongoDB collection will be removed.
-   * @param {string} title - title of the song to be removed
+   * @param {Song} song - song to be removed.
    * @param {string} plName - playlist name to remove from.
-   * TODO: remove song by title and artist and remove regex.
    */
-  removeSong(title, plName) {
+  removeSong(song, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
-        deleteOne({"title": {"$options": "$i", "$regex": this.escapeRegExp(title)}}).
+        deleteOne({"artist": song.artist, "title": song.title}).
         then(resolve).
         catch(reject);
     });
@@ -180,13 +179,13 @@ class DBService {
 
   /**
    * Find a song by title in a playlist with fuzzy search.
-   * @param {string} song - query to search with.
+   * @param {string} title - query to search titles with.
    * @param {string} plName - playlist to search in.
    */
-  findSong(song, plName) {
+  findSong(title, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
-        findOne({"title": {"$options": "$i", "$regex": this.escapeRegExp(song)}}).
+        findOne({"title": {"$options": "$i", "$regex": this.escapeRegExp(title)}}).
         then(resolve).
         catch(reject);
     });
