@@ -7,8 +7,8 @@
 ##### Playlists #####
 - .start command should clear queue and stop playback to be used while song is playing
 - remove song from playlist command has to use artist and title. 
-- .ls should report if playlist wasn´t found
-	- bonus points: did you mean (closest name - Levenstein/Fuzzy Search)?
+- .ls should report if playlist wasn't found
+	- bonus points: did you mean (closest name - Levenshtein / Fuzzy Search)?
 
 ##### Search #####
 - search command followup to add song to playlist.
@@ -45,5 +45,5 @@
 - Stream ends immediately after start
 	- can be solved via retry.
 	- hard to reproduce reliable.
-- Can't play because its "allready playing"
+- Can't play because its "already playing" -> (fixed? / how to reproduce?)
 	- workaround with .stop -> .play
