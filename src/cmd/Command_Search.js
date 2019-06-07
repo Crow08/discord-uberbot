@@ -14,15 +14,17 @@ class SearchCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    * @param {SearchService} searchService - SearchService.
    */
-  constructor(chatService, playerService, queueService, searchService) {
+  constructor(chatService, playerService, queueService, searchService, dbService) {
     super("search");
     super.help = "search for a song and choose from multiple results.";
-    super.usage = "<prefix>search <query>\n=> <<\"play\"|\"add\" <song number>>|\"cancel\">";
+    super.usage = "<prefix>search <query>\n=> \"cancel\" |\n" +
+    "[\"play\"|\"add\"] <song number> |\n \"pladd\" <pl name> <song number>";
     super.alias = ["search"];
     this.playerService = playerService;
     this.queueService = queueService;
     this.chatService = chatService;
     this.searchService = searchService;
+    this.dbService = dbService;
   }
 
   /**
@@ -89,15 +91,13 @@ class SearchCommand extends Command {
    */
   isSelectionCmd(resp) {
     const message = resp.content.trim();
-    if (!isNaN(message) && message.length > 0) {
+    if ((!isNaN(message) && message.length > 0) || message === "cancel") {
       return true;
-    } else if (message === "cancel") {
+    }
+    const cmd = message.split(" ")[0];
+    if ((message.split(" ").length === 2 && ["a", "add", "p", "play"].includes(cmd) && !isNaN(message.split(" ")[1])) ||
+        (message.split(" ").length === 3 && ["pla", "pladd"].includes(cmd) && !isNaN(message.split(" ")[2]))) {
       return true;
-    } else if (message.split(" ").length >= 2) {
-      const cmd = message.split(" ")[0];
-      if (["a", "add", "p", "play"].includes(cmd) && !isNaN(message.split(" ")[1])) {
-        return true;
-      }
     }
     return false;
   }
@@ -117,7 +117,15 @@ class SearchCommand extends Command {
       this.chatService.simpleNote(response, "Selection canceled!", this.chatService.msgType.MUSIC);
     } else {
       const cmd = content.split(" ")[0];
-      const song = songs[content.split(" ")[1] - 1];
+      let song = null;
+      let plName = null;
+      if (content.split(" ").length === 2) {
+        song = songs[content.split(" ")[1] - 1];
+      } else {
+        plName = content.split(" ")[1];
+        song = songs[content.split(" ")[2] - 1];
+      }
+
       switch (cmd) {
       case "p":
       case "play": {
@@ -128,6 +136,13 @@ class SearchCommand extends Command {
       case "add": {
         this.queueService.addToQueue(song);
         const note = `Song added to queue: ${song.title}`;
+        this.chatService.simpleNote(response, note, this.chatService.msgType.MUSIC);
+        break;
+      }
+      case "pla":
+      case "pladd": {
+        this.dbService.addSong(song, plName);
+        const note = `Song added ${song.title} to playlist ${plName}`;
         this.chatService.simpleNote(response, note, this.chatService.msgType.MUSIC);
         break;
       }
