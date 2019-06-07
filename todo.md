@@ -10,7 +10,8 @@
 ##### Search #####
 - Add a "did you mean"-feature for all failed searches with strings (closest name - Levenshtein distance / fuzzy search).
 - improve search for youtube by choosing automatically from a small number for songs
-	- disfavor songs with "cover" / "live" / "remix"
+	- disfavor songs with "cover" / "live" / "remix" / "mix" / "parody" / "hour" / "extended" / ...
+	- ignore exceptions included in the query.
 
 ---
 
@@ -28,16 +29,15 @@
 - sometimes in stream does not end, when the song has ended playing.
 	- can be solved via skip song.
 	- hard to reproduce reliable.
-- Stream ends immediately after start -> (fixed?)
-	- can be solved via retry.
-	- hard to reproduce reliable.
-- Can't play because its "already playing" -> (fixed? / how to reproduce?)
-	- workaround with .stop -> .play
+- *Stream ends immediately after start -> (fixed?)*
+	- *can be solved via retry.*
+	- *hard to reproduce reliable.*
+- *Can't play because its "already playing" -> (fixed? / how to reproduce?)*
+	- *workaround with .stop -> .play*
 
 ##### Report all the Errors ####
 - `:x: | MongoError: ns not found`
-  - native, non descriptive error when deleting a non existent playlist.
-- `Error [VOICE_PLAY_INTERFACE_BAD_TYPE]: Unknown stream type`
-	- recreate:
-		- try .start &lt;playlist&gt; for consistent error
-- `:x: | Error: input stream: No formats found with custom filter`
+	- native, non descriptive error when deleting a non existent playlist.
+- *`Error [VOICE_PLAY_INTERFACE_BAD_TYPE]: Unknown stream type` -> (fixed?)*
+	- *recreate: try .start &lt;playlist&gt; for consistent error*
+- *`:x: | Error: input stream: No formats found with custom filter` -> (how to reproduce?)*
