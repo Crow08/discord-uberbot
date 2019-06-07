@@ -9,9 +9,6 @@
 
 ##### Search #####
 - Add a "did you mean"-feature for all failed searches with strings (closest name - Levenshtein distance / fuzzy search).
-- improve search for youtube by choosing automatically from a small number for songs
-	- disfavor songs with "cover" / "live" / "remix" / "mix" / "parody" / "hour" / "extended" / ...
-	- ignore exceptions included in the query.
 
 ---
 

@@ -75,13 +75,14 @@ class YoutubeService {
    */
   getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {
+      const maxResults = count === 1 ? 5 : count; // Auto choose from 5 to improve results.
       request(
         "https://www.googleapis.com/youtube/v3/search?" +
         "part=snippet&" +
         "type=video&" +
         "videoCategoryId=10&" + // https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=DE&key=
         "fields=items(id%2FvideoId%2Csnippet(channelTitle%2Ctitle))&" + // Cspell:disable-line
-        `maxResults=${count}&` +
+        `maxResults=${maxResults}&` +
         `q=${encodeURIComponent(searchString)}&` +
         `key=${this.apiKey}`,
         (error, response, body) => {
@@ -95,7 +96,7 @@ class YoutubeService {
           if (result.length < 1) {
             return reject(new Error(`No results for Query: "${searchString}"! [YT]`));
           }
-          const songs = [];
+          let songs = [];
           for (let index = 0; index < result.length; index++) {
             const song = new Song();
             song.title = result[index].snippet.title;
@@ -103,6 +104,10 @@ class YoutubeService {
             song.artist = result[index].snippet.channelTitle;
             song.src = Song.srcType.YT;
             songs.push(song);
+          }
+
+          if (songs.length > 0 && count === 1) {
+            songs = [this.autoChoose(songs, searchString)];
           }
           return resolve(songs);
         }
@@ -116,6 +121,25 @@ class YoutubeService {
    */
   getStream(url) {
     return ytdlDiscord(url);
+  }
+
+  /**
+   * Automatically pick a song from a list of songs based on some disfavored strings.
+   * Disfavored:["cover", "live", "remix", "mix", "parody", "hour", "extended"]
+   * @private
+   * @param {Song[]} songs results to auto choose from.
+   * @param {string} query user search query string.
+   */
+  autoChoose(songs, query) {
+    let exclude = ["cover", "live", "remix", "mix", "parody", "hour", "extended"];
+    exclude = exclude.filter((term) => !query.includes(term));
+    let hit = songs[0];
+    songs.reverse().forEach((song) => {
+      if (!new RegExp(exclude.join("|"), "u").test(song.title)) {
+        hit = song;
+      }
+    });
+    return hit;
   }
 }
 
