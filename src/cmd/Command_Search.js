@@ -1,45 +1,5 @@
 const Command = require("./Command.js");
 
-const isSelectionCmd = (resp) => {
-  const message = resp.content.trim();
-  if (!isNaN(message) && message.length > 0) {
-    return true;
-  } else if (message === "cancel") {
-    return true;
-  } else if (message.split(" ").length >= 2) {
-    const cmd = message.split(" ")[0];
-    if ((cmd === "add" || cmd === "play") && !isNaN(message.split(" ")[1])) {
-      return true;
-    }
-  }
-  return false;
-};
-
-const processSelectionCmd = (collected, songs, playerService, queueService, chatService) => {
-  const response = collected.array()[0];
-  const content = response.content.trim();
-  if (!isNaN(content)) {
-    playerService.playNow(songs[content - 1], response);
-  } else if (content !== "cancel") {
-    const cmd = content.split(" ")[0];
-    const song = songs[content.split(" ")[1] - 1];
-    switch (cmd) {
-    case "play": {
-      playerService.playNow(song, response);
-      break;
-    }
-    case "add": {
-      queueService.addToQueue(song);
-      const note = `song added to queue: ${song.title}`;
-      chatService.simpleNote(response, note, chatService.msgType.MUSIC);
-      break;
-    }
-    default:
-      break;
-    }
-  }
-};
-
 /**
  * Class for search song command.
  * @extends Command
@@ -114,12 +74,67 @@ class SearchCommand extends Command {
           this.chatService.pagedContent(msg, pages);
 
           this.chatService.awaitCommand(
-            msg, isSelectionCmd,
-            (col) => processSelectionCmd(col, eSongs, this.playerService, this.queueService, this.chatService)
+            msg, (resp) => this.isSelectionCmd(resp),
+            (col) => this.processSelectionCmd(col, eSongs)
           );
         }
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
+  }
+
+  /**
+   * Filter for incoming messages for await command.
+   * @private
+   * @param {Message} resp Collected User responses.
+   */
+  isSelectionCmd(resp) {
+    const message = resp.content.trim();
+    if (!isNaN(message) && message.length > 0) {
+      return true;
+    } else if (message === "cancel") {
+      return true;
+    } else if (message.split(" ").length >= 2) {
+      const cmd = message.split(" ")[0];
+      if (["a", "add", "p", "play"].includes(cmd) && !isNaN(message.split(" ")[1])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Process followup command for user selection by adding or playing the song.
+   * @private
+   * @param {Message[]} collected Collected User responses in this case always a single element.
+   * @param {*} songs songs in the selection.
+   */
+  processSelectionCmd(collected, songs) {
+    const response = collected.array()[0];
+    const content = response.content.trim();
+    if (!isNaN(content)) {
+      this.playerService.playNow(songs[content - 1], response);
+    } else if (content === "cancel") {
+      this.chatService.simpleNote(response, "Selection canceled!", this.chatService.msgType.MUSIC);
+    } else {
+      const cmd = content.split(" ")[0];
+      const song = songs[content.split(" ")[1] - 1];
+      switch (cmd) {
+      case "p":
+      case "play": {
+        this.playerService.playNow(song, response);
+        break;
+      }
+      case "a":
+      case "add": {
+        this.queueService.addToQueue(song);
+        const note = `Song added to queue: ${song.title}`;
+        this.chatService.simpleNote(response, note, this.chatService.msgType.MUSIC);
+        break;
+      }
+      default:
+        break;
+      }
+    }
   }
 }
 

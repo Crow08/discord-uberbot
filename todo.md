@@ -14,7 +14,6 @@
 - search command followup to add song to playlist.
 - improve search for youtube by choosing automatically from a small number for songs
 	- disfavor songs with "cover" / "live" / "remix"
-- say something, when "cancel" is used
 
 ---
 
