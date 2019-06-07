@@ -7,10 +7,9 @@
 ##### Playlists #####
 - .start command should clear queue and stop playback to be used while song is playing
 - remove song from playlist command has to use artist and title. 
-- .ls should report if playlist wasn't found
-	- bonus points: did you mean (closest name - Levenshtein / Fuzzy Search)?
 
 ##### Search #####
+- Add a "did you mean"-feature for all failed searches with strings (closest name - Levenshtein distance / fuzzy search).
 - search command followup to add song to playlist.
 - improve search for youtube by choosing automatically from a small number for songs
 	- disfavor songs with "cover" / "live" / "remix"
