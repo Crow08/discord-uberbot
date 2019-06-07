@@ -16,10 +16,6 @@
 	- disfavor songs with "cover" / "live" / "remix"
 - say something, when "cancel" is used
 
-#### Paging ####
-- Last Page + Next Page = First Page
-- First Page + Prev. Page = Last Page
-
 ---
 
 #### Known Bugs: ####
@@ -42,7 +38,7 @@
 - sometimes in stream does not end even if song has ended playing.
 	- can be solved via skip song.
 	- hard to reproduce reliable.
-- Stream ends immediately after start
+- Stream ends immediately after start -> (fixed?)
 	- can be solved via retry.
 	- hard to reproduce reliable.
 - Can't play because its "already playing" -> (fixed? / how to reproduce?)
