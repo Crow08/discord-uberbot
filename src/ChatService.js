@@ -95,17 +95,13 @@ class ChatService {
         // Handle reactions.
         nextReaction.on("collect", (reaction) => {
           reaction.users.remove(msg.author);
-          if ((page + 1) < pages.length) {
-            ++page;
-            curPage.edit(pages[page]);
-          }
+          page = (page + 1) < pages.length ? ++page : 0;
+          curPage.edit(pages[page]);
         });
         backReaction.on("collect", (reaction) => {
           reaction.users.remove(msg.author);
-          if (page > 0) {
-            --page;
-            curPage.edit(pages[page]);
-          }
+          page = (page > 0) ? --page : pages.length - 1;
+          curPage.edit(pages[page]);
         });
         nextReaction.on("end", () => curPage.reactions.removeAll());
         backReaction.on("end", () => curPage.reactions.removeAll());

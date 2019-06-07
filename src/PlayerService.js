@@ -129,7 +129,7 @@ class PlayerService {
    * @param {Message} msg - User message the playback was is invoked by.
    */
   play(msg) {
-    if (!this.audioDispatcher) {
+    if (!this.audioDispatcher || this.audioDispatcher.writableLength <= 0) {
       this.playNext(msg);
     } else if (this.audioDispatcher.paused) {
       this.audioDispatcher.resume();

@@ -33,36 +33,47 @@ class RemovePLCommand extends Command {
       return;
     }
     const plName = payload.split(" ")[0];
-    let songName = payload.substr(plName.length + 1).trim();
+    const songQuery = payload.substr(plName.length + 1).trim();
 
-    if (!isNaN(songName)) {
-      this.dbService.getPlaylist(plName).then((songs) => {
-        songName = songs[songName - 1].title;
-        console.log(songName);
-        this.handleRemove(songName, plName, msg);
-      });
-      return;
+    if (isNaN(songQuery)) {
+      this.dbService.findSong(songQuery, plName).
+        then((song) => {
+          const note = `Song with title: ${songQuery} not found in ${plName}!`;
+          this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
+          this.handleRemove(song, plName, msg);
+        }).
+        catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
+    } else {
+      this.dbService.getPlaylist(plName).
+        then((songs) => {
+          if (songQuery < 1 || songQuery > songs.length) {
+            this.chatService.simpleNote(msg, "Invalid song number!", this.chatService.msgType.FAIL);
+            return;
+          }
+          this.handleRemove(songs[songQuery - 1], plName, msg);
+        }).
+        catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
     }
-    this.handleRemove(songName, plName, msg);
-    console.log(plName);
   }
 
   /**
    * Remove the song by from the playlist and notify the user.
    * @private
-   * @param {string} songName - song name (title) to be removed.
+   * @param {Song} song - song to be removed.
    * @param {string} plName - playlist name to remove the song from.
    * @param {Message} msg - User message this function is invoked by.
    */
-  handleRemove(songName, plName, msg) {
-    this.dbService.removeSong(songName, plName).then((info) => {
-      if (info.deletedCount === 0) {
-        const note = `"${songName}" not found in ${plName}!`;
-        this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
-      } else {
-        this.chatService.simpleNote(msg, `"${songName}" removed from ${plName}!`, this.chatService.msgType.INFO);
-      }
-    });
+  handleRemove(song, plName, msg) {
+    this.dbService.removeSong(song, plName).
+      then((info) => {
+        if (info.deletedCount === 0) {
+          const note = "Something went wrong deleting the song!";
+          this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
+        } else {
+          this.chatService.simpleNote(msg, `"${song.title}" removed from ${plName}!`, this.chatService.msgType.INFO);
+        }
+      }).
+      catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
   }
 }
 module.exports = RemovePLCommand;

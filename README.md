@@ -160,7 +160,9 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 +--------------------------------------------------------------+
 | Name:   search                                               |
 | Usage:  !search <query>                                      |
-|         => <<"play"|"add" <song number>>|"cancel">           |
+|         => "cancel" |                                        |
+|         ["play"|"add"] <song number> |                       |
+|          "pladd" <pl name> <song number>                     |
 | About:  search for a song and choose from multiple results.  |
 +--------------------------------------------------------------+
 | Name:   plsearch                                             |

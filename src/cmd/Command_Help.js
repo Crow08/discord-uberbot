@@ -34,34 +34,38 @@ class HelpCommand extends Command {
     embed.setColor("RED");
     embed.setThumbnail("https://cdn.discordapp.com/avatars/543844387835215873/baeabaa2290c3b584b4f771bf86ed5ca.png");
     this.chatService.send(msg, embed);
-    const pages = [];
-    let helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
-    this.commands.forEach((command, index) => {
+    // Create help pages:
+    const maxLines = 30; // 2000 chars per message limit from discord API (30*65 chars).
+    let pages = [];
+    let helpPage = "```prolog\n+----------------------------Commands--------------------------+\n";
+    let helpText = "";
+    this.commands.forEach((command) => {
+      helpText = "";
       const {help, name, usage, alias} = command;
       // Ignore undefined commands
       if (typeof name !== "undefined") {
-        helpText += this.buildRow(`Name:   ${name}`);
+        helpText += this.buildRow(`Alias:  ${alias.join(", ")}`);
         helpText += this.buildRow(`Usage:  ${usage.replace("<prefix>", this.prefix)}`);
         helpText += this.buildRow(`About:  ${help}`);
-        if (alias.length > 1) {
-          helpText += this.buildRow(`Alias:  ${alias.join(", ")}`);
+        // Check if page is full.
+        if (helpPage.split("\n").length + helpText.split("\n").length > maxLines) {
+          helpPage = helpPage.substr(0, helpPage.length - 65); // Remove separation line to make room for paging.
+          const paging = `Page ${pages.length + 1} / #MAX#`;
+          helpPage += `+------------------------- ${paging} -------------------------+\n\`\`\``;
+          pages.push(helpPage); // Add full page.
+          helpPage = "```prolog\n+----------------------------Commands--------------------------+\n";
         }
-        if ((index + 1) % 5 === 0) {
-          const paging = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
-          helpText += `+------------------------- ${paging} -------------------------+\n\`\`\``;
-          pages.push(helpText);
-          helpText = "```prolog\n+----------------------------Commands--------------------------+\n";
-        } else {
-          helpText += "+--------------------------------------------------------------+\n";
-        }
+        helpPage += `${helpText}+--------------------------------------------------------------+\n`;
       }
     });
-    if (this.commands.length % 5 !== 0) {
-      helpText = helpText.substr(0, helpText.length - 65);
-      const paging = `Page ${pages.length + 1} / ${Math.ceil(this.commands.length / 5)}`;
-      helpText += `+------------------------- ${paging} -------------------------+\n\`\`\``;
-      pages.push(helpText);
-    }
+    // Add last page.
+    helpPage = helpPage.substr(0, helpPage.length - 65); // Remove separation line to make room for paging.
+    const paging = `Page ${pages.length + 1} / #MAX#`;
+    helpPage += `+------------------------- ${paging} -------------------------+\n\`\`\``;
+    pages.push(helpPage); // Add last page.
+    // Replace max page placeholder with the actual page count.
+    pages = pages.map((page) => page.replace("#MAX#", pages.length));
+
     this.chatService.pagedContent(msg, pages);
   }
 

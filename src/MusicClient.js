@@ -108,7 +108,7 @@ class MusicClient {
       new RemovePLCommand(this.chatService, this.dbService),
       new RenamePLCommand(this.chatService, this.dbService),
       new RenameSongCommand(this.chatService, this.dbService),
-      new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService),
+      new SearchCommand(this.chatService, this.playerService, this.queueService, this.searchService, this.dbService),
       new SearchPLCommand(this.chatService, this.dbService, this.ratingService),
       new SeekCommand(this.chatService, this.playerService),
       new ShowHistoryCommand(this.chatService, this.queueService, this.commands),

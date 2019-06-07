@@ -120,7 +120,7 @@ class RatingService {
    */
   removeFromPL(song) {
     return new Promise((resolve, reject) => {
-      this.dbService.removeSong(song.title, song.playlist).
+      this.dbService.removeSong(song, song.playlist).
         then((info) => {
           if (info.deletedCount === 0) {
             reject(new Error("Song already deleted!"));
