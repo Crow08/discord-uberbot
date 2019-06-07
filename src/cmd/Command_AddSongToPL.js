@@ -1,7 +1,7 @@
 const Command = require("./Command.js");
 
 /**
- * Class for add song to playlist command.
+ * Class for add the current song to playlist command.
  * @extends Command
  * @Category Commands
  */
