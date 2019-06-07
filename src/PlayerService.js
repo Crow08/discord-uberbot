@@ -82,7 +82,10 @@ class PlayerService {
         });
         this.chatService.displaySong(msg, song, ratingFunc);
       }).
-      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
+      catch((error) => {
+        this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
+        this.playNext(msg);
+      });
   }
 
   /**

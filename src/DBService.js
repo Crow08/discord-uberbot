@@ -96,6 +96,7 @@ class DBService {
    */
   addSong(song, plName) {
     return new Promise((resolve, reject) => {
+      song.playlist = plName;
       this.db.collection(plName).
         insertOne(song).
         then(() => {
@@ -118,7 +119,10 @@ class DBService {
   addSongs(songs, plName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).
-        insertMany(songs).
+        insertMany(songs.map((song) => {
+          song.playlist = plName;
+          return song;
+        })).
         then(() => {
           resolve();
           this.db.collection(plName).
