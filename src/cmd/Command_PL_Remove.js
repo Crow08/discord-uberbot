@@ -38,8 +38,11 @@ class RemovePLCommand extends Command {
     if (isNaN(songQuery)) {
       this.dbService.findSong(songQuery, plName).
         then((song) => {
-          const note = `Song with title: ${songQuery} not found in ${plName}!`;
-          this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
+          if (song === null) {
+            const note = `Song with title: ${songQuery} not found in ${plName}!`;
+            this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
+            return;
+          }
           this.handleRemove(song, plName, msg);
         }).
         catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
