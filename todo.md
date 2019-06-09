@@ -38,3 +38,12 @@
 - *`Error [VOICE_PLAY_INTERFACE_BAD_TYPE]: Unknown stream type` -> (fixed?)*
 	- *recreate: try .start &lt;playlist&gt; for consistent error*
 - *`:x: | Error: input stream: No formats found with custom filter` -> (how to reproduce?)*
+
+##### Feedback/Error/Misbehaviour - this one evening ####
+- Upvote Song adds it to auto, but is allready auto -> weird chat
+- special chars in songnames (ghost'n stuff)
+- history shows each song 2 times
+- .np creates additional empty field
+- remove song from queue doesn´t give removed songname
+- convert commands and payload to lowercase..always!
+- .search listens to everyone. problem when multiple people use search simultaniously
