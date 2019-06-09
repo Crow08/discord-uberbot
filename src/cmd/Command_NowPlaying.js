@@ -35,13 +35,13 @@ class NowPlayingCommand extends Command {
         if (typeof nowPlaying === "undefined") {
           embed.setColor(13632027);
           embed.addField("Are you deaf?", "Go check your ears, there is clearly nothing playing right now!", true);
+          this.chatService.send(msg, embed);
         } else {
           this.chatService.displaySong(
             msg, nowPlaying,
             (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd)
           );
         }
-        this.chatService.send(msg, embed);
       });
   }
 }
