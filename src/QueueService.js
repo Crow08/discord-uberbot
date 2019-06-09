@@ -96,9 +96,11 @@ class QueueService {
    * @param {Song} song - The song to be added.
    */
   addSongToHistory(song) {
-    this.history.unshift(song);
-    while (this.history.length > this.historyLength) {
-      this.history.pop();
+    if (this.history[0] !== song) {
+      this.history.unshift(song);
+      while (this.history.length > this.historyLength) {
+        this.history.pop();
+      }
     }
   }
 
