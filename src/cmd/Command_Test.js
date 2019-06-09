@@ -33,8 +33,7 @@ class TestCommand extends Command {
    * @param {Message} msg - User message this function is invoked by.
    */
   run(payload, msg) {
-    console.log(payload);
-    console.log(msg);
+    console.log(this.queueService.history);
   }
 }
 module.exports = TestCommand;
