@@ -41,7 +41,14 @@ class SearchService {
             `${preSongs[0].title} ${preSongs[0].artist}`,
             count, preferredSrc === "SP" ? "YT" : preferredSrc
           ).
-            then(({note, songs}) => resolve({"note": `Get song from Spotify url~\n${note}`, songs})).
+            then(({note, songs}) => {
+              songs.map((song) => {
+                song.title = preSongs[0].title;
+                song.artist = preSongs[0].artist;
+                return song;
+              });
+              resolve({"note": `Get song from Spotify url~\n${note}`, songs});
+            }).
             catch(reject)).
           catch(reject);
       } else if (searchString.includes("youtu.be/") || searchString.includes("youtube.com/")) {
@@ -160,7 +167,14 @@ class SearchService {
       const preNote = "Get song title and artist from Spotify~";
       this.spotifyService.getSongsViaSearchQuery(searchString).
         then((preSongs) => this.getSongsFromYtThenSc(`${preSongs[0].title} ${preSongs[0].artist}`, count).
-          then(({note, songs}) => resolve({"note": `${preNote}\n${note}`, songs})).
+          then(({note, songs}) => {
+            songs.map((song) => {
+              song.title = preSongs[0].title;
+              song.artist = preSongs[0].artist;
+              return song;
+            });
+            resolve({"note": `${preNote}\n${note}`, songs});
+          }).
           catch((err2) => reject(new Error(`${preNote}\n${err2}`)))).
         catch((err) => this.getSongsFromYtThenSc(searchString, count).
           then(({note, songs}) => resolve({"note": `${err}\n${note}`, songs})).
