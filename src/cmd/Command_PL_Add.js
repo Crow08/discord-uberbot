@@ -47,7 +47,7 @@ class AddPLCommand extends Command {
             return song;
           });
           this.dBService.addSongs(enrichedSongs, plName).then(() => {
-            const count = enrichedSongs.length();
+            const count = enrichedSongs.length;
             const note2 = `${count} songs added to playlist: ${plName}`;
             this.chatService.simpleNote(msg, note2, this.chatService.msgType.MUSIC);
           }).
