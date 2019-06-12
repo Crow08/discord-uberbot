@@ -18,6 +18,8 @@ class PlayerService {
     this.queueService = queueService;
     this.chatService = chatService;
     this.ratingService = ratingService;
+
+    this.playerMsg = null;
   }
 
   /**
@@ -70,22 +72,64 @@ class PlayerService {
         this.audioDispatcher.on("finish", () => this.handleSongEnd(msg, startTime));
         this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
         this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
-        const ratingFunc = (rSong, user, delta, ignoreCd) => new Promise((resolve, reject) => {
-          this.ratingService.rateSong(rSong, user, delta, ignoreCd).
-            then(resolve).
-            catch(reject).
-            finally(() => {
-              if (delta < 0) {
-                this.skip(msg);
-              }
-            });
+
+        const reactionFunctions = this.buildReactionFunctions(msg);
+        if (this.playerMsg && !this.playerMsg.deleted) {
+          this.playerMsg.delete();
+        }
+        this.chatService.displayPlayer(msg, song, reactionFunctions).then((playerMsg) => {
+          this.playerMsg = playerMsg;
         });
-        this.chatService.displaySong(msg, song, ratingFunc);
       }).
       catch((error) => {
         this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
         this.playNext(msg);
       });
+  }
+
+  /**
+   * Build object for reaction based player functions.
+   * @private
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
+  buildReactionFunctions(msg) {
+    const ratingFunc = (rSong, user, delta, ignoreCd) => new Promise((resolve, reject) => {
+      this.ratingService.rateSong(rSong, user, delta, ignoreCd).
+        then(resolve).
+        catch(reject).
+        finally(() => {
+          if (delta < 0) {
+            this.skip(msg);
+          }
+        });
+    });
+    const reactionFunctions = {
+      "⏩": () => this.skip(msg),
+      "⏪": () => this.back(msg),
+      "⏫": ratingFunc,
+      "⏬": ratingFunc,
+      "⏯": () => {
+        if (!this.audioDispatcher || this.audioDispatcher.paused) {
+          this.play(msg);
+        } else {
+          this.pause(msg);
+        }
+      },
+      "⏹": () => this.stop(msg),
+      "🔀": () => {
+        this.queueService.shuffleQueue();
+        this.chatService.simpleNote(msg, "Queue shuffled!", this.chatService.msgType.MUSIC);
+      },
+      "🔁": () => {
+        this.queueService.mode = this.queueService.mode === "n" ? "ra" : "n";
+        this.chatService.simpleNote(
+          msg, this.queueService.mode === "n" ? "No more looping!" : "Loop current queue!",
+          this.chatService.msgType.MUSIC
+        );
+
+      }
+    };
+    return reactionFunctions;
   }
 
   /**
@@ -182,6 +226,18 @@ class PlayerService {
     }
     this.chatService.simpleNote(msg, "Skipping song!", this.chatService.msgType.MUSIC);
     this.audioDispatcher.end();
+  }
+
+  /**
+   * Play last song again.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
+  back(msg) {
+    if (this.queueService.history.length >= 2) {
+      this.playNow(this.queueService.history[1], msg);
+    } else {
+      this.chatService.simpleNote(msg, "No song in history!", this.chatService.msgType.FAIL);
+    }
   }
 
   /**
