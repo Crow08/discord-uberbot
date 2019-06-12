@@ -169,9 +169,15 @@ class SearchService {
    */
   handleSoundCloudUrl(searchString) {
     return new Promise((resolve, reject) => {
-      this.soundCloudService.getSongViaUrl(searchString).
-        then((songs) => resolve({"note": "Get song from SoundCloud url~", songs})).
-        catch(reject);
+      if (searchString.includes("sets/")) {
+        this.soundCloudService.getSongsViaPlaylistUrl(searchString).
+          then((songs) => resolve({"note": `Get ${songs.length} songs from SoundCloud playlist url~`, songs})).
+          catch(reject);
+      } else {
+        this.soundCloudService.getSongViaUrl(searchString).
+          then((songs) => resolve({"note": "Get song from SoundCloud url~", songs})).
+          catch(reject);
+      }
     });
   }
 

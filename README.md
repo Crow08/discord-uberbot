@@ -10,11 +10,11 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 
 ### Remarkable Features: ###
 
-- Can play songs from many sources: 
-  - SoundCloud links or search queries.
-  - YouTube links or search queries.
+- Can play songs from many sources:
+  - SoundCloud links (tracks / playlists) or search queries.
+  - YouTube links (tracks / playlists) or search queries.
   - From direct links to music files.
-  - Spotify can only be used by resolving links or to query search for songs.  
+  - Spotify can only be used for resolving links (tracks / playlists) or to query search for songs.  
   (no music streaming from Spotify atm)
 
 - Persistent playlists:
