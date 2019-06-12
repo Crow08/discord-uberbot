@@ -201,7 +201,10 @@ class ChatService {
    * @param {function} process - Function to be invoked if a message passed the filter.
    */
   awaitCommand(msg, filter, process) {
-    msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
+    msg.channel.awaitMessages(
+      (resp) => resp.author.id === msg.author.id && filter(resp),
+      {"errors": ["time"], "max": 1, "time": 120000}
+    ).
       then(process).
       // Timeout or error.
       catch((err) => {
