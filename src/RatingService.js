@@ -92,6 +92,9 @@ class RatingService {
       if (delta > 0 && song.rating > 0) {
         this.queueService.getAutoPL().
           then((autoPL) => {
+            if (song.playlist === autoPL) {
+              resolve("Song already in auto playlist!");
+            }
             const songCopy = new Song();
             songCopy.title = song.title;
             songCopy.artist = song.artist;

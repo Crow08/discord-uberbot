@@ -37,9 +37,10 @@ class RemoveCommand extends Command {
       this.chatService.simpleNote(msg, "queue number out of bounds!", this.chatService.msgType.FAIL);
       return;
     }
-
+    const song = this.queueService.queue[index];
     this.queueService.remove(index);
-    this.chatService.simpleNote(msg, "song removed from the queue!", this.chatService.msgType.MUSIC);
+    const message = `${song.title} - ${song.artist} removed from the queue!`;
+    this.chatService.simpleNote(msg, message, this.chatService.msgType.MUSIC);
   }
 }
 

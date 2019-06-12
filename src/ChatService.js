@@ -122,37 +122,76 @@ class ChatService {
     // Build Song embed.
     msg.channel.send(this.buildSongEmbed(song)).
       // Add reactions for song rating.
-      then((songMsg) => this.postReactionEmojis(songMsg, ["⏫", "⏬", "💩"]).
+      then((songMsg) => this.postReactionEmojis(songMsg, ["⏫", "⏬"]).
         then(() => {
         // Add listeners to reactions.
-          const upReaction = songMsg.createReactionCollector(
-            (reaction, user) => (reaction.emoji.name === "⏫" && (!user.bot)),
-            {"time": 600000}
-          );
-          const downReaction = songMsg.createReactionCollector(
-            (reaction, user) => (reaction.emoji.name === "⏬" && (!user.bot)),
-            {"time": 600000}
-          );
-          const poopReaction = songMsg.createReactionCollector(
-            (reaction, user) => (reaction.emoji.name === "💩" && (!user.bot)),
+          const reactionCollector = songMsg.createReactionCollector(
+            (reaction, user) => (["⏫", "⏬"].includes(reaction.emoji.name) && (!user.bot)),
             {"time": 600000}
           );
           // Handle reactions.
-          upReaction.on("collect", (reaction) => {
-            this.handleRatingReaction(reaction, song, 1, processRating);
+          reactionCollector.on("collect", (reaction) => {
+            switch (reaction.emoji.name) {
+            case "⏫":
+              this.handleRatingReaction(reaction, song, 1, processRating);
+              break;
+            case "⏬":
+              this.handleRatingReaction(reaction, song, -1, processRating);
+              break;
+            default:
+              break;
+            }
           });
-          downReaction.on("collect", (reaction) => {
-            this.handleRatingReaction(reaction, song, -1, processRating);
-          });
-          poopReaction.on("collect", (reaction) => {
-            const note = "Let me clean that 💩 for you";
-            this.simpleNote(reaction.message, note, this.msgType.MUSIC);
-            this.handleRatingReaction(reaction, song, -1000, processRating, true);
-          });
-          upReaction.on("end", () => songMsg.reactions.removeAll());
-          downReaction.on("end", () => songMsg.reactions.removeAll());
-          poopReaction.on("end", () => songMsg.reactions.removeAll());
+          reactionCollector.on("end", () => songMsg.reactions.removeAll());
         }));
+  }
+
+  /**
+   * Display a song in pretty markdown and add reaction based user rating.
+   * @param {Message} msg - User message this function is invoked by.
+   * @param {Song} song - Song to be displayed.
+   * @param {function} reactionFunctions - Function to be invoked if a reaction was given.
+   */
+  displayPlayer(msg, song, reactionFunctions) {
+    this.debugPrint(song);
+    if (typeof msg.channel === "undefined") {
+      return new Promise((resolve) => resolve({"delete": () => null}));
+    }
+    // Build Song embed.
+    return new Promise((resolve, reject) => msg.channel.send(this.buildSongEmbed(song)).
+      // Add reactions for song rating.
+      then((playerMsg) => this.postReactionEmojis(playerMsg, ["⏫", "⏬", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"]).
+        then(() => {
+        // Add listeners to reactions.
+          const reactionCollector = playerMsg.createReactionCollector(
+            (reaction, user) => (["⏫", "⏬", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"].includes(reaction.emoji.name) &&
+              (!user.bot)),
+            {"time": 600000}
+          );
+          // Handle reactions.
+          reactionCollector.on("collect", (reaction) => {
+            switch (reaction.emoji.name) {
+            case "⏫":
+              this.handleRatingReaction(reaction, song, 1, reactionFunctions["⏫"]);
+              break;
+            case "⏬":
+              this.handleRatingReaction(reaction, song, -1, reactionFunctions["⏬"]);
+              break;
+            default:
+              this.handleReaction(reaction, reactionFunctions[reaction.emoji.name]);
+              break;
+            }
+          });
+          reactionCollector.on("end", () => {
+            if (!playerMsg.deleted) {
+              playerMsg.delete();
+              this.displayPlayer(msg, song, reactionFunctions);
+            }
+          });
+          resolve(playerMsg);
+        }).
+        catch(reject)).
+      catch(reject));
   }
 
   /**
@@ -218,6 +257,19 @@ class ChatService {
           }
         }).
         catch((err) => this.simpleNote(reaction.message, err, this.msgType.FAIL));
+    });
+  }
+
+  /**
+   * Process reactions.
+   * @private
+   * @param {MessageReaction} reaction - given user reaction.
+   * @param {function} processFunction - Function to be invoked if rating was given.
+   */
+  handleReaction(reaction, processFunction) {
+    reaction.users.filter((user) => !user.bot).forEach((user) => {
+      reaction.users.remove(user);
+      processFunction();
     });
   }
 
