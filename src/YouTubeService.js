@@ -1,4 +1,3 @@
-const ytdl = require("ytdl-core");
 const ytdlDiscord = require("ytdl-core-discord");
 const ytpl = require("ytpl");
 const request = require("request");
@@ -24,7 +23,7 @@ class YoutubeService {
    */
   getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
-      ytdl.getBasicInfo(searchString, {}, (err, info) => {
+      ytdlDiscord.getBasicInfo(searchString, {}, (err, info) => {
         if (err) {
           return reject(err);
         }
@@ -46,7 +45,7 @@ class YoutubeService {
   getSongsViaPlaylistUrl(searchString) {
     const playId = searchString.toString().split("list=")[1];
     return new Promise((resolve, reject) => {
-      ytpl(playId, (err, playlist) => {
+      ytpl(playId, {"limit": 1000}, (err, playlist) => {
         if (err) {
           return reject(new Error("Something went wrong fetching that playlist!"));
         }

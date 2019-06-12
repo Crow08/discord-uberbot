@@ -27,30 +27,30 @@ class ChatService {
    */
   simpleNote(msg, text, type) {
     this.debugPrint(text);
-    let ret = new Promise((resolve) => resolve({"delete": () => null}));
     if (typeof msg.channel === "undefined") {
-      return ret;
+      return new Promise((resolve) => resolve({"delete": () => null}));
     }
+    const ret = [];
     text.toString().split("\n").
       forEach((line) => {
         switch (type) {
         case this.msgType.INFO:
-          ret = msg.channel.send(`:information_source: | ${line}`);
+          ret.push(`:information_source: | ${line}`);
           return;
         case this.msgType.MUSIC:
-          ret = msg.channel.send(`:musical_note: | ${line}`);
+          ret.push(`:musical_note: | ${line}`);
           return;
         case this.msgType.SEARCH:
-          ret = msg.channel.send(`:mag: | ${line}`);
+          ret.push(`:mag: | ${line}`);
           return;
         case this.msgType.FAIL:
-          ret = msg.channel.send(`:x: | ${line}`);
+          ret.push(`:x: | ${line}`);
           return;
         default:
-          ret = msg.channel.send(`${line}`);
+          ret.push(line);
         }
       });
-    return ret;
+    return msg.channel.send(ret.join("\n"));
   }
 
   /**
@@ -201,7 +201,10 @@ class ChatService {
    * @param {function} process - Function to be invoked if a message passed the filter.
    */
   awaitCommand(msg, filter, process) {
-    msg.channel.awaitMessages(filter, {"errors": ["time"], "max": 1, "time": 120000}).
+    msg.channel.awaitMessages(
+      (resp) => resp.author.id === msg.author.id && filter(resp),
+      {"errors": ["time"], "max": 1, "time": 120000}
+    ).
       then(process).
       // Timeout or error.
       catch((err) => {
@@ -293,8 +296,7 @@ class ChatService {
     source = song.src === "raw" ? "raw file" : source;
 
     embed.setColor(890629);
-    embed.addField("Title", `\`\`\`${song.title}\`\`\``, true);
-    embed.addBlankField();
+    embed.addField("Title", `\`\`\`${song.title}\`\`\``);
     embed.addField("Artist", `\`\`\`${song.artist}\`\`\``, true);
     embed.addField("Source", `\`\`\`${source}\`\`\``, true);
     embed.addField("Requester", `\`\`\`${song.requester}\`\`\``, true);

@@ -15,6 +15,39 @@ class SoundCloudService {
   }
 
   /**
+   * Get songs via playlist url.
+   * @param {string} payload - Url to get song from.
+   * @returns {Song[]} - Songs from playlist url.
+   */
+  getSongsViaPlaylistUrl(payload) {
+    return new Promise((resolve, reject) => {
+      request(
+        `http://api.soundcloud.com/resolve?url=${payload}&client_id=${this.clientId}`,
+        (error, response, body) => {
+          if (error) {
+            return reject(error);
+          }
+          const infos = JSON.parse(body);
+          const songs = [];
+          infos.tracks.forEach((info) => {
+            if (!info.streamable) {
+              reject(new Error("Song is not streamable from SoundCloud!"));
+              return;
+            }
+            const song = new Song();
+            song.title = info.title;
+            song.url = info.stream_url;
+            song.artist = info.user.username;
+            song.src = Song.srcType.SC;
+            songs.push(song);
+          });
+          return resolve(songs);
+        }
+      );
+    });
+  }
+
+  /**
    * Get song via url.
    * @param {string} payload - Url to get song from.
    * @returns {Song} - Song from url.
