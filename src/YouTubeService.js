@@ -45,7 +45,7 @@ class YoutubeService {
   getSongsViaPlaylistUrl(searchString) {
     const playId = searchString.toString().split("list=")[1];
     return new Promise((resolve, reject) => {
-      ytpl(playId, (err, playlist) => {
+      ytpl(playId, {"limit": 1000}, (err, playlist) => {
         if (err) {
           return reject(new Error("Something went wrong fetching that playlist!"));
         }
