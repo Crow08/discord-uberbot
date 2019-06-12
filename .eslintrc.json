@@ -23,6 +23,7 @@
         "key-spacing": "warn",
         "keyword-spacing": "warn",
         "max-len": ["warn", { "code": 120, "tabWidth": 2 }],
+        "max-lines": ["warn", {"skipBlankLines": true, "skipComments": true}],
         "max-lines-per-function": ["warn", {"max": 50, "skipBlankLines": true, "skipComments": true}],
         "max-statements": ["warn", { "max": 25}],
         "max-params": ["warn", {"max": 6}],
