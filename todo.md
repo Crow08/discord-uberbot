@@ -39,4 +39,3 @@
 
 ##### Feedback/Error/Misbehaviour - this one evening ####
 - special chars in songnames (ghost'n stuff)
-- convert commands and payload to lowercase..always!

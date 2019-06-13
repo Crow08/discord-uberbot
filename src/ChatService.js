@@ -129,20 +129,20 @@ class ChatService {
     // Build Song embed.
       msg.channel.send(this.buildSongEmbed(song)).
         // Add reactions for song rating.
-        then((songMsg) => this.postReactionEmojis(songMsg, ["👍", "👎"]).
+        then((songMsg) => this.postReactionEmojis(songMsg, ["588807875057549398", "588811190134898689"]).
           then(() => {
           // Add listeners to reactions.
             const reactionCollector = songMsg.createReactionCollector(
-              (reaction, user) => (["👍", "👎"].includes(reaction.emoji.name) && (!user.bot)),
+              (reaction, user) => (["588807875057549398", "588811190134898689"].includes(reaction.emoji.name) && (!user.bot)),
               {"time": 600000}
             );
             // Handle reactions.
             reactionCollector.on("collect", (reaction) => {
               switch (reaction.emoji.name) {
-              case "👍":
+              case "588807875057549398":
                 this.handleRatingReaction(reaction, song, 1, processRating);
                 break;
-              case "👎":
+              case "588811190134898689":
                 this.handleRatingReaction(reaction, song, -1, processRating);
                 break;
               default:
@@ -171,21 +171,21 @@ class ChatService {
     // Build Song embed.
     return new Promise((resolve, reject) => msg.channel.send(this.buildSongEmbed(song)).
       // Add reactions for song rating.
-      then((playerMsg) => this.postReactionEmojis(playerMsg, ["👍", "👎", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"]).
+      then((playerMsg) => this.postReactionEmojis(playerMsg, ["588807875057549398", "588811190134898689", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"]).
         then(() => {
         // Add listeners to reactions.
           const reactionCollector = playerMsg.createReactionCollector(
-            (reaction, user) => (["👍", "👎", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"].includes(reaction.emoji.name) &&
+            (reaction, user) => (["588807875057549398", "588811190134898689", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"].includes(reaction.emoji.name) &&
               (!user.bot)),
             {"time": 600000}
           );
           // Handle reactions.
           reactionCollector.on("collect", (reaction) => {
             switch (reaction.emoji.name) {
-            case "👍":
+            case "588807875057549398":
               this.handleRatingReaction(reaction, song, 1, reactionFunctions[reaction.emoji.name]);
               break;
-            case "👎":
+            case "588811190134898689":
               this.handleRatingReaction(reaction, song, -1, reactionFunctions[reaction.emoji.name]);
               break;
             default:

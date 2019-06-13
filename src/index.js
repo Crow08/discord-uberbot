@@ -91,7 +91,7 @@ const processMsg = (msg) => {
   }
   // Split multiline messages to allow multiple commands in one message.
   msg.content.split("\n").forEach((element) => {
-    const message = element.trim();
+    const message = element.trim().toLowerCase();
     // If message is a command for this bot.
     if (message.startsWith(settings.botPrefix) && (msg.channel.type === "text" || msg.channel.type === "dm")) {
       const cmd = message.substr(settings.botPrefix.length).split(" ", 1)[0];

@@ -28,7 +28,7 @@ class PlayNextCommand extends Command {
    * @param {Message} msg - User message this function is invoked by.
    */
   run(payload, msg) {
-    if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length > 1) {
+    if (typeof payload === "undefined" || payload.length === 0) {
       this.chatService.simpleNote(msg, "What are you doing?", this.chatService.msgType.FAIL);
       this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
       return;
