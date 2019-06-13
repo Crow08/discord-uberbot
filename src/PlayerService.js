@@ -33,8 +33,7 @@ class PlayerService {
     if (delta < 2000) {
       // Try to reset everything.
       this.chatService.simpleNote(msg, "Song ended to quickly: Try to reset voice.", this.chatService.msgType.FAIL);
-      this.audioDispatcher.destroy();
-      this.audioDispatcher = null;
+      this.endStream();
       this.voiceService.disconnectVoiceConnection(msg);
       this.voiceService.getVoiceConnection(msg).
         then(() => this.playNext(msg)).
@@ -60,10 +59,7 @@ class PlayerService {
    * @param {Message} msg - User message the playback was is invoked by.
    */
   playNow(song, msg) {
-    if (this.audioDispatcher) {
-      this.audioDispatcher.destroy();
-      this.audioDispatcher = null;
-    }
+    this.endStream();
     this.voiceService.playStream(song, msg).
       then((dispatcher) => {
         this.queueService.addSongToHistory(song);
@@ -155,9 +151,10 @@ class PlayerService {
    * @param {Message} msg - User message the playback was is invoked by.
    */
   playNext(msg) {
-    this.queueService.getNextSong().
+    this.queueService.popNextSong().
       then((song) => {
         if (song === null) {
+          this.endStream();
           this.chatService.simpleNote(msg, "Queue is empty, playback finished!", this.chatService.msgType.MUSIC);
           this.voiceService.disconnectVoiceConnection(msg);
         } else {
@@ -209,9 +206,9 @@ class PlayerService {
       this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
       return;
     }
-    this.audioDispatcher.destroy();
-    this.audioDispatcher = null;
+    this.endStream();
     this.chatService.simpleNote(msg, "Playback stopped!", this.chatService.msgType.MUSIC);
+    this.voiceService.disconnectVoiceConnection(msg);
   }
 
   /**
@@ -233,7 +230,14 @@ class PlayerService {
    */
   back(msg) {
     if (this.queueService.history.length >= 2) {
-      this.playNow(this.queueService.history[1], msg);
+      this.chatService.simpleNote(msg, "Loading last song!", this.chatService.msgType.MUSIC);
+      // Add current playing song back to queue.
+      this.queueService.queue.unshift(this.queueService.history[0]);
+      // Get last song
+      const lastSong = this.queueService.history[1];
+      // Remove current and last song from history.
+      this.queueService.history.splice(0, 2);
+      this.playNow(lastSong, msg);
     } else {
       this.chatService.simpleNote(msg, "No song in history!", this.chatService.msgType.FAIL);
     }
@@ -245,10 +249,7 @@ class PlayerService {
    * @param {Message} msg - User message the playback was is invoked by.
    */
   seek(position, msg) {
-    if (this.audioDispatcher) {
-      this.audioDispatcher.destroy();
-      this.audioDispatcher = null;
-    }
+    this.endStream();
     this.voiceService.playStream(this.queueService.getHistorySong(0), msg, position).
       then((dispatcher) => {
         this.audioDispatcher = dispatcher;
@@ -257,6 +258,17 @@ class PlayerService {
         this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
+  }
+
+  /**
+   * Destroys the audio dispatcher if necessary.
+   * @private
+   */
+  endStream() {
+    if (this.audioDispatcher) {
+      this.audioDispatcher.destroy();
+      this.audioDispatcher = null;
+    }
   }
 }
 module.exports = PlayerService;
