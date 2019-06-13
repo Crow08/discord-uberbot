@@ -42,9 +42,9 @@ class HelpCommand extends Command {
     let helpText = "";
     this.commands.forEach((command) => {
       helpText = "";
-      const {help, name, usage, alias} = command;
+      const {help, usage, alias} = command;
       // Ignore undefined commands
-      if (typeof name !== "undefined") {
+      if (typeof alias !== "undefined") {
         helpText += this.buildRow(`Alias:  ${alias.join(", ")}`);
         helpText += this.buildRow(`Usage:  ${usage.replace("<prefix>", this.prefix)}`);
         helpText += this.buildRow(`About:  ${help}`);
