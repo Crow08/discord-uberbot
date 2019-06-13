@@ -248,12 +248,11 @@ class SearchService {
       const preNote = "Get song title and artist from Spotify~";
       this.spotifyService.getSongsViaSearchQuery(searchString).
         then((preSongs) => this.getSongsFromYtThenSc(`${preSongs[0].title} ${preSongs[0].artist}`, count).
-          then(({note, "songs": rawSongs}) => {
-            const songs = rawSongs.map((song) => {
-              song.title = preSongs[0].title;
-              song.artist = preSongs[0].artist;
-              return song;
-            });
+          then(({note, songs}) => {
+            if (songs.length === 1) {
+              songs[0].title = preSongs[0].title;
+              songs[0].artist = preSongs[0].artist;
+            }
             resolve({"note": `${preNote}\n${note}`, songs});
           }).
           catch((err2) => reject(new Error(`${preNote}\n${err2}`)))).

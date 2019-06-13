@@ -71,7 +71,7 @@ class SearchCommand extends Command {
           pages.push(embed);
         }
         if (pages.length === 0) {
-          this.chatService.simpleNote(msg, "History is empty!", this.chatService.msgType.INFO);
+          this.chatService.simpleNote(msg, "No search results!", this.chatService.msgType.INFO);
         } else {
           this.chatService.pagedContent(msg, pages).
             then((pagedMsg) => this.chatService.awaitCommand(
