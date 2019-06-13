@@ -13,11 +13,12 @@ class AutoPLCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    */
   constructor(chatService, queueService) {
-    super("autopl");
-    super.help = "get or set a playlist name to be the auto playlist.\n" +
-    "(playlist name to set, no parameter to get and \"unset\" to unset).";
-    super.usage = "<prefix>autopl [<playlist name>|\"unset\"]";
-    super.alias = ["autopl", "apl", "auto"];
+    super(
+      ["autopl", "apl", "auto"],
+      "get or set a playlist name to be the auto playlist.\n" +
+      "(playlist name to set, no parameter to get and \"unset\" to unset).",
+      "<prefix>autopl [<playlist name>|\"unset\"]"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
   }

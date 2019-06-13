@@ -59,7 +59,7 @@ class QueueService {
    * Get next song which is position 0 of the queue.
    * @returns {Song} - The next song.
    */
-  getNextSong() {
+  popNextSong() {
     return new Promise((resolve, reject) => {
       if (this.queue.length > 0) {
         const song = this.queue[0];
@@ -72,8 +72,6 @@ class QueueService {
           this.addToQueue(song);
         }
         // REPEAT_ONE: Do nothing, leave current song at the top of the queue.
-
-        this.addSongToHistory(song);
         resolve(song);
       } else {
         if (this.autoPL === null) {
@@ -82,7 +80,6 @@ class QueueService {
         }
         this.dbService.getRandomSong(this.autoPL).
           then((song) => {
-            this.addSongToHistory(song);
             resolve(song);
           }).
           catch((err) => reject(err));
@@ -96,11 +93,9 @@ class QueueService {
    * @param {Song} song - The song to be added.
    */
   addSongToHistory(song) {
-    if (this.history[0] !== song) {
-      this.history.unshift(song);
-      while (this.history.length > this.historyLength) {
-        this.history.pop();
-      }
+    this.history.unshift(song);
+    while (this.history.length > this.historyLength) {
+      this.history.pop();
     }
   }
 

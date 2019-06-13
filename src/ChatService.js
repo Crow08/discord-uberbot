@@ -28,7 +28,7 @@ class ChatService {
   simpleNote(msg, text, type) {
     this.debugPrint(text);
     if (typeof msg.channel === "undefined") {
-      return new Promise((resolve) => resolve({"delete": () => null}));
+      return this.buildDummyMessage();
     }
     const ret = [];
     text.toString().split("\n").
@@ -63,7 +63,7 @@ class ChatService {
   send(msg, content) {
     this.debugPrint(content);
     if (typeof msg.channel === "undefined") {
-      return new Promise((resolve) => resolve({"delete": () => null}));
+      return this.buildDummyMessage();
     }
     return msg.channel.send(content);
   }
@@ -76,36 +76,42 @@ class ChatService {
   pagedContent(msg, pages) {
     this.debugPrint(pages);
     if (typeof msg.channel === "undefined") {
-      return;
+      return this.buildDummyMessage();
     }
-    let page = 0;
-    // Build choose menu.
-    msg.channel.send(pages[0]).
-      // Add reactions for page navigation.
-      then((curPage) => this.postReactionEmojis(curPage, ["⏪", "⏩"]).then(() => {
-        // Add listeners to reactions.
-        const nextReaction = curPage.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏩" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        const backReaction = curPage.createReactionCollector(
-          (reaction, user) => reaction.emoji.name === "⏪" && user.id === msg.author.id,
-          {"time": 120000}
-        );
-        // Handle reactions.
-        nextReaction.on("collect", (reaction) => {
-          reaction.users.remove(msg.author);
-          page = (page + 1) < pages.length ? ++page : 0;
-          curPage.edit(pages[page]);
-        });
-        backReaction.on("collect", (reaction) => {
-          reaction.users.remove(msg.author);
-          page = (page > 0) ? --page : pages.length - 1;
-          curPage.edit(pages[page]);
-        });
-        nextReaction.on("end", () => curPage.reactions.removeAll());
-        backReaction.on("end", () => curPage.reactions.removeAll());
-      }));
+    return new Promise((resolve, reject) => {
+      let page = 0;
+      // Build choose menu.
+      msg.channel.send(pages[0]).
+        // Add reactions for page navigation.
+        then((curPage) => this.postReactionEmojis(curPage, ["⏪", "⏩"]).
+          then(() => {
+            // Add listeners to reactions.
+            const reactionCollector = curPage.createReactionCollector(
+              (reaction, user) => (["⏪", "⏩"].includes(reaction.emoji.name) && user.id === msg.author.id),
+              {"time": 120000}
+            );
+            // Handle reactions.
+            reactionCollector.on("collect", (reaction) => {
+              reaction.users.remove(msg.author);
+              switch (reaction.emoji.name) {
+              case "⏪":
+                page = (page > 0) ? --page : pages.length - 1;
+                break;
+              case "⏩":
+                page = (page + 1) < pages.length ? ++page : 0;
+                break;
+              default:
+                break;
+              }
+              curPage.edit(pages[page]);
+            });
+            // Timeout.
+            reactionCollector.on("end", () => curPage.reactions.removeAll());
+            resolve(curPage);
+          }).
+          catch(reject)).
+        catch(reject);
+    });
   }
 
   /**
@@ -117,33 +123,38 @@ class ChatService {
   displaySong(msg, song, processRating) {
     this.debugPrint(song);
     if (typeof msg.channel === "undefined") {
-      return;
+      return this.buildDummyMessage();
     }
+    return new Promise((resolve, reject) => {
     // Build Song embed.
-    msg.channel.send(this.buildSongEmbed(song)).
-      // Add reactions for song rating.
-      then((songMsg) => this.postReactionEmojis(songMsg, ["⏫", "⏬"]).
-        then(() => {
-        // Add listeners to reactions.
-          const reactionCollector = songMsg.createReactionCollector(
-            (reaction, user) => (["⏫", "⏬"].includes(reaction.emoji.name) && (!user.bot)),
-            {"time": 600000}
-          );
-          // Handle reactions.
-          reactionCollector.on("collect", (reaction) => {
-            switch (reaction.emoji.name) {
-            case "⏫":
-              this.handleRatingReaction(reaction, song, 1, processRating);
-              break;
-            case "⏬":
-              this.handleRatingReaction(reaction, song, -1, processRating);
-              break;
-            default:
-              break;
-            }
-          });
-          reactionCollector.on("end", () => songMsg.reactions.removeAll());
-        }));
+      msg.channel.send(this.buildSongEmbed(song)).
+        // Add reactions for song rating.
+        then((songMsg) => this.postReactionEmojis(songMsg, ["👍", "👎"]).
+          then(() => {
+          // Add listeners to reactions.
+            const reactionCollector = songMsg.createReactionCollector(
+              (reaction, user) => (["👍", "👎"].includes(reaction.emoji.name) && (!user.bot)),
+              {"time": 600000}
+            );
+            // Handle reactions.
+            reactionCollector.on("collect", (reaction) => {
+              switch (reaction.emoji.name) {
+              case "👍":
+                this.handleRatingReaction(reaction, song, 1, processRating);
+                break;
+              case "👎":
+                this.handleRatingReaction(reaction, song, -1, processRating);
+                break;
+              default:
+                break;
+              }
+            });
+            reactionCollector.on("end", () => songMsg.reactions.removeAll());
+            resolve(songMsg);
+          }).
+          catch(reject)).
+        catch(reject);
+    });
   }
 
   /**
@@ -155,27 +166,27 @@ class ChatService {
   displayPlayer(msg, song, reactionFunctions) {
     this.debugPrint(song);
     if (typeof msg.channel === "undefined") {
-      return new Promise((resolve) => resolve({"delete": () => null}));
+      return this.buildDummyMessage();
     }
     // Build Song embed.
     return new Promise((resolve, reject) => msg.channel.send(this.buildSongEmbed(song)).
       // Add reactions for song rating.
-      then((playerMsg) => this.postReactionEmojis(playerMsg, ["⏫", "⏬", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"]).
+      then((playerMsg) => this.postReactionEmojis(playerMsg, ["👍", "👎", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"]).
         then(() => {
         // Add listeners to reactions.
           const reactionCollector = playerMsg.createReactionCollector(
-            (reaction, user) => (["⏫", "⏬", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"].includes(reaction.emoji.name) &&
+            (reaction, user) => (["👍", "👎", "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"].includes(reaction.emoji.name) &&
               (!user.bot)),
             {"time": 600000}
           );
           // Handle reactions.
           reactionCollector.on("collect", (reaction) => {
             switch (reaction.emoji.name) {
-            case "⏫":
-              this.handleRatingReaction(reaction, song, 1, reactionFunctions["⏫"]);
+            case "👍":
+              this.handleRatingReaction(reaction, song, 1, reactionFunctions[reaction.emoji.name]);
               break;
-            case "⏬":
-              this.handleRatingReaction(reaction, song, -1, reactionFunctions["⏬"]);
+            case "👎":
+              this.handleRatingReaction(reaction, song, -1, reactionFunctions[reaction.emoji.name]);
               break;
             default:
               this.handleReaction(reaction, reactionFunctions[reaction.emoji.name]);
@@ -199,8 +210,9 @@ class ChatService {
    * @param {Message} msg - User message this function is invoked by.
    * @param {function} filter - function to filter the collected messages and determine which ones should be processed.
    * @param {function} process - Function to be invoked if a message passed the filter.
+   * @param {function} timeout - Function to be invoked if a timeout occurs.
    */
-  awaitCommand(msg, filter, process) {
+  awaitCommand(msg, filter, process, timeout = () => null) {
     msg.channel.awaitMessages(
       (resp) => resp.author.id === msg.author.id && filter(resp),
       {"errors": ["time"], "max": 1, "time": 120000}
@@ -212,8 +224,7 @@ class ChatService {
           this.simpleNote(msg, err, this.msgType.FAIL);
           return;
         }
-        const note = "Did you fell asleep? My attention span lasts only for 2 min... oh a kitten :heart_eyes:";
-        this.simpleNote(msg, note, this.msgType.INFO);
+        timeout();
       });
   }
 
@@ -318,6 +329,10 @@ class ChatService {
     } else {
       console.log("\x1b[36m%s\x1b[0m", content);
     }
+  }
+
+  buildDummyMessage() {
+    return new Promise((resolve) => resolve({"delete": () => null}));
   }
 }
 

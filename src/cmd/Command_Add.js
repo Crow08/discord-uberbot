@@ -14,10 +14,11 @@ class AddCommand extends Command {
    * @param {SearchService} searchService - searchService.
    */
   constructor(chatService, queueService, searchService) {
-    super("add");
-    super.help = "add a song to the current queue by url or query.";
-    super.usage = "<prefix>add <url | query>";
-    super.alias = ["add", "a"];
+    super(
+      ["add", "a"],
+      "add a song to the current queue by url or query.",
+      "<prefix>add <url | query>"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
     this.searchService = searchService;

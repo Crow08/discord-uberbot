@@ -13,10 +13,11 @@ class LoopCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    */
   constructor(chatService, queueService) {
-    super("loop");
-    super.help = "toggle loop mode of the queue.\nadd 1 to loop only the current song.";
-    super.usage = "<prefix>loop [1]";
-    super.alias = ["loop"];
+    super(
+      ["loop"],
+      "toggle loop mode of the queue.\nadd 1 to loop only the current song.",
+      "<prefix>loop [1]"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
   }

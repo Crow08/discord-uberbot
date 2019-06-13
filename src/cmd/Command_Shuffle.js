@@ -13,10 +13,11 @@ class ShuffleCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    */
   constructor(chatService, queueService) {
-    super("shuffle");
-    super.help = "shuffle the current queue.";
-    super.usage = "<prefix>shuffle";
-    super.alias = ["shuffle"];
+    super(
+      ["shuffle"],
+      "shuffle the current queue.",
+      "<prefix>shuffle"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
   }

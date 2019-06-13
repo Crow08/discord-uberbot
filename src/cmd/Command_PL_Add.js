@@ -14,10 +14,11 @@ class AddPLCommand extends Command {
    * @param {SearchService} searchService - SearchService.
    */
   constructor(chatService, dBService, searchService) {
-    super("pladd");
-    super.help = "add a song to the specified playlist by url or query.";
-    super.usage = "<prefix>pladd <pl name> <url | query>";
-    super.alias = ["pladd"];
+    super(
+      ["pladd"],
+      "add a song to the specified playlist by url or query.",
+      "<prefix>pladd <pl name> <url | query>"
+    );
     this.chatService = chatService;
     this.dBService = dBService;
     this.searchService = searchService;

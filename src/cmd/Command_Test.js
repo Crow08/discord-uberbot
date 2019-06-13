@@ -16,10 +16,11 @@ class TestCommand extends Command {
    * @param {PlayerService} playerService - PlayerService.
    */
   constructor(chatService, queueService, dbService, voiceService, playerService) {
-    super("test");
-    super.help = "for testing - duh!";
-    super.usage = "<prefix>test";
-    super.alias = ["test"];
+    super(
+      ["test"],
+      "for testing - duh!",
+      "<prefix>test"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
     this.dbService = dbService;

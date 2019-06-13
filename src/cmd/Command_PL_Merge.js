@@ -13,10 +13,11 @@ class MergePLCommand extends Command {
    * @param {DbService} dbService - DbService.
    */
   constructor(chatService, dbService) {
-    super("merge");
-    super.help = "copies one playlist into another!";
-    super.usage = "<prefix>merge <sourcepl> <targetpl>";
-    super.alias = ["merge"];
+    super(
+      ["plmerge", "merge"],
+      "copies one playlist into another!",
+      "<prefix>merge <sourcepl> <targetpl>"
+    );
     this.chatService = chatService;
     this.dbService = dbService;
   }

@@ -33,8 +33,6 @@
 	- *workaround with .stop -> .play*
 
 ##### Report all the Errors ####
-- `:x: | MongoError: ns not found`
-	- native, non descriptive error when deleting a non existent playlist.
 - *`Error [VOICE_PLAY_INTERFACE_BAD_TYPE]: Unknown stream type` -> (fixed?)*
 	- *recreate: try .start &lt;playlist&gt; for consistent error*
 - *`:x: | Error: input stream: No formats found with custom filter` -> (how to reproduce?)*

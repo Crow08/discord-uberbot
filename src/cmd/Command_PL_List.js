@@ -13,10 +13,11 @@ class ListPLCommand extends Command {
    * @param {DbService} dbService - DbService.
    */
   constructor(chatService, dbService) {
-    super("pllist");
-    super.help = "lists available playlists";
-    super.usage = "<prefix>pllist";
-    super.alias = ["pllist", "l"];
+    super(
+      ["pllist", "l"],
+      "lists available playlists",
+      "<prefix>pllist"
+    );
     this.chatService = chatService;
     this.dbService = dbService;
   }

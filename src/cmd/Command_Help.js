@@ -14,10 +14,11 @@ class HelpCommand extends Command {
    * @param {string} prefix - String representing the bot command prefix.
    */
   constructor(chatService, commands, prefix) {
-    super("help");
-    super.help = "list all implemented commands";
-    super.usage = "<prefix>help";
-    super.alias = ["help", "?"];
+    super(
+      ["help", "?", "medic"],
+      "list all implemented commands",
+      "<prefix>help"
+    );
     this.chatService = chatService;
     this.commands = commands;
     this.prefix = prefix;
@@ -41,9 +42,9 @@ class HelpCommand extends Command {
     let helpText = "";
     this.commands.forEach((command) => {
       helpText = "";
-      const {help, name, usage, alias} = command;
+      const {help, usage, alias} = command;
       // Ignore undefined commands
-      if (typeof name !== "undefined") {
+      if (typeof alias !== "undefined") {
         helpText += this.buildRow(`Alias:  ${alias.join(", ")}`);
         helpText += this.buildRow(`Usage:  ${usage.replace("<prefix>", this.prefix)}`);
         helpText += this.buildRow(`About:  ${help}`);

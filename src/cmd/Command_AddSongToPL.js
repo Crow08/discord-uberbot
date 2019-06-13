@@ -14,10 +14,11 @@ class AddSongToPlCommand extends Command {
    * @param {DbService} dbService - dbService.
    */
   constructor(chatService, queueService, dbService) {
-    super("addsongtopl");
-    super.help = "adds current song to given playlist";
-    super.usage = "<prefix>addsongtopl <playlist>";
-    super.alias = ["addsongtopl", "as2pl", "as2p"];
+    super(
+      ["addsongtopl", "as2pl", "as2p"],
+      "adds current song to given playlist",
+      "<prefix>addsongtopl <playlist>"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
     this.dbService = dbService;

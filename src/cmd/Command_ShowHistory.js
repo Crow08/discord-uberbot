@@ -39,10 +39,11 @@ class ShowHistoryCommand extends Command {
    * @param {Command[]} commands - Bot commands.
    */
   constructor(chatService, queueService, commands) {
-    super("showhistory");
-    super.help = "displays all songs from current history.";
-    super.usage = "<prefix>showhistory";
-    super.alias = ["showhistory", "h", "history"];
+    super(
+      ["showhistory", "h", "history"],
+      "displays all songs from current history.",
+      "<prefix>showhistory"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
     this.commands = commands;
@@ -79,12 +80,11 @@ class ShowHistoryCommand extends Command {
     if (pages.length === 0) {
       this.chatService.simpleNote(msg, "History is empty!", this.chatService.msgType.INFO);
     } else {
-      this.chatService.pagedContent(msg, pages);
-
-      this.chatService.awaitCommand(
-        msg, (responseMsg) => filter(responseMsg, ["p", "play", "a", "add"]),
-        (res) => process(res, this.commands, msg, this.queueService)
-      );
+      this.chatService.pagedContent(msg, pages).
+        then((pagedMsg) => this.chatService.awaitCommand(
+          msg, (responseMsg) => filter(responseMsg, ["p", "play", "a", "add"]),
+          (res) => process(res, this.commands, msg, this.queueService)
+        ));
     }
   }
 }

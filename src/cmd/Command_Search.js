@@ -15,11 +15,12 @@ class SearchCommand extends Command {
    * @param {SearchService} searchService - SearchService.
    */
   constructor(chatService, playerService, queueService, searchService, dbService) {
-    super("search");
-    super.help = "search for a song and choose from multiple results.";
-    super.usage = "<prefix>search <query>\n=> \"cancel\" |\n" +
-    "[\"play\"|\"add\"] <song number> |\n \"pladd\" <pl name> <song number>";
-    super.alias = ["search"];
+    super(
+      ["search"],
+      "search for a song and choose from multiple results.",
+      "<prefix>search <query>\n=> \"cancel\" |\n" +
+      "[\"play\"|\"add\"] <song number> |\n \"pladd\" <pl name> <song number>"
+    );
     this.playerService = playerService;
     this.queueService = queueService;
     this.chatService = chatService;
@@ -47,7 +48,6 @@ class SearchCommand extends Command {
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC).
           then((infoMsg) => infoMsg.delete({"timeout": 5000}));
 
-
         const pages = [];
         let curPage = "";
         eSongs.forEach((entry, index) => {
@@ -71,14 +71,15 @@ class SearchCommand extends Command {
           pages.push(embed);
         }
         if (pages.length === 0) {
-          this.chatService.simpleNote(msg, "History is empty!", this.chatService.msgType.INFO);
+          this.chatService.simpleNote(msg, "No search results!", this.chatService.msgType.INFO);
         } else {
-          this.chatService.pagedContent(msg, pages);
-
-          this.chatService.awaitCommand(
-            msg, (resp) => this.isSelectionCmd(resp),
-            (col) => this.processSelectionCmd(col, eSongs)
-          );
+          this.chatService.pagedContent(msg, pages).
+            then((pagedMsg) => this.chatService.awaitCommand(
+              msg, (resp) => this.isSelectionCmd(resp), (col) => this.processSelectionCmd(col, eSongs),
+              () => {
+                pagedMsg.delete();
+              }
+            ));
         }
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
