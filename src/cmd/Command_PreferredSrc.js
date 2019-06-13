@@ -13,11 +13,13 @@ class PreferredSrcCommand extends Command {
    * @param {SearchService} searchService - SearchService.
    */
   constructor(chatService, searchService) {
-    super("preferdsrc");
-    super.help = "set a source to be the default source for all searches.\n" +
-    "(valid sources to set are: \"yt\":youtube,\"sc\":soundcloud,\"sp\":spotify.\nno parameter to get current source)";
-    super.usage = "<prefix>preferdsrc [yt|sc|sp]";
-    super.alias = ["preferdsrc", "searchsrc", "src"];
+    super(
+      ["preferdsrc", "searchsrc", "src"],
+      "set a source to be the default source for all searches.\n" +
+      "(valid sources to set are: \"yt\":youtube,\"sc\":soundcloud,\"sp\":spotify.\n" +
+      "no parameter to get current source)",
+      "<prefix>preferdsrc [yt|sc|sp]"
+    );
     this.chatService = chatService;
     this.searchService = searchService;
     this.sources = ["YT", "SC", "SP"];

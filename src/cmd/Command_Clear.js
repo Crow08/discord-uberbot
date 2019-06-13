@@ -13,10 +13,11 @@ class ClearCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    */
   constructor(chatService, queueService) {
-    super("clear");
-    super.help = "delete all songs from current queue.";
-    super.usage = "<prefix>clear";
-    super.alias = ["clear"];
+    super(
+      ["clear"],
+      "delete all songs from current queue.",
+      "<prefix>clear"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
   }

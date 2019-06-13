@@ -15,11 +15,12 @@ class SearchCommand extends Command {
    * @param {SearchService} searchService - SearchService.
    */
   constructor(chatService, playerService, queueService, searchService, dbService) {
-    super("search");
-    super.help = "search for a song and choose from multiple results.";
-    super.usage = "<prefix>search <query>\n=> \"cancel\" |\n" +
-    "[\"play\"|\"add\"] <song number> |\n \"pladd\" <pl name> <song number>";
-    super.alias = ["search"];
+    super(
+      ["search"],
+      "search for a song and choose from multiple results.",
+      "<prefix>search <query>\n=> \"cancel\" |\n" +
+      "[\"play\"|\"add\"] <song number> |\n \"pladd\" <pl name> <song number>"
+    );
     this.playerService = playerService;
     this.queueService = queueService;
     this.chatService = chatService;

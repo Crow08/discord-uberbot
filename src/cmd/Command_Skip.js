@@ -12,10 +12,11 @@ class SkipCommand extends Command {
    * @param {PlayerService} playerService - PlayerService.
    */
   constructor(playerService) {
-    super("skip");
-    super.help = "skip current song.";
-    super.usage = "<prefix>skip";
-    super.alias = ["skip", "s"];
+    super(
+      ["skip", "s"],
+      "skip current song.",
+      "<prefix>skip"
+    );
     this.playerService = playerService;
   }
 

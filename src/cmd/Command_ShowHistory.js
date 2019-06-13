@@ -39,10 +39,11 @@ class ShowHistoryCommand extends Command {
    * @param {Command[]} commands - Bot commands.
    */
   constructor(chatService, queueService, commands) {
-    super("showhistory");
-    super.help = "displays all songs from current history.";
-    super.usage = "<prefix>showhistory";
-    super.alias = ["showhistory", "h", "history"];
+    super(
+      ["showhistory", "h", "history"],
+      "displays all songs from current history.",
+      "<prefix>showhistory"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
     this.commands = commands;

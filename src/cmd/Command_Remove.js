@@ -13,10 +13,11 @@ class RemoveCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    */
   constructor(chatService, queueService) {
-    super("remove");
-    super.help = "removes a song from the current queue.";
-    super.usage = "<prefix>remove <queue number>";
-    super.alias = ["remove"];
+    super(
+      ["remove"],
+      "removes a song from the current queue.",
+      "<prefix>remove <queue number>"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
   }

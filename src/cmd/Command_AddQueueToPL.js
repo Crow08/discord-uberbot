@@ -14,10 +14,11 @@ class AddQueueToPLCommand extends Command {
    * @param {DbService} dbService - dbService.
    */
   constructor(chatService, queueService, dbService) {
-    super("addqueuetopl");
-    super.help = "adds queue to given playlist";
-    super.usage = "<prefix>addqueuetopl <playlist>";
-    super.alias = ["addqueuetopl", "aq2pl", "aq2p"];
+    super(
+      ["addqueuetopl", "aq2pl", "aq2p"],
+      "adds queue to given playlist",
+      "<prefix>addqueuetopl <playlist>"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
     this.dbService = dbService;

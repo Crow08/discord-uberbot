@@ -16,11 +16,12 @@ class UploadCommand extends Command {
    * @param {DbService} dbService - DbService.
    */
   constructor(chatService, queueService, searchService, dBService) {
-    super("upload");
-    super.help = "add a songs from a file to the queue or to a playlist.";
-    super.usage = "<prefix>upload [<playlist name>]\n=> attach file to the message\n" +
-    "txt files with a query each row or csv files with 3 columns per row <query>;<artist>;<title>";
-    super.alias = ["upload"];
+    super(
+      ["upload"],
+      "add a songs from a file to the queue or to a playlist.",
+      "<prefix>upload [<playlist name>]\n=> attach file to the message\n" +
+      "txt files with a query each row or csv files with 3 columns per row <query>;<artist>;<title>"
+    );
     this.chatService = chatService;
     this.dBService = dBService;
     this.searchService = searchService;

@@ -13,10 +13,11 @@ class LeaveCommand extends Command {
    * @param {VoiceService} voiceService - VoiceService.
    */
   constructor(playerService, voiceService) {
-    super("leave");
-    super.help = "leave the current voice channel.";
-    super.usage = "<prefix>leave";
-    super.alias = ["leave"];
+    super(
+      ["leave"],
+      "leave the current voice channel.",
+      "<prefix>leave"
+    );
     this.voiceService = voiceService;
     this.playerService = playerService;
   }

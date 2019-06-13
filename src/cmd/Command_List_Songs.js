@@ -13,10 +13,11 @@ class ListSongsCommand extends Command {
    * @param {DbService} dbService - DbService.
    */
   constructor(chatService, dbService) {
-    super("listsongs");
-    super.help = "lists all songs of the specified playlist";
-    super.usage = "<prefix>listsongs <playlist>";
-    super.alias = ["listsongs", "ls"];
+    super(
+      ["listsongs", "ls"],
+      "lists all songs of the specified playlist",
+      "<prefix>listsongs <playlist>"
+    );
     this.chatService = chatService;
     this.dbService = dbService;
   }

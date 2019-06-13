@@ -13,10 +13,11 @@ class RemovePLCommand extends Command {
    * @param {DbService} dbService - DbService.
    */
   constructor(chatService, dbService) {
-    super("plremove");
-    super.help = "remove given song from given playlist";
-    super.usage = "<prefix>plremove <pl name> <song name>";
-    super.alias = ["plremove", "plrm"];
+    super(
+      ["plremove", "plrm"],
+      "remove given song from given playlist",
+      "<prefix>plremove <pl name> <song name>"
+    );
     this.chatService = chatService;
     this.dbService = dbService;
   }

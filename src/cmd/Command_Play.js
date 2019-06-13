@@ -14,10 +14,11 @@ class PlayCommand extends Command {
    * @param {SearchService} searchService - SearchService.
    */
   constructor(chatService, playerService, searchService) {
-    super("play");
-    super.help = "play a song by url or query.";
-    super.usage = "<prefix>play <url | query>";
-    super.alias = ["play", "p"];
+    super(
+      ["play", "p"],
+      "play a song by url or query.",
+      "<prefix>play <url | query>"
+    );
     this.playerService = playerService;
     this.chatService = chatService;
     this.searchService = searchService;

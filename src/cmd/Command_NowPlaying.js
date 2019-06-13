@@ -14,10 +14,11 @@ class NowPlayingCommand extends Command {
    * @param {RatingService} ratingService - RatingService.
    */
   constructor(chatService, queueService, ratingService) {
-    super("nowplaying");
-    super.help = "returns first song in history (current song)";
-    super.usage = "<prefix>nowplaying";
-    super.alias = ["nowplaying", "np"];
+    super(
+      ["nowplaying", "np"],
+      "returns first song in history (current song)",
+      "<prefix>nowplaying"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
     this.ratingService = ratingService;

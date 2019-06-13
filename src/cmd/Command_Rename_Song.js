@@ -13,10 +13,11 @@ class RenameSongCommand extends Command {
    * @param {DbService} dbService - DbService.
    */
   constructor(chatService, dbService) {
-    super("rename");
-    super.help = "rename title or artist of song.\n(first parameter \"t\" for title and \"a\" for artist.)";
-    super.usage = "<prefix>rename <\"t\"|\"a\"> <playlist name> <song number> <new name>";
-    super.alias = ["rename", "renamesong", "r"];
+    super(
+      ["rename", "renamesong", "r"],
+      "rename title or artist of song.\n(first parameter \"t\" for title and \"a\" for artist.)",
+      "<prefix>rename <\"t\"|\"a\"> <playlist name> <song number> <new name>"
+    );
     this.chatService = chatService;
     this.dbService = dbService;
   }

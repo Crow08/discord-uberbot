@@ -14,10 +14,11 @@ class VolumeCommand extends Command {
    * @param {PlayerService} playerService - PlayerService.
    */
   constructor(chatService, voiceService, playerService) {
-    super("volume");
-    super.help = "sets volume, or returns volume if no parameter given";
-    super.usage = "<prefix>volume <number>";
-    super.alias = ["volume", "vol", "v"];
+    super(
+      ["volume", "vol", "v"],
+      "sets volume, or returns volume if no parameter given",
+      "<prefix>volume <number>"
+    );
     this.chatService = chatService;
     this.voiceService = voiceService;
     this.playerService = playerService;

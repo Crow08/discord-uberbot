@@ -6,23 +6,25 @@ class Command {
 
   /**
    * Constructor.
-   * @param {string} name - unique command name.
+   * @param {string[]} alias - Command name / aliases to address the command.
+   * @param {string} help - Help text to describe command functionality.
+   * @param {string} usage - Command syntax (+ followups).
    */
-  constructor(name) {
-    this.name = name;
-    this.enabled = true;
-    this.alias = [];
-    this.help = "";
-    this.usage = "";
+  constructor(alias, help = "", usage = "", enabled = true) {
+    this.enabled = enabled;
+    this.alias = alias;
+    this.help = help;
+    this.usage = usage;
   }
 
   /**
+   * Method to run when the command gets called.
    * @abstract
    * @param {string} payload - Command payload with with optional parameters dependent on the command implementation.
    * @param {Message} msg - Discord.js message which triggered the command.
    */
   run(payload, msg) {
-    console.log(`No implementation of '${this.name}'-command found.\n Arguments:`);
+    console.log("No command implementation found.\n Arguments:");
     console.log(payload);
     console.log(msg);
   }

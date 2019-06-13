@@ -13,10 +13,11 @@ class LoadPLCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    */
   constructor(chatService, queueService) {
-    super("plload");
-    super.help = "load a playlist replacing the current queue.";
-    super.usage = "<prefix>plload <pl name>";
-    super.alias = ["plload"];
+    super(
+      ["plload"],
+      "load a playlist replacing the current queue.",
+      "<prefix>plload <pl name>"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
   }

@@ -15,10 +15,11 @@ class StartCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    */
   constructor(playerService, searchService, chatService, queueService) {
-    super("start");
-    super.help = "loads a playlist shuffles it and starts playing.";
-    super.usage = "<prefix>start <pl name>";
-    super.alias = ["start"];
+    super(
+      ["start"],
+      "loads a playlist shuffles it and starts playing.",
+      "<prefix>start <pl name>"
+    );
     this.playerService = playerService;
     this.searchService = searchService;
     this.chatService = chatService;

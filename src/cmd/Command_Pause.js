@@ -12,10 +12,11 @@ class PauseCommand extends Command {
    * @param {PlayerService} playerService - PlayerService.
    */
   constructor(playerService) {
-    super("pause");
-    super.help = "pause current playback.";
-    super.usage = "<prefix>pause";
-    super.alias = ["pause"];
+    super(
+      ["pause"],
+      "pause current playback.",
+      "<prefix>pause"
+    );
     this.playerService = playerService;
   }
 

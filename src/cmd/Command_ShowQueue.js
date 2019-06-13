@@ -13,10 +13,11 @@ class ShowQueueCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    */
   constructor(chatService, queueService) {
-    super("showqueue");
-    super.help = "displays all songs from current queue.";
-    super.usage = "<prefix>showqueue";
-    super.alias = ["showqueue", "q", "queue"];
+    super(
+      ["showqueue", "q", "queue"],
+      "displays all songs from current queue.",
+      "<prefix>showqueue"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
   }

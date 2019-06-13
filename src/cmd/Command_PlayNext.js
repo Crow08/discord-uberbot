@@ -13,10 +13,11 @@ class PlayNextCommand extends Command {
    * @param {QueueService} queueService - QueueService.
    */
   constructor(chatService, queueService) {
-    super("playnext");
-    super.help = "moves song at given position to top";
-    super.usage = "<prefix>playnext <queue position>";
-    super.alias = ["playnext", "pn"];
+    super(
+      ["playnext", "pn"],
+      "moves song at given position to top",
+      "<prefix>playnext <queue position>"
+    );
     this.chatService = chatService;
     this.queueService = queueService;
   }

@@ -13,10 +13,11 @@ class DeletePLCommand extends Command {
    * @param {DbService} dbService - DbService.
    */
   constructor(chatService, dBService) {
-    super("pldelete");
-    super.help = "deletes a playlist permanently.";
-    super.usage = "<prefix>pldelete <pl name>";
-    super.alias = ["pldelete"];
+    super(
+      ["pldelete"],
+      "deletes a playlist permanently.",
+      "<prefix>pldelete <pl name>"
+    );
     this.chatService = chatService;
     this.dBService = dBService;
   }

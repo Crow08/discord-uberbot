@@ -12,10 +12,11 @@ class StopCommand extends Command {
    * @param {PlayerService} playerService - PlayerService.
    */
   constructor(playerService) {
-    super("stop");
-    super.help = "stop current playback.";
-    super.usage = "<prefix>stop";
-    super.alias = ["stop"];
+    super(
+      ["stop"],
+      "stop current playback.",
+      "<prefix>stop"
+    );
     this.playerService = playerService;
   }
 
