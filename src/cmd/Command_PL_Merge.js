@@ -16,7 +16,7 @@ class MergePLCommand extends Command {
     super("merge");
     super.help = "copies one playlist into another!";
     super.usage = "<prefix>merge <sourcepl> <targetpl>";
-    super.alias = ["merge"];
+    super.alias = ["plmerge", "merge"];
     this.chatService = chatService;
     this.dbService = dbService;
   }

@@ -264,7 +264,7 @@ class DBService {
       this.db.collection(plName).
         drop().
         then(resolve).
-        catch(reject);
+        catch((err) => reject(err.message.includes("not found") ? new Error("Playlist name not found!") : err));
     });
   }
 

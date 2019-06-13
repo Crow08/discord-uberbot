@@ -30,7 +30,7 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 
 - Import songs
   - Import songs by uploading txt files with links or queries oer line.
-  - Import songs via csv file to additional define the exact title and artist od the song.
+  - Import songs via csv file to additional define the exact title and artist of the song.
 
 ---
 
