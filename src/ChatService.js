@@ -86,27 +86,27 @@ class ChatService {
         then((curPage) => this.postReactionEmojis(curPage, ["⏪", "⏩"]).
           then(() => {
             // Add listeners to reactions.
-            const nextReaction = curPage.createReactionCollector(
-              (reaction, user) => reaction.emoji.name === "⏩" && user.id === msg.author.id,
-              {"time": 120000}
-            );
-            const backReaction = curPage.createReactionCollector(
-              (reaction, user) => reaction.emoji.name === "⏪" && user.id === msg.author.id,
+            const reactionCollector = curPage.createReactionCollector(
+              (reaction, user) => (["⏪", "⏩"].includes(reaction.emoji.name) && user.id === msg.author.id),
               {"time": 120000}
             );
             // Handle reactions.
-            nextReaction.on("collect", (reaction) => {
+            reactionCollector.on("collect", (reaction) => {
               reaction.users.remove(msg.author);
-              page = (page + 1) < pages.length ? ++page : 0;
+              switch (reaction.emoji.name) {
+              case "⏪":
+                page = (page > 0) ? --page : pages.length - 1;
+                break;
+              case "⏩":
+                page = (page + 1) < pages.length ? ++page : 0;
+                break;
+              default:
+                break;
+              }
               curPage.edit(pages[page]);
             });
-            backReaction.on("collect", (reaction) => {
-              reaction.users.remove(msg.author);
-              page = (page > 0) ? --page : pages.length - 1;
-              curPage.edit(pages[page]);
-            });
-            nextReaction.on("end", () => curPage.reactions.removeAll());
-            backReaction.on("end", () => curPage.reactions.removeAll());
+            // Timeout.
+            reactionCollector.on("end", () => curPage.reactions.removeAll());
             resolve(curPage);
           }).
           catch(reject)).
