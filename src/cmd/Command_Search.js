@@ -91,7 +91,7 @@ class SearchCommand extends Command {
    * @param {Message} resp Collected User responses.
    */
   isSelectionCmd(resp) {
-    const message = resp.content.trim();
+    const message = resp.content.trim().toLowerCase();
     if ((!isNaN(message) && message.length > 0) || message === "cancel") {
       return true;
     }
@@ -111,7 +111,7 @@ class SearchCommand extends Command {
    */
   processSelectionCmd(collected, songs) {
     const response = collected.array()[0];
-    const content = response.content.trim();
+    const content = response.content.trim().toLowerCase();
     if (!isNaN(content)) {
       this.playerService.playNow(songs[content - 1], response);
     } else if (content === "cancel") {

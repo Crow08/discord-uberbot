@@ -4,14 +4,14 @@ const filter = (res, list) => {
   if (res.content.trim().split(" ").length !== 2) {
     return false;
   }
-  const cmd = res.content.trim().split(" ")[0];
+  const cmd = res.content.trim().split(" ")[0].toLowerCase();
   const selection = res.content.trim().split(" ")[1];
   return (list.includes(cmd) && !isNaN(selection));
 };
 
 const process = (res, commandList, msg, queueService) => {
-  const cmd = res.array()[0].content.trim().split(" ")[0];
-  const selection = res.array()[0].content.trim().split(" ")[1];
+  const cmd = res.array()[0].content.trim().split(" ")[0].toLowerCase();
+  const selection = res.array()[0].content.trim().split(" ")[1].toLowerCase();
 
   const song = queueService.history[selection - 1];
 
