@@ -34,7 +34,7 @@ class VoiceService {
     return new Promise((resolve, reject) => {
       const opt = {"bitrate": this.bitRate, "passes": 3, seek, "volume": (this.volume / 100)};
       if (song.src === Song.srcType.YT) {
-        opt.type = "opus";
+        //opt.type = "opus";
       }
       this.getVoiceConnection(msg).
         then((conn) => this.getStream(song).
