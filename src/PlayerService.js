@@ -106,8 +106,6 @@ class PlayerService {
     const reactionFunctions = {
       "⏩": () => this.skip(msg),
       "⏪": () => this.back(msg),
-      "⏫": ratingFunc,
-      "⏬": ratingFunc,
       "⏯": () => {
         if (!this.audioDispatcher || this.audioDispatcher.paused) {
           this.play(msg);
@@ -116,6 +114,8 @@ class PlayerService {
         }
       },
       "⏹": () => this.stop(msg),
+      "👍": ratingFunc,
+      "👎": ratingFunc,
       "🔀": () => {
         this.queueService.shuffleQueue();
         this.chatService.simpleNote(msg, "Queue shuffled!", this.chatService.msgType.MUSIC);
@@ -126,7 +126,6 @@ class PlayerService {
           msg, this.queueService.mode === "n" ? "No more looping!" : "Loop current queue!",
           this.chatService.msgType.MUSIC
         );
-
       }
     };
     return reactionFunctions;
