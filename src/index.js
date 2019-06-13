@@ -91,10 +91,10 @@ const processMsg = (msg) => {
   }
   // Split multiline messages to allow multiple commands in one message.
   msg.content.split("\n").forEach((element) => {
-    const message = element.trim().toLowerCase();
+    const message = element.trim();
     // If message is a command for this bot.
     if (message.startsWith(settings.botPrefix) && (msg.channel.type === "text" || msg.channel.type === "dm")) {
-      const cmd = message.substr(settings.botPrefix.length).split(" ", 1)[0];
+      const cmd = message.substr(settings.botPrefix.length).split(" ", 1)[0].toLowerCase();
       const payload = message.substr(cmd.length + settings.botPrefix.length + 1);
       // Process command here.
       musicClient.execute(cmd, payload, msg);
