@@ -83,10 +83,7 @@ class ShowHistoryCommand extends Command {
       this.chatService.pagedContent(msg, pages).
         then((pagedMsg) => this.chatService.awaitCommand(
           msg, (responseMsg) => filter(responseMsg, ["p", "play", "a", "add"]),
-          (res) => process(res, this.commands, msg, this.queueService),
-          () => {
-            pagedMsg.delete();
-          }
+          (res) => process(res, this.commands, msg, this.queueService)
         ));
     }
   }
