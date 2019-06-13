@@ -48,7 +48,6 @@ class SearchCommand extends Command {
         this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC).
           then((infoMsg) => infoMsg.delete({"timeout": 5000}));
 
-
         const pages = [];
         let curPage = "";
         eSongs.forEach((entry, index) => {
@@ -74,12 +73,13 @@ class SearchCommand extends Command {
         if (pages.length === 0) {
           this.chatService.simpleNote(msg, "History is empty!", this.chatService.msgType.INFO);
         } else {
-          this.chatService.pagedContent(msg, pages);
-
-          this.chatService.awaitCommand(
-            msg, (resp) => this.isSelectionCmd(resp),
-            (col) => this.processSelectionCmd(col, eSongs)
-          );
+          this.chatService.pagedContent(msg, pages).
+            then((pagedMsg) => this.chatService.awaitCommand(
+              msg, (resp) => this.isSelectionCmd(resp), (col) => this.processSelectionCmd(col, eSongs),
+              () => {
+                pagedMsg.delete();
+              }
+            ));
         }
       }).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));

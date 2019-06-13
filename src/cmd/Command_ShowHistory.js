@@ -80,12 +80,14 @@ class ShowHistoryCommand extends Command {
     if (pages.length === 0) {
       this.chatService.simpleNote(msg, "History is empty!", this.chatService.msgType.INFO);
     } else {
-      this.chatService.pagedContent(msg, pages);
-
-      this.chatService.awaitCommand(
-        msg, (responseMsg) => filter(responseMsg, ["p", "play", "a", "add"]),
-        (res) => process(res, this.commands, msg, this.queueService)
-      );
+      this.chatService.pagedContent(msg, pages).
+        then((pagedMsg) => this.chatService.awaitCommand(
+          msg, (responseMsg) => filter(responseMsg, ["p", "play", "a", "add"]),
+          (res) => process(res, this.commands, msg, this.queueService),
+          () => {
+            pagedMsg.delete();
+          }
+        ));
     }
   }
 }
