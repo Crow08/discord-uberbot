@@ -137,12 +137,14 @@ class MusicClient {
     let found = false;
     this.commands.forEach((command) => {
       if (!found && command.alias.includes(cmd)) {
+        msg.react("✅");
         console.log("\x1b[33m%s\x1b[0m", `> CMD: ${cmd}\n`);
         command.run(payload, msg);
         found = true;
       }
     });
     if (!found) {
+      msg.react("❎");
       console.log("\x1b[33m%s\x1b[0m", `> unrecognized command name:  ${cmd}\n`);
     }
   }
