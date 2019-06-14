@@ -100,6 +100,8 @@ class PlayerService {
         });
     });
     const reactionFunctions = {
+      "588807875057549398": ratingFunc,
+      "588811190134898689": ratingFunc,
       "⏩": () => this.skip(msg),
       "⏪": () => this.back(msg),
       "⏯": () => {
@@ -110,8 +112,6 @@ class PlayerService {
         }
       },
       "⏹": () => this.stop(msg),
-      "588807875057549398": ratingFunc,
-      "588811190134898689": ratingFunc,
       "🔀": () => {
         this.queueService.shuffleQueue();
         this.chatService.simpleNote(msg, "Queue shuffled!", this.chatService.msgType.MUSIC);
