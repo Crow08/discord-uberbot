@@ -1,5 +1,5 @@
-const ytdlDiscord = require("ytdl-core-discord");
 const ytdl = require("ytdl-core");
+const ytdlDiscord = require("ytdl-core-discord");
 const ytpl = require("ytpl");
 const request = require("request");
 const Song = require("./Song");
@@ -120,7 +120,7 @@ class YoutubeService {
    * @param {string} url - Url to get audio stream from.
    */
   getStream(url) {
-    return new Promise((resolve) => resolve(ytdl(url)));
+    return ytdlDiscord(url);
   }
 
   /**
