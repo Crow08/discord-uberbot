@@ -100,8 +100,8 @@ class PlayerService {
         });
     });
     const reactionFunctions = {
-      "588807875057549398": ratingFunc,
-      "588811190134898689": ratingFunc,
+      "👍": ratingFunc,
+      "👎": ratingFunc,
       "⏩": () => this.skip(msg),
       "⏪": () => this.back(msg),
       "⏯": () => {
