@@ -16,6 +16,7 @@
 ##### Misc #####
 - Voice-Message on join, take voiceline out of huge list of cool quotes
 - Don´t refresh player when Bot is not in channel/when player is allready at bottom
+- reboot-command
 
 ---
 

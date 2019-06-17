@@ -1,4 +1,6 @@
 const Song = require("./Song");
+const googleTTS = require("google-tts-api");
+const voiceLines = require("../voiceLines.json");
 
 /**
  * Class representing a voice service.
@@ -21,6 +23,37 @@ class VoiceService {
     this.soundCloudService = soundCloudService;
     this.spotifyService = spotifyService;
     this.rawFileService = rawFileService;
+    this.client.on("voiceStateUpdate", (oldState, newState) => {
+      const newUserChannel = newState.channel;
+      const oldUserChannel = oldState.channel;
+      const guildId = newState.guild.id;
+      if (typeof this.client.voice.connections.find((val) => val.channel.guild.id === guildId) !== "undefined") {
+        const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === guildId);
+        const newUser = newState.member.displayName;
+        if (voiceConnection.channel && newUserChannel && oldUserChannel &&
+        newUserChannel.id === voiceConnection.channel.id && oldUserChannel.id !== voiceConnection.channel.id) {
+        // User joins voice channel of bot
+          const messageJoin = voiceLines.join[Math.floor(Math.random() * voiceLines.join.length)].
+            replace("#User", newUser);
+          console.log(messageJoin);
+          googleTTS(messageJoin, "en", 1). // Speed normal = 1 (default), slow = 0.24
+            then((url) => {
+              const opt = {"bitrate": this.bitRate, "passes": 3, "seek": 0, "volume": (this.volume / 100)};
+              console.log(url); // https://translate.google.com/translate_tts?...
+              //voiceConnection.play(this.rawFileService.getStream(url), opt);
+            }).
+            catch((err) => {
+              console.error(err.stack);
+            });
+        } else if (oldUserChannel && voiceConnection.channel && newUserChannel &&
+        oldUserChannel.id === voiceConnection.channel.id && newUserChannel.id !== voiceConnection.channel.id) {
+        // User leaves voice channel of bot
+          console.log(voiceLines.leave[Math.floor(Math.random() * voiceLines.leave.length)].
+            replace("#User", newUser));
+          // X const messageLeave = voiceLines.join[Math.floor(Math.random() * voiceLines.leave.length)];
+        }
+      }
+    });
   }
 
   /**
@@ -30,6 +63,7 @@ class VoiceService {
    * @param {number} seek - position in seconds to start the stream from.
    * @returns {Object} - Stream dispatcher.
    */
+
   playStream(song, msg, seek = 0) {
     return new Promise((resolve, reject) => {
       const opt = {"bitrate": this.bitRate, "passes": 3, seek, "volume": (this.volume / 100)};
