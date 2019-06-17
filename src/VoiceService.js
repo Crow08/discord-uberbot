@@ -38,9 +38,9 @@ class VoiceService {
           console.log(messageJoin);
           googleTTS(messageJoin, "en", 1). // Speed normal = 1 (default), slow = 0.24
             then((url) => {
-              const opt = {"bitrate": this.bitRate, "passes": 3, "seek": 0, "volume": (this.volume / 100)};
+              //const opt = {"bitrate": this.bitRate, "passes": 3, "seek": 0, "volume": (this.volume / 100)};
               console.log(url); // https://translate.google.com/translate_tts?...
-              //voiceConnection.play(this.rawFileService.getStream(url), opt);
+              voiceConnection.play(this.rawFileService.getStream(url));
             }).
             catch((err) => {
               console.error(err.stack);
@@ -72,7 +72,9 @@ class VoiceService {
       }
       this.getVoiceConnection(msg).
         then((conn) => this.getStream(song).
-          then((stream) => resolve(conn.play(stream, opt))).
+          then((stream) => {
+            resolve(conn.play(stream, opt));
+          }).
           catch((err) => reject(err))).
         catch((err) => reject(err));
     });

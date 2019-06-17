@@ -39,6 +39,7 @@ class RawFileService {
    * @param {string} url - Url to get audio stream from.
    */
   getStream(url) {
+    console.log("found raw file!");
     return new Promise((resolve) => resolve(url));
   }
 }
