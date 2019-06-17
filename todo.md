@@ -4,11 +4,18 @@
 
 ### Features: ###
 
+##### Queue #####
+- implement limit for max adds to queue (like .limit 10)
+
 ##### Playlists #####
 - .start command should clear queue and stop playback to be used while song is playing
 
 ##### Search #####
 - Add a "did you mean"-feature for all failed searches with strings (closest name - Levenshtein distance / fuzzy search).
+
+##### Misc #####
+- Voice-Message on join, take voiceline out of huge list of cool quotes
+- Don´t refresh player when Bot is not in channel/when player is allready at bottom
 
 ---
 
@@ -31,6 +38,10 @@
 	- *hard to reproduce reliable.*
 - *Can't play because its "already playing" -> (fixed? / how to reproduce?)*
 	- *workaround with .stop -> .play*
+- Bot will remember everything and spams chat after successfully joined
+	- implement something that deletes cache
+- Bot goes crazy, if you are not in a voice chanel, because it cant join
+	- implement default channel to join
 
 ##### Report all the Errors ####
 - *`Error [VOICE_PLAY_INTERFACE_BAD_TYPE]: Unknown stream type` -> (fixed?)*
