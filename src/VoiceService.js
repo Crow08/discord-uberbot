@@ -91,6 +91,21 @@ class VoiceService {
   }
 
   /**
+   * Check if a voice connection to the server of the message is established.
+   * @param {Message} msg - User message this function is invoked by.
+   */
+  isVoiceConnected(msg) {
+    if (typeof msg.guild === "undefined") {
+      return false;
+    }
+    const serverId = msg.guild.id;
+    // Search for established connection with this server.
+    const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === serverId);
+
+    return typeof voiceConnection !== "undefined";
+  }
+
+  /**
    * Resolve the streaming source of a Song and get the stream accordingly as a promise.
    * @private
    * @param {Song} song song to get the Stream from

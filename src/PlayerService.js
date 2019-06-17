@@ -79,7 +79,9 @@ class PlayerService {
       }).
       catch((error) => {
         this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
-        this.playNext(msg);
+        if (this.voiceService.isVoiceConnected(msg)) {
+          this.playNext(msg);
+        }
       });
   }
 
