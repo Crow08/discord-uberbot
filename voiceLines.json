@@ -1,27 +1,34 @@
 {  
-    "join":[  
-       "Hide your wifes, #User is here",
-       "Oh my gosh #User joined your channel",
-       "Look, #User is here for you",
-       "Begone loneliness, #User joined",
-       "#User joined your channel",
-       "#User joined the party",
-       "#User needs your attention",
-       "#User is here, bitches",
-       "#User is looking for some fun",
-       "Looks like #User crawled out of his bed",
-       "Looks like #User is finally awake"
-    ],
-    "leave":[  
-       "#User ran away",
-       "#User is gone",
-       "#User bites the dust",
-       "#User abandoned you",
-       "#User left you",
-       "#User had enough of you",
-       "#User left, what a coward",
-       "#User disconnected",
-       "Bye #User, we won't miss you",
-       "The traitor #User has left"
-    ]
- }
+   "join":[  
+      "Hide your wifes, #User is here",
+      "Oh my gosh #User joined your channel",
+      "Look, #User is here for you",
+      "Begone loneliness, #User joined",
+      "#User joined your channel",
+      "#User joined the party",
+      "#User needs your attention",
+      "#User is here, bitches",
+      "#User is looking for some fun",
+      "Looks like #User crawled out of his bed",
+      "Looks like #User is finally awake"
+   ],
+   "leave":[  
+      "#User ran away",
+      "#User is gone",
+      "#User bites the dust",
+      "#User abandoned you",
+      "#User left you",
+      "#User had enough of you",
+      "#User left, what a coward",
+      "#User disconnected",
+      "Bye #User, we won't miss you",
+      "The traitor #User has left"
+   ],
+   "user":{  
+      "Hawky":"Tobi",
+      "Crow08":"Kevin",
+      "Speins":"Marcus",
+      "KedyinsCrow":"Thomas",
+      "Mallicor":"Seybi"
+   }
+}

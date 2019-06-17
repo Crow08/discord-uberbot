@@ -34,13 +34,10 @@ class VoiceService {
         newUserChannel.id === voiceConnection.channel.id && oldUserChannel.id !== voiceConnection.channel.id) {
         // User joins voice channel of bot
           const messageJoin = voiceLines.join[Math.floor(Math.random() * voiceLines.join.length)].
-            replace("#User", newUser);
-          console.log(messageJoin);
+            replace("#User", this.evalNewUser(newUser));
           googleTTS(messageJoin, "en", 1). // Speed normal = 1 (default), slow = 0.24
             then((url) => {
-              //const opt = {"bitrate": this.bitRate, "passes": 3, "seek": 0, "volume": (this.volume / 100)};
-              console.log(url); // https://translate.google.com/translate_tts?...
-              voiceConnection.play(this.rawFileService.getStream(url));
+              this.rawFileService.getStream(url).then((stream) => voiceConnection.play(stream));
             }).
             catch((err) => {
               console.error(err.stack);
@@ -48,12 +45,26 @@ class VoiceService {
         } else if (oldUserChannel && voiceConnection.channel && newUserChannel &&
         oldUserChannel.id === voiceConnection.channel.id && newUserChannel.id !== voiceConnection.channel.id) {
         // User leaves voice channel of bot
-          console.log(voiceLines.leave[Math.floor(Math.random() * voiceLines.leave.length)].
-            replace("#User", newUser));
-          // X const messageLeave = voiceLines.join[Math.floor(Math.random() * voiceLines.leave.length)];
+          const messageLeave = voiceLines.leave[Math.floor(Math.random() * voiceLines.leave.length)].
+            replace("#User", this.evalNewUser(newUser));
+          googleTTS(messageLeave, "en", 1). // Speed normal = 1 (default), slow = 0.24
+            then((url) => {
+              this.rawFileService.getStream(url).then((stream) => voiceConnection.play(stream));
+            }).
+            catch((err) => {
+              console.error(err.stack);
+            });
         }
       }
     });
+  }
+
+  // Outsource this to a config-file of some sort
+  evalNewUser(newUser) {
+    if (`${newUser}` in voiceLines.user) {
+      return voiceLines.user[`${newUser}`];
+    }
+    return newUser;
   }
 
   /**
