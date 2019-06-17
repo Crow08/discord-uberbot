@@ -102,8 +102,6 @@ class PlayerService {
         });
     });
     const reactionFunctions = {
-      "👍": ratingFunc,
-      "👎": ratingFunc,
       "⏩": () => this.skip(msg),
       "⏪": () => this.back(msg),
       "⏯": () => {
@@ -114,6 +112,8 @@ class PlayerService {
         }
       },
       "⏹": () => this.stop(msg),
+      "👍": ratingFunc,
+      "👎": ratingFunc,
       "🔀": () => {
         this.queueService.shuffleQueue();
         this.chatService.simpleNote(msg, "Queue shuffled!", this.chatService.msgType.MUSIC);
