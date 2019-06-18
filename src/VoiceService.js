@@ -182,7 +182,7 @@ class VoiceService {
    * @param {VoiceConnection} voiceConnection Discord.js Voice connection to announce to.
    */
   announceMessage(message, voiceConnection) {
-    googleTTS(message, "en", 1). // Speed normal = 1 (default), slow = 0.24
+    googleTTS(message, "en-US", 1). // Speed normal = 1 (default), slow = 0.24
       then((url) => {
         this.rawFileService.getStream(url).then((stream) => {
           const oldDispatcher = voiceConnection.dispatcher;

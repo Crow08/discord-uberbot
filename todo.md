@@ -26,6 +26,8 @@
 - catch all promises and process accordingly.
 - catch all fatal errors to prevent bot crash.
 - Notify user every time, even after unsuccessful execution.
+- Bot crashes, when it announces player and the queue is empy
+	-recreate: Start bot, leave, join, leave, join
 
 ##### Strange behavior #####
 - sometimes in playback no sound is played while stream seems to be active.
