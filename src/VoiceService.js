@@ -146,14 +146,14 @@ class VoiceService {
       const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === newState.guild.id);
       if (typeof voiceConnection !== "undefined") {
         const newUser = newState.member.displayName;
-        if (voiceConnection.channel && oldUserChannel && newUserChannel &&
-          newUserChannel.id === voiceConnection.channel.id && oldUserChannel.id !== voiceConnection.channel.id) {
+        if (voiceConnection.channel && newUserChannel &&
+          newUserChannel.id === voiceConnection.channel.id) {
           // User joins voice channel of bot
           const messageJoin = voiceLines.join[Math.floor(Math.random() * voiceLines.join.length)].
             replace("#User", this.phoneticNicknameFor(newUser));
           this.announceMessage(messageJoin, voiceConnection);
-        } else if (voiceConnection.channel && oldUserChannel && newUserChannel &&
-          oldUserChannel.id === voiceConnection.channel.id && newUserChannel.id !== voiceConnection.channel.id) {
+        } else if (voiceConnection.channel && oldUserChannel &&
+          oldUserChannel.id === voiceConnection.channel.id) {
           // User leaves voice channel of bot
           const messageLeave = voiceLines.leave[Math.floor(Math.random() * voiceLines.leave.length)].
             replace("#User", this.phoneticNicknameFor(newUser));
