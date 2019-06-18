@@ -99,9 +99,9 @@ class YoutubeService {
           let songs = [];
           for (let index = 0; index < result.length; index++) {
             const song = new Song();
-            song.title = result[index].snippet.title;
+            song.title = this.htmlUnescape(result[index].snippet.title);
             song.url = `https://www.youtube.com/watch?v=${result[index].id.videoId}`;
-            song.artist = result[index].snippet.channelTitle;
+            song.artist = this.htmlUnescape(result[index].snippet.channelTitle);
             song.src = Song.srcType.YT;
             songs.push(song);
           }
@@ -140,6 +140,23 @@ class YoutubeService {
       }
     });
     return hit;
+  }
+
+  /**
+   * Unescape html escaped characters.
+   * @private
+   * @param {string} str string possibly containing html escaped characters.
+   */
+  htmlUnescape(str) {
+    let map = {
+      "&#39;": "'",
+      "&amp;": "&",
+      "&gt;": ">",
+      "&lt;": "<",
+      "&nbsp;": " ",
+      "&quot;": "\""
+    };
+    return str.replace(/&#39;|&amp;|&gt;|&lt;|&nbsp;|&quot;/gu, (subStr) => map[subStr]);
   }
 }
 
