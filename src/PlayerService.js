@@ -74,6 +74,9 @@ class PlayerService {
           this.playerMsg.delete();
         }
         this.chatService.displayPlayer(msg, song, reactionFunctions).then((playerMsg) => {
+          if (this.playerMsg && !this.playerMsg.deleted) {
+            this.playerMsg.delete();
+          }
           this.playerMsg = playerMsg;
         });
       }).
