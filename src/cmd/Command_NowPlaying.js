@@ -11,9 +11,9 @@ class NowPlayingCommand extends Command {
    * Constructor.
    * @param {ChatService} chatService - ChatService.
    * @param {QueueService} queueService - QueueService.
-   * @param {RatingService} ratingService - RatingService.
+   * @param {PlayerService} playerService - PlayerService.
    */
-  constructor(chatService, queueService, ratingService) {
+  constructor(chatService, queueService, playerService) {
     super(
       ["nowplaying", "np"],
       "returns first song in history (current song)",
@@ -21,7 +21,7 @@ class NowPlayingCommand extends Command {
     );
     this.chatService = chatService;
     this.queueService = queueService;
-    this.ratingService = ratingService;
+    this.playerService = playerService;
   }
 
   /**
@@ -38,10 +38,7 @@ class NowPlayingCommand extends Command {
           embed.addField("Are you deaf?", "Go check your ears, there is clearly nothing playing right now!", true);
           this.chatService.send(msg, embed);
         } else {
-          this.chatService.displaySong(
-            msg, nowPlaying,
-            (rSong, user, delta, ignoreCd) => this.ratingService.rateSong(rSong, user, delta, ignoreCd)
-          );
+          this.playerService.rebuildPlayer(msg);
         }
       });
   }

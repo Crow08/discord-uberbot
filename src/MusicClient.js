@@ -99,7 +99,7 @@ class MusicClient {
       new LoadPLCommand(this.chatService, this.queueService),
       new LoopCommand(this.chatService, this.queueService),
       new MergePLCommand(this.chatService, this.dbService),
-      new NowPlayingCommand(this.chatService, this.queueService, this.ratingService),
+      new NowPlayingCommand(this.chatService, this.queueService, this.playerService),
       new PauseCommand(this.playerService),
       new PlayCommand(this.chatService, this.playerService, this.searchService),
       new PlayNextCommand(this.chatService, this.queueService),
