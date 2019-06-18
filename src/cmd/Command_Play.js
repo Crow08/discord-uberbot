@@ -32,6 +32,7 @@ class PlayCommand extends Command {
   run(payload, msg) {
     if (typeof payload === "undefined" || payload.length === 0) {
       this.playerService.play(msg);
+      this.playerService.rebuildPlayer(msg);
       return;
     }
     this.searchService.search(payload).

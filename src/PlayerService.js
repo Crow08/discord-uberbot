@@ -69,13 +69,7 @@ class PlayerService {
         this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
         this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
 
-        const reactionFunctions = this.buildReactionFunctions(msg);
-        if (this.playerMsg && !this.playerMsg.deleted) {
-          this.playerMsg.delete();
-        }
-        this.chatService.displayPlayer(msg, song, reactionFunctions).then((playerMsg) => {
-          this.playerMsg = playerMsg;
-        });
+        this.rebuildPlayer(msg, song);
       }).
       catch((error) => {
         this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
@@ -83,6 +77,27 @@ class PlayerService {
           this.playNext(msg);
         }
       });
+  }
+
+  /**
+   * (Re-) builds the player with controls.
+   * Can be used to move the player down in chat.
+   * @param {Message} msg - User message the playback was is invoked by.
+   */
+  rebuildPlayer(msg) {
+    this.queueService.getCurrentSong().then((song) => {
+      console.log(song);
+      const reactionFunctions = this.buildReactionFunctions(msg);
+      if (this.playerMsg && !this.playerMsg.deleted) {
+        this.playerMsg.delete();
+      }
+      this.chatService.displayPlayer(msg, song, reactionFunctions).then((playerMsg) => {
+        if (this.playerMsg && !this.playerMsg.deleted) {
+          this.playerMsg.delete();
+        }
+        this.playerMsg = playerMsg;
+      });
+    });
   }
 
   /**
