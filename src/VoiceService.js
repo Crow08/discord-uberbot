@@ -188,14 +188,14 @@ class VoiceService {
           const oldDispatcher = voiceConnection.dispatcher;
           const dispatcher = voiceConnection.play(stream);
           dispatcher.on("end", () => {
-            if (oldDispatcher) {
+            if (oldDispatcher && !oldDispatcher.paused) {
               oldDispatcher.end();
             }
           });
         });
       }).
       catch((err) => {
-        if (voiceConnection.dispatcher) {
+        if (voiceConnection.dispatcher && !voiceConnection.dispatcher.paused) {
           voiceConnection.dispatcher.end();
         }
         console.log(err);
