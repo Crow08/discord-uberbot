@@ -23,12 +23,5 @@
       "#User disconnected",
       "Bye #User, we won't miss you",
       "The traitor #User has left"
-   ],
-   "user":{  
-      "Hawky":"Tobi",
-      "Crow08":"Kevin",
-      "Speins":"Marcus",
-      "KedyinsCrow":"Thomas",
-      "Mallicor":"Seybi"
-   }
+   ]
 }

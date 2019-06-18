@@ -18,6 +18,7 @@ class VoiceService {
   constructor(options, client, youtubeService, soundCloudService, spotifyService, rawFileService) {
     this.bitRate = options.bitRate;
     this.volume = options.defVolume;
+    this.phoneticNicknames = options.phoneticNicknames;
     this.client = client;
     this.youtubeService = youtubeService;
     this.soundCloudService = soundCloudService;
@@ -168,8 +169,8 @@ class VoiceService {
    * @param {string} userName Username to process.
    */
   phoneticNicknameFor(userName) {
-    if (userName in voiceLines.user) {
-      return voiceLines.user[userName];
+    if (this.phoneticNicknames && userName in this.phoneticNicknames) {
+      return this.phoneticNicknames[userName];
     }
     return userName;
   }
