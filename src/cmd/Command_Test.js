@@ -15,17 +15,16 @@ class TestCommand extends Command {
    * @param {VoiceService} voiceService - VoiceService.
    * @param {PlayerService} playerService - PlayerService.
    */
-  constructor(chatService, queueService, dbService, voiceService, playerService) {
+  constructor(chatService, voiceService, ttsService, rawFileService) {
     super(
       ["test"],
       "for testing - duh!",
       "<prefix>test"
     );
     this.chatService = chatService;
-    this.queueService = queueService;
-    this.dbService = dbService;
     this.voiceService = voiceService;
-    this.playerService = playerService;
+    this.ttsService = ttsService;
+    this.rawFileService = rawFileService;
   }
 
   /**
@@ -34,7 +33,12 @@ class TestCommand extends Command {
    * @param {Message} msg - User message this function is invoked by.
    */
   run(payload, msg) {
-    console.log(this.queueService.history);
+    this.voiceService.getVoiceConnection(msg).then((voiceConnection) => {
+      this.ttsService.getStream("the quick brown fox jumps over the lazy dog").then((stream) => {
+        console.log(stream);
+        voiceConnection.play(stream);
+      });
+    });
   }
 }
 module.exports = TestCommand;

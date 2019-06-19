@@ -8,8 +8,10 @@
     "scClientId": "SOUNDCLOUD_CLIENT_ID",
     "spotifyClientId": "SPOTIFY_CLIENT_ID",
     "spotifyClientSecret": "SPOTIFY_CLIENT_SECRET",
+    "ttsApiKey": "TTS_API_KEY",
     "youtubeApiKey": "YOUTUBE_API_KEY",
     "mongodbUrl": "",
     "mongodbUser": "",
-    "mongodbPassword": ""
+    "mongodbPassword": "",
+    "phoneticNicknames": {}
 }
