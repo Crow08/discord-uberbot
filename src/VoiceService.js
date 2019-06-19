@@ -1,5 +1,4 @@
 const Song = require("./Song");
-const googleTTS = require("google-tts-api");
 const voiceLines = require("../voiceLines.json");
 
 /**
@@ -11,19 +10,18 @@ class VoiceService {
    * Constructor.
    * @param {Object} options - options and user settings for voice connection.
    * @param {Client} client - Discord.js client object.
-   * @param {YoutubeService} youtubeService - YoutubeService.
-   * @param {SoundCloudService} soundCloudService - SoundCloudService.
-   * @param {SpotifyService} spotifyService - SpotifyService.
+   * @param {StreamSourceService} streamSourceService - StreamSourceService.
    */
-  constructor(options, client, youtubeService, soundCloudService, spotifyService, rawFileService) {
+  constructor(options, client, streamSourceService) {
     this.bitRate = options.bitRate;
     this.volume = options.defVolume;
     this.phoneticNicknames = options.phoneticNicknames;
     this.client = client;
-    this.youtubeService = youtubeService;
-    this.soundCloudService = soundCloudService;
-    this.spotifyService = spotifyService;
-    this.rawFileService = rawFileService;
+    this.youtubeService = streamSourceService.youtubeService;
+    this.soundCloudService = streamSourceService.soundCloudService;
+    this.spotifyService = streamSourceService.spotifyService;
+    this.rawFileService = streamSourceService.rawFileService;
+    this.ttsService = streamSourceService.ttsService;
     this.setupVoiceStateListener();
   }
 
@@ -182,16 +180,14 @@ class VoiceService {
    * @param {VoiceConnection} voiceConnection Discord.js Voice connection to announce to.
    */
   announceMessage(message, voiceConnection) {
-    googleTTS(message, "en-US", 1). // Speed normal = 1 (default), slow = 0.24
-      then((url) => {
-        this.rawFileService.getStream(url).then((stream) => {
-          const oldDispatcher = voiceConnection.dispatcher;
-          const dispatcher = voiceConnection.play(stream);
-          dispatcher.on("end", () => {
-            if (oldDispatcher && !oldDispatcher.paused) {
-              oldDispatcher.end();
-            }
-          });
+    this.ttsService.getStream(message).
+      then((stream) => {
+        const oldDispatcher = voiceConnection.dispatcher;
+        const dispatcher = voiceConnection.play(stream);
+        dispatcher.on("end", () => {
+          if (oldDispatcher && !oldDispatcher.paused) {
+            oldDispatcher.end();
+          }
         });
       }).
       catch((err) => {

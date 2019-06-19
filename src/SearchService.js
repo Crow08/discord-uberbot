@@ -5,15 +5,15 @@ class SearchService {
 
   /**
    * Constructor.
-   * @param {YoutubeService} youtubeService - YoutubeService.
-   * @param {SoundCloudService} soundCloudService - SoundCloudService.
-   * @param {SpotifyService} spotifyService - SpotifyService.
+   * @param {"yt"|"sc"|"sp"} defaultSrc - default source for searching song when using queries.
+   * <br>&nbsp;&nbsp;"yt" : YouTube | "sc" : SoundCloud |"sp" : Spotify
+   * @param {StreamSourceService} streamSourceService - StreamSourceService.
    */
-  constructor(defaultSrc, youtubeService, soundCloudService, spotifyService, rawFileService) {
-    this.youtubeService = youtubeService;
-    this.soundCloudService = soundCloudService;
-    this.spotifyService = spotifyService;
-    this.rawFileService = rawFileService;
+  constructor(defaultSrc, streamSourceService) {
+    this.youtubeService = streamSourceService.youtubeService;
+    this.soundCloudService = streamSourceService.soundCloudService;
+    this.spotifyService = streamSourceService.spotifyService;
+    this.rawFileService = streamSourceService.rawFileService;
     this.defaultSrc = defaultSrc;
   }
 

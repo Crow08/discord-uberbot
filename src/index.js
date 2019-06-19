@@ -181,7 +181,8 @@ const validateSettings = (() => {
   return ((typeof settings.scClientId !== "undefined" && settings.scClientId !== "SOUNDCLOUD_CLIENT_ID") ||
     (typeof settings.spotifyClientId !== "undefined" && settings.spotifyClientId !== "SPOTIFY_CLIENT_ID") ||
     (typeof settings.spotifyClientSecret !== "undefined" && settings.spotifyClientSecret !== "SPOTIFY_CLIENT_SECRET") ||
-    (typeof settings.youtubeApiKey !== "undefined" && settings.youtubeApiKey !== "YOUTUBE_API_KEY"));
+    (typeof settings.youtubeApiKey !== "undefined" && settings.youtubeApiKey !== "YOUTUBE_API_KEY") ||
+    (typeof settings.ttsApiKey !== "undefined" && settings.ttsApiKey !== "TTS_API_KEY"));
 });
 
 // Script starts here:

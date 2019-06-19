@@ -1,3 +1,10 @@
+const DBService = require("./DBService");
+const QueueService = require("./QueueService");
+const RatingService = require("./RatingService");
+const SearchService = require("./SearchService");
+const StreamSourceService = require("./StreamSourceService");
+const VoiceService = require("./VoiceService");
+
 const AddCommand = require("./cmd/Command_Add");
 const AddPLCommand = require("./cmd/Command_PL_Add");
 const AutoPLCommand = require("./cmd/Command_AutoPL");
@@ -5,7 +12,6 @@ const AddSongToPLCommand = require("./cmd/Command_AddSongToPL");
 const AddQueueToPLCommand = require("./cmd/Command_AddQueueToPL");
 const ChatService = require("./ChatService");
 const ClearCommand = require("./cmd/Command_Clear");
-const DBService = require("./DBService");
 const DeletePLCommand = require("./cmd/Command_PL_Delete");
 const HelpCommand = require("./cmd/Command_Help");
 const LeaveCommand = require("./cmd/Command_Leave");
@@ -20,30 +26,23 @@ const PlayCommand = require("./cmd/Command_Play");
 const PlayerService = require("./PlayerService");
 const PlayNextCommand = require("./cmd/Command_PlayNext");
 const PreferredSrcCommand = require("./cmd/Command_PreferredSrc");
-const QueueService = require("./QueueService");
-const RatingService = require("./RatingService");
-const RawFileService = require("./RawFileService");
 const RemoveCommand = require("./cmd/Command_Remove");
 const RemovePLCommand = require("./cmd/Command_PL_Remove");
 const RenamePLCommand = require("./cmd/Command_PL_Rename");
 const RenameSongCommand = require("./cmd/Command_Rename_Song");
 const TestCommand = require("./cmd/Command_Test");
 const SearchCommand = require("./cmd/Command_Search");
-const SearchService = require("./SearchService");
 const SearchPLCommand = require("./cmd/Command_PL_Search");
 const SeekCommand = require("./cmd/Command_Seek");
 const ShowHistoryCommand = require("./cmd/Command_ShowHistory");
 const ShowQueueCommand = require("./cmd/Command_ShowQueue");
 const ShuffleCommand = require("./cmd/Command_Shuffle");
 const SkipCommand = require("./cmd/Command_Skip");
-const SoundCloudService = require("./SoundCloudService");
-const SpotifyService = require("./SpotifyService");
 const StartCommand = require("./cmd/Command_Start");
 const StopCommand = require("./cmd/Command_Stop");
 const UploadCommand = require("./cmd/Command_Upload");
-const VoiceService = require("./VoiceService");
 const VolumeCommand = require("./cmd/Command_Volume");
-const YouTubeService = require("./YouTubeService");
+
 
 /** Class representing the music bot. */
 class MusicClient {
@@ -60,18 +59,9 @@ class MusicClient {
     this.botPrefix = opt.botPrefix;
     console.log("\x1b[35m%s\x1b[0m", "> Loading services\n> ...");
     this.chatService = new ChatService(DiscordMessageEmbed);
-    this.youtubeService = new YouTubeService(opt.youtubeApiKey);
-    this.soundCloudService = new SoundCloudService(opt.scClientId);
-    this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
-    this.rawFileService = new RawFileService();
-    this.searchService = new SearchService(
-      "SP", this.youtubeService, this.soundCloudService,
-      this.spotifyService, this.rawFileService
-    );
-    this.voiceService = new VoiceService(
-      {"bitRate": opt.bitRate, "defVolume": opt.defVolume, "phoneticNicknames": opt.phoneticNicknames},
-      this.baseClient, this.youtubeService, this.soundCloudService, this.spotifyService, this.rawFileService
-    );
+    this.streamSourceService = new StreamSourceService(opt);
+    this.searchService = new SearchService("SP", this.streamSourceService);
+    this.voiceService = new VoiceService(opt, this.baseClient, this.streamSourceService);
     this.dbService = new DBService(opt.mongodbUrl, opt.mongodbUser, opt.mongodbPassword);
     this.queueService = new QueueService(500, this.dbService);
     this.ratingService = new RatingService(opt.ratingCooldown, this.dbService, this.queueService);
@@ -117,7 +107,7 @@ class MusicClient {
       new SkipCommand(this.playerService),
       new StartCommand(this.playerService, this.searchService, this.chatService, this.queueService),
       new StopCommand(this.playerService),
-      new TestCommand(this.chatService, this.queueService, this.dbService, this.voiceService, this.playerService),
+      new TestCommand(this.chatService, this.voiceService, this.ttsService, this.rawFileService),
       new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService),
       new VolumeCommand(this.chatService, this.voiceService, this.playerService)
     );
