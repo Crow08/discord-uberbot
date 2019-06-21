@@ -29,6 +29,7 @@
     "opusscript": "^0.0.6",
     "prism-media": "^1.0.2",
     "request": "^2.88.0",
+    "say": "^0.16.0",
     "sodium": "^3.0.2",
     "ytdl-core": "^0.29.2",
     "ytdl-core-discord": "github:Crow08/ytdl-core-discord#16bded982e0f263a865c092dfc41e991f3056f6b",

@@ -15,7 +15,7 @@ class TestCommand extends Command {
    * @param {VoiceService} voiceService - VoiceService.
    * @param {PlayerService} playerService - PlayerService.
    */
-  constructor(chatService, voiceService, ttsService, rawFileService) {
+  constructor(chatService, voiceService, ttsService, rawFileService, baseClient) {
     super(
       ["test"],
       "for testing - duh!",
@@ -25,6 +25,7 @@ class TestCommand extends Command {
     this.voiceService = voiceService;
     this.ttsService = ttsService;
     this.rawFileService = rawFileService;
+    this.baseClient = baseClient;
   }
 
   /**
@@ -33,12 +34,8 @@ class TestCommand extends Command {
    * @param {Message} msg - User message this function is invoked by.
    */
   run(payload, msg) {
-    this.voiceService.getVoiceConnection(msg).then((voiceConnection) => {
-      this.ttsService.getStream("the quick brown fox jumps over the lazy dog").then((stream) => {
-        console.log(stream);
-        voiceConnection.play(stream);
-      });
-    });
+    const channel = this.baseClient.channels.get(msg.member.voice.channel.id);
+    channel.join();
   }
 }
 module.exports = TestCommand;

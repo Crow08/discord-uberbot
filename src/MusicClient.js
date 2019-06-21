@@ -14,6 +14,7 @@ const ChatService = require("./ChatService");
 const ClearCommand = require("./cmd/Command_Clear");
 const DeletePLCommand = require("./cmd/Command_PL_Delete");
 const HelpCommand = require("./cmd/Command_Help");
+const JoinCommand = require("./cmd/Command_Join");
 const LeaveCommand = require("./cmd/Command_Leave");
 const ListPLCommand = require("./cmd/Command_PL_List");
 const LoadPLCommand = require("./cmd/Command_PL_Load");
@@ -82,6 +83,7 @@ class MusicClient {
       new AddQueueToPLCommand(this.chatService, this.queueService, this.dbService),
       new ClearCommand(this.chatService, this.queueService),
       new DeletePLCommand(this.chatService, this.dbService),
+      new JoinCommand(this.baseClient),
       new HelpCommand(this.chatService, this.commands, this.botPrefix),
       new LeaveCommand(this.playerService, this.voiceService),
       new ListPLCommand(this.chatService, this.dbService),
@@ -107,7 +109,7 @@ class MusicClient {
       new SkipCommand(this.playerService),
       new StartCommand(this.playerService, this.searchService, this.chatService, this.queueService),
       new StopCommand(this.playerService),
-      new TestCommand(this.chatService, this.voiceService, this.ttsService, this.rawFileService),
+      new TestCommand(this.chatService, this.voiceService, this.ttsService, this.rawFileService, this.baseClient),
       new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService),
       new VolumeCommand(this.chatService, this.voiceService, this.playerService)
     );

@@ -9,6 +9,7 @@
 
 ##### Playlists #####
 - .start command should clear queue and stop playback to be used while song is playing
+- music.youtube is already supported...
 
 ##### Search #####
 - Add a "did you mean"-feature for all failed searches with strings (closest name - Levenshtein distance / fuzzy search).
@@ -36,6 +37,9 @@
 - sometimes in stream does not end, when the song has ended playing.
 	- can be solved via skip song.
 	- hard to reproduce reliable.
+- frequent channel switches crash playback of bot
+	- must be because of the announce messages
+	- .stop -> .p to fix it
 
 ##### Report all the Errors ####
 - *`:x: | Error: input stream: No formats found with custom filter` -> (how to reproduce?)*
