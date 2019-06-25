@@ -2,10 +2,15 @@
 
 ---
 
-### Features: ###
+### README.md ###
+- Add announcement feature.
+- Add some pictures (possibly gifs)
+- Update commands table.
+	- (write a small script to get updated table...)
 
-##### Queue #####
-- implement smart insert in queue (Fair-Queuing / Round Robin)
+---
+
+### Features: ###
 
 ##### Playlists #####
 - .start command should clear queue and stop playback to be used while song is playing
@@ -17,10 +22,11 @@
 ##### Misc #####
 - Don´t refresh player when Bot is not in channel
 - reboot-command
+- Ability to toggle user announcements on and off.
 
 ---
 
-#### Known Bugs: ####
+### Known Bugs: ###
 
 ##### Error handling #####
 - catch all promises and process accordingly.
@@ -41,4 +47,5 @@
 	- .stop -> .p to fix it
 
 ##### Report all the Errors ####
-- *`:x: | Error: input stream: No formats found with custom filter` -> (how to reproduce?)*
+- *`:x: | Error: input stream: No formats found with custom filter`* 
+	- *-> (how to reproduce?)*

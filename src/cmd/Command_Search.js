@@ -135,7 +135,7 @@ class SearchCommand extends Command {
       }
       case "a":
       case "add": {
-        this.queueService.addToQueue(song);
+        this.queueService.addFairlyToQueue(song);
         const note = `Song added to queue: ${song.title}`;
         this.chatService.simpleNote(response, note, this.chatService.msgType.MUSIC);
         break;

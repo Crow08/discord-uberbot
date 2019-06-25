@@ -165,12 +165,12 @@ class UploadCommand extends Command {
     });
     if (songs.length > 1) {
       if (typeof plName === "undefined") {
-        this.queueService.addMultipleToQueue(enrichedSongs);
+        this.queueService.addMultipleFairlyToQueue(enrichedSongs);
       } else {
         this.dBService.addSongs(enrichedSongs, plName);
       }
     } else if (typeof plName === "undefined") {
-      this.queueService.addToQueue(songs[0]);
+      this.queueService.addFairlyToQueue(songs[0]);
     } else {
       this.dBService.addSong(songs[0], plName);
     }

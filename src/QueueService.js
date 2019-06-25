@@ -69,7 +69,7 @@ class QueueService {
         } else if (this.mode === QueueService.queueMode.REPEAT_ALL) {
           // REPEAT_ALL: remove song first song from queue and reinsert it at the end.
           this.queue.shift();
-          this.addToQueue(song);
+          this.queue.push(song);
         }
         // REPEAT_ONE: Do nothing, leave current song at the top of the queue.
         resolve(song);
@@ -111,19 +111,39 @@ class QueueService {
   }
 
   /**
-   * Add a song to the end of the queue.
+   * Add a song fairly to the queue.
+   * Songs from requester with viewer songs gets added farther ahead in queue.
+   * The resulting queue from only fairly added songs should contain songs form all requesters in Round Robin fashion.
    * @param {Song} song - The song to be added.
    */
-  addToQueue(song) {
+  addFairlyToQueue(song) {
+    const songRequestBalanceHelper = {};
+    songRequestBalanceHelper[song.requester] = 1;
+    for (let index = 0; index < this.queue.length; index++) {
+      const queuedSong = this.queue[index];
+      if (Object.prototype.hasOwnProperty.call(songRequestBalanceHelper, queuedSong.requester)) {
+        songRequestBalanceHelper[queuedSong.requester] += 1;
+      } else {
+        songRequestBalanceHelper[queuedSong.requester] = 1;
+      }
+      if (songRequestBalanceHelper[queuedSong.requester] > songRequestBalanceHelper[song.requester]) {
+        this.queue.splice(index, 0, song);
+        return;
+      }
+    }
     this.queue.push(song);
   }
 
   /**
-   * Add multiple songs to the end of the queue.
+   * Add multiple songs fairly to the queue.
+   * Songs from requester with viewer songs gets added farther ahead in queue.
+   * The resulting queue from only fairly added songs should contain songs form all requesters in Round Robin fashion.
    * @param {Song[]} songs - Array of songs to be added.
    */
-  addMultipleToQueue(songs) {
-    this.queue = this.queue.concat(songs);
+  addMultipleFairlyToQueue(songs) {
+    songs.forEach((newSong) => {
+      this.addFairlyToQueue(newSong);
+    });
   }
 
   /**
@@ -156,7 +176,7 @@ class QueueService {
     return new Promise((resolve, reject) => {
       this.dbService.getPlaylist(plName).
         then((songs) => {
-          this.addMultipleToQueue(shuffle(songs));
+          this.addMultipleFairlyToQueue(shuffle(songs));
           resolve();
         }).
         catch((error) => reject(error));
