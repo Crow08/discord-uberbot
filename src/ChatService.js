@@ -173,45 +173,65 @@ class ChatService {
     // Build Song embed.
     return new Promise((resolve, reject) => msg.channel.send(this.buildSongEmbed(song)).
       // Add reactions for song rating.
-      then((playerMsg) => this.postReactionEmojis(
-        playerMsg,
-        [upVoteEmojiId, downVoteEmojiId, "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"]
-      ).
-        then(() => {
-        // Add listeners to reactions.
-          const reactionCollector = playerMsg.createReactionCollector(
-            (reaction, user) => (
-              [upVoteEmojiName, downVoteEmojiName, "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"].includes(reaction.emoji.name) &&
-              (!user.bot)
-            ),
-            {"time": 600000}
-          );
-          // Handle reactions.
-          reactionCollector.on("collect", (reaction) => {
-            switch (reaction.emoji.name) {
-            case upVoteEmojiName:
-              this.handleRatingReaction(reaction, song, 1, reactionFunctions["👍"]);
-              break;
-            case downVoteEmojiName:
-              this.handleRatingReaction(reaction, song, -1, reactionFunctions["👎"]);
-              break;
-            default:
-              this.handleReaction(reaction, reactionFunctions[reaction.emoji.name]);
-              break;
-            }
-          });
-          reactionCollector.on("end", () => {
-            if (!playerMsg.deleted) {
-              playerMsg.delete();
-              this.displayPlayer(msg, song, reactionFunctions);
-            }
-          });
-          resolve(playerMsg);
-        }).
-        catch(reject)).
+      then((playerMsg) => {
+        this.postReactionEmojis(playerMsg, [upVoteEmojiId, downVoteEmojiId, "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"]).
+          then(() => {
+            // Add listeners to reactions.
+            this.addReactionListener(playerMsg, upVoteEmojiName, downVoteEmojiName, song, reactionFunctions);
+            resolve(playerMsg);
+          }).
+          catch(reject);
+      }).
       catch(reject));
   }
 
+  /**
+   * Add Reaction controls to player and refreshes listener recursively until message is destroyed.
+   * @private
+   * @param {Message} playerMsg - Player Messages the Reactions are attached to.
+   * @param {string} upVoteEmojiName - name of the custom upvote emoji.
+   * @param {string} downVoteEmojiName - name of the custom upvote emoji.
+   * @param {Song} song - Song to be displayed / rated.
+   * @param {function} reactionFunctions - Function to be invoked if a reaction was given.
+   */
+  addReactionListener(playerMsg, upVoteEmojiName, downVoteEmojiName, song, reactionFunctions) {
+    const reactionCollector = playerMsg.createReactionCollector((reaction, user) => (
+      [upVoteEmojiName, downVoteEmojiName, "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"].includes(reaction.emoji.name) &&
+      (!user.bot)), {"time": 600000});
+    // Handle reactions.
+    reactionCollector.on("collect", (reaction) => {
+      switch (reaction.emoji.name) {
+      case upVoteEmojiName:
+        this.handleRatingReaction(reaction, song, 1, reactionFunctions["👍"]);
+        break;
+      case downVoteEmojiName:
+        this.handleRatingReaction(reaction, song, -1, reactionFunctions["👎"]);
+        break;
+      default:
+        if (Object.prototype.hasOwnProperty.call(reactionFunctions, reaction.emoji.name)) {
+          this.handleReaction(reaction, reactionFunctions[reaction.emoji.name]);
+        }
+        break;
+      }
+    });
+    reactionCollector.on("end", () => {
+      if (!playerMsg.deleted) {
+        if (playerMsg.channel.lastMessageID === playerMsg.id) {
+          this.addReactionListener(playerMsg, upVoteEmojiName, downVoteEmojiName, song, reactionFunctions);
+        } else {
+          playerMsg.delete();
+          this.displayPlayer(playerMsg, song, reactionFunctions);
+        }
+      }
+    });
+  }
+
+  /**
+   * Function to get a tuple of voting emoji names and IDs with defaults (👍/👎).
+   * @todo make custom emojis configurable.
+   * @private
+   * @param {Message} msg - User message this function is invoked by.
+   */
   getRatingEmojis(msg) {
     let upVoteEmojiId = "👍";
     let upVoteEmojiName = "👍";
@@ -356,6 +376,10 @@ class ChatService {
     }
   }
 
+  /**
+   * Build a dummy message to prevent crashes when executing commands from the console.
+   * @private
+   */
   buildDummyMessage() {
     return new Promise((resolve) => resolve({"delete": () => null}));
   }
