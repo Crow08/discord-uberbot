@@ -139,22 +139,23 @@ class VoiceService {
    */
   setupVoiceStateListener() {
     this.client.on("voiceStateUpdate", (oldState, newState) => {
+      if (newState.member.user.bot) {
+        return; // Ignore bots.
+      }
       const newUserChannel = newState.channel;
       const oldUserChannel = oldState.channel;
       const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === newState.guild.id);
       if (typeof voiceConnection !== "undefined") {
         const newUser = newState.member.displayName;
-        if (voiceConnection.channel && newUserChannel &&
-          newUserChannel.id === voiceConnection.channel.id) {
+        if (newUserChannel && newUserChannel.id === voiceConnection.channel.id) {
           // User joins voice channel of bot
-          const messageJoin = voiceLines.join[Math.floor(Math.random() * voiceLines.join.length)].
-            replace("#User", this.phoneticNicknameFor(newUser));
+          const line = Math.floor(Math.random() * voiceLines.join.length);
+          const messageJoin = voiceLines.join[line].replace("#User", this.phoneticNicknameFor(newUser));
           this.announceMessage(messageJoin, voiceConnection);
-        } else if (voiceConnection.channel && oldUserChannel &&
-          oldUserChannel.id === voiceConnection.channel.id) {
+        } else if (oldUserChannel && oldUserChannel.id === voiceConnection.channel.id) {
           // User leaves voice channel of bot
-          const messageLeave = voiceLines.leave[Math.floor(Math.random() * voiceLines.leave.length)].
-            replace("#User", this.phoneticNicknameFor(newUser));
+          const line = Math.floor(Math.random() * voiceLines.leave.length);
+          const messageLeave = voiceLines.leave[line].replace("#User", this.phoneticNicknameFor(newUser));
           this.announceMessage(messageLeave, voiceConnection);
         }
       }

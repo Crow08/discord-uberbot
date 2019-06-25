@@ -148,7 +148,7 @@ class YoutubeService {
    * @param {string} str string possibly containing html escaped characters.
    */
   htmlUnescape(str) {
-    let map = {
+    const map = {
       "&#39;": "'",
       "&amp;": "&",
       "&gt;": ">",

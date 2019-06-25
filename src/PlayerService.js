@@ -158,7 +158,7 @@ class PlayerService {
     this.playNow(songs[0], msg);
     if (songs.length > 1) {
       songs.splice(0, 1);
-      this.queueService.addMultipleToQueue(songs);
+      this.queueService.addMultipleFairlyToQueue(songs);
     }
   }
 
@@ -173,14 +173,12 @@ class PlayerService {
         if (song === null) {
           this.endStream();
           this.chatService.simpleNote(msg, "Queue is empty, playback finished!", this.chatService.msgType.MUSIC);
-          this.voiceService.disconnectVoiceConnection(msg);
         } else {
           this.playNow(song, msg);
         }
       }).
       catch((err) => {
         this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL);
-        this.voiceService.disconnectVoiceConnection(msg);
       });
   }
 
@@ -225,7 +223,6 @@ class PlayerService {
     }
     this.endStream();
     this.chatService.simpleNote(msg, "Playback stopped!", this.chatService.msgType.MUSIC);
-    this.voiceService.disconnectVoiceConnection(msg);
   }
 
   /**

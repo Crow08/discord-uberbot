@@ -81,7 +81,7 @@ class ShowHistoryCommand extends Command {
       this.chatService.simpleNote(msg, "History is empty!", this.chatService.msgType.INFO);
     } else {
       this.chatService.pagedContent(msg, pages).
-        then((pagedMsg) => this.chatService.awaitCommand(
+        then(() => this.chatService.awaitCommand(
           msg, (responseMsg) => filter(responseMsg, ["p", "play", "a", "add"]),
           (res) => process(res, this.commands, msg, this.queueService)
         ));
