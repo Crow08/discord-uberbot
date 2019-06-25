@@ -1,7 +1,7 @@
 const Command = require("./Command.js");
 
 /**
- * Temporary class for testing commands.
+ * Class for join command.
  * @extends Command
  * @Category Commands
  */
@@ -29,4 +29,5 @@ class JoinCommand extends Command {
     this.voiceService.getVoiceConnection(msg);
   }
 }
+
 module.exports = JoinCommand;
