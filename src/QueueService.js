@@ -1,16 +1,3 @@
-const shuffle = (array) => {
-  let pos1 = 0,
-    pos2 = 0,
-    tmpVal = 0;
-  for (pos1 = array.length - 1; pos1 > 0; pos1--) {
-    pos2 = Math.floor(Math.random() * (pos1 + 1));
-    tmpVal = array[pos1];
-    array[pos1] = array[pos2];
-    array[pos2] = tmpVal;
-  }
-  return array;
-};
-
 /**
  * Class representing a queue service.
  * This Service is managing the queue of upcoming songs and the history of passed songs.
@@ -165,7 +152,7 @@ class QueueService {
    * Shuffles the current queue.
    */
   shuffleQueue() {
-    this.queue = shuffle(this.queue);
+    this.queue = this.shuffle(this.queue);
   }
 
   /**
@@ -176,7 +163,7 @@ class QueueService {
     return new Promise((resolve, reject) => {
       this.dbService.getPlaylist(plName).
         then((songs) => {
-          this.addMultipleFairlyToQueue(shuffle(songs));
+          this.addMultipleFairlyToQueue(this.shuffle(songs));
           resolve();
         }).
         catch((error) => reject(error));
@@ -239,6 +226,25 @@ class QueueService {
       message = `Next up: ${this.queue[0].title} - ${this.queue[0].artist}`;
     }
     return (message);
+  }
+
+  /**
+   * Shuffles the given array and returns it.
+   * @private
+   * @param {Array} array - array to be shuffled
+   * @returns {Array} - shuffled array.
+   */
+  shuffle(array) {
+    let pos1 = 0,
+      pos2 = 0,
+      tmpVal = 0;
+    for (pos1 = array.length - 1; pos1 > 0; pos1--) {
+      pos2 = Math.floor(Math.random() * (pos1 + 1));
+      tmpVal = array[pos1];
+      array[pos1] = array[pos2];
+      array[pos2] = tmpVal;
+    }
+    return array;
   }
 }
 
