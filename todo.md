@@ -17,7 +17,6 @@
 ##### Misc #####
 - Don´t refresh player when Bot is not in channel
 - reboot-command
-- join channel command (now useful for announcement functionality.)
 
 ---
 
@@ -27,7 +26,7 @@
 - catch all promises and process accordingly.
 - catch all fatal errors to prevent bot crash.
 - Notify user every time, even after unsuccessful execution.
-- Bot crashes, when it announces player and the queue is empy
+- Bot crashes, when it announces player and the queue is empty
 	-recreate: Start bot, leave, join, leave, join
 
 ##### Strange behavior #####
@@ -43,6 +42,3 @@
 
 ##### Report all the Errors ####
 - *`:x: | Error: input stream: No formats found with custom filter` -> (how to reproduce?)*
-
-##### Feedback/Error/Misbehaviour - this one evening ####
-- special chars in songnames (ghost'n stuff)
