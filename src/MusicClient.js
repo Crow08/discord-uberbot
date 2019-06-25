@@ -45,7 +45,9 @@ const UploadCommand = require("./cmd/Command_Upload");
 const VolumeCommand = require("./cmd/Command_Volume");
 
 
-/** Class representing the music bot. */
+/**
+ * Class representing the music bot.
+ */
 class MusicClient {
 
   /**
@@ -109,7 +111,7 @@ class MusicClient {
       new SkipCommand(this.playerService),
       new StartCommand(this.playerService, this.searchService, this.chatService, this.queueService),
       new StopCommand(this.playerService),
-      new TestCommand(this.chatService, this.voiceService, this.ttsService, this.rawFileService, this.baseClient),
+      new TestCommand(this.chatService, this.voiceService, this.rawFileService, this.baseClient),
       new UploadCommand(this.chatService, this.queueService, this.searchService, this.dbService),
       new VolumeCommand(this.chatService, this.voiceService, this.playerService)
     );

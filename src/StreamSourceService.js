@@ -1,7 +1,6 @@
 const RawFileService = require("./RawFileService");
 const SoundCloudService = require("./SoundCloudService");
 const SpotifyService = require("./SpotifyService");
-const TTSService = require("./TTSService");
 const YouTubeService = require("./YouTubeService");
 
 /**
@@ -18,7 +17,6 @@ class StreamSourceService {
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
     this.rawFileService = new RawFileService();
-    this.ttsService = new TTSService(opt.ttsApiKey);
   }
 }
 

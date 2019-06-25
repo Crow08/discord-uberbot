@@ -1,27 +1,32 @@
 const Discord = require("discord.js");
 const MusicClient = require("./MusicClient.js");
+const AnnouncerClient = require("./AnnouncerClient.js");
 const readline = require("readline");
 const http = require("http");
 const fs = require("fs");
 
 let debug = false;
-let webOnly = false;
-let botOnly = false;
+let disableWeb = false;
+let disableBot = false;
+let disableAnnouncer = false;
 let settingsPath = "./settings.json";
 let settingsUrl = "";
 
 let settings = {};
 let baseClient = null;
 let musicClient = null;
+let announcerClient = null;
 
 // Parsing command line arguments.
 process.argv.forEach((arg) => {
   if (arg === "debug") {
     debug = true;
-  } else if (arg === "web_only") {
-    webOnly = true;
-  } else if (arg === "bot_only") {
-    botOnly = true;
+  } else if (arg === "disable_web") {
+    disableWeb = true;
+  } else if (arg === "disable_bot") {
+    disableBot = true;
+  } else if (arg === "disable_announcer") {
+    disableAnnouncer = true;
   } else if (arg.match(/^settings_url=.+/u)) {
     settingsUrl = arg.split("=")[1];
   } else if (arg.match(/^settings_path=.+/u)) {
@@ -33,11 +38,14 @@ process.argv.forEach((arg) => {
 if (debug === false && typeof process.env.debug !== "undefined") {
   debug = typeof process.env.debug;
 }
-if (webOnly === false && typeof process.env.web_only !== "undefined") {
-  webOnly = typeof process.env.web_only;
+if (disableWeb === false && typeof process.env.disable_web !== "undefined") {
+  disableWeb = typeof process.env.disable_web;
 }
-if (botOnly === false && typeof process.env.bot_only !== "undefined") {
-  botOnly = typeof process.env.bot_only;
+if (disableBot === false && typeof process.env.disable_bot !== "undefined") {
+  disableBot = typeof process.env.disable_bot;
+}
+if (disableAnnouncer === false && typeof process.env.disable_bot !== "undefined") {
+  disableAnnouncer = typeof process.env.disable_bot;
 }
 if (settingsUrl === "" && typeof process.env.settings_url !== "undefined") {
   settingsUrl = process.env.settings_url;
@@ -97,7 +105,12 @@ const processMsg = (msg) => {
       const cmd = message.substr(settings.botPrefix.length).split(" ", 1)[0].toLowerCase();
       const payload = message.substr(cmd.length + settings.botPrefix.length + 1);
       // Process command here.
-      musicClient.execute(cmd, payload, msg);
+      if (musicClient) {
+        musicClient.execute(cmd, payload, msg);
+      }
+      if (announcerClient) {
+        announcerClient.execute(cmd, payload, msg);
+      }
     }
   });
 };
@@ -128,18 +141,20 @@ const setBotEventListeners = () => {
         }
       });
     });
-    // Poll for DB connection.
-    const timeout = new Date().getTime() + 30000;
-    const checkDBConnection = () => {
-      if (musicClient.dbService.isConnected()) {
-        console.log("\x1b[32m%s\x1b[0m", "-------- UberBot is fully charged!  --------\n");
-      } else if (new Date().getTime() < timeout) {
-        setTimeout(checkDBConnection, 100);
-      } else {
-        throw new Error("DB connection timed out!");
-      }
-    };
-    checkDBConnection();
+    if (musicClient) {
+      // Poll for DB connection.
+      const timeout = new Date().getTime() + 30000;
+      const checkDBConnection = () => {
+        if (musicClient.dbService.isConnected()) {
+          console.log("\x1b[32m%s\x1b[0m", "-------- UberBot is fully charged!  --------\n");
+        } else if (new Date().getTime() < timeout) {
+          setTimeout(checkDBConnection, 100);
+        } else {
+          throw new Error("DB connection timed out!");
+        }
+      };
+      checkDBConnection();
+    }
   });
 
   // Print debug info from base client.
@@ -186,7 +201,7 @@ const validateSettings = (() => {
 });
 
 // Script starts here:
-if (!webOnly) {
+if (!disableBot) {
   console.log("\x1b[32m%s\x1b[0m", "--------    UberBot is charging!    --------\n");
   loadSettings().then((json) => {
     settings = json;
@@ -200,7 +215,9 @@ if (!webOnly) {
 
     // Create base client (discord.js client) and music client (uberbot client).
     // These provide the main functionality of the bot.
-    baseClient = new Discord.Client();
+    if (!baseClient) {
+      baseClient = new Discord.Client();
+    }
     musicClient = new MusicClient(baseClient, Discord.MessageEmbed, settings);
 
     // Set up event listeners for Discord events like incoming messages.
@@ -218,7 +235,32 @@ if (!webOnly) {
     });
 }
 
-if (!botOnly) {
+if (!disableAnnouncer) {
+  console.log("\x1b[32m%s\x1b[0m", "--------    Announcer is starting!    --------\n");
+  loadSettings().then((json) => {
+    settings = json;
+
+    // Create base client (discord.js client) and music client (uberbot client).
+    // These provide the main functionality of the bot.
+    if (!baseClient) {
+      baseClient = new Discord.Client();
+    }
+    announcerClient = new AnnouncerClient(baseClient, Discord.MessageEmbed, settings);
+
+    // Set up event listeners for Discord events like incoming messages.
+    setBotEventListeners();
+
+    // Login to Discord.
+    baseClient.login(settings.token).
+      then(() => console.log("\x1b[32m%s\x1b[0m", "--------    Announcer successfully started!     --------\n")).
+      catch((err) => console.log(err));
+  }).
+    catch((err) => {
+      console.log("\x1b[31m%s\x1b[0m", err);
+    });
+}
+
+if (!disableWeb) {
   console.log("\x1b[34m%s\x1b[0m", "--------    WebServer is starting!    --------\n");
   http.createServer((request, response) => {
     const path = request.url === "/" ? "./docs/index.html" : `./docs${request.url}`;

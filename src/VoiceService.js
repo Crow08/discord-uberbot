@@ -1,5 +1,4 @@
 const Song = require("./Song");
-const voiceLines = require("../voiceLines.json");
 
 /**
  * Class representing a voice service.
@@ -15,14 +14,11 @@ class VoiceService {
   constructor(options, client, streamSourceService) {
     this.bitRate = options.bitRate;
     this.volume = options.defVolume;
-    this.phoneticNicknames = options.phoneticNicknames;
     this.client = client;
     this.youtubeService = streamSourceService.youtubeService;
     this.soundCloudService = streamSourceService.soundCloudService;
     this.spotifyService = streamSourceService.spotifyService;
     this.rawFileService = streamSourceService.rawFileService;
-    this.ttsService = streamSourceService.ttsService;
-    this.setupVoiceStateListener();
   }
 
   /**
@@ -131,72 +127,6 @@ class VoiceService {
         reject(new Error("song src not valid!"));
       }
     });
-  }
-
-  /**
-   * Setup user join or leave events with announcer tts voice.
-   * @private
-   */
-  setupVoiceStateListener() {
-    this.client.on("voiceStateUpdate", (oldState, newState) => {
-      if (newState.member.user.bot) {
-        return; // Ignore bots.
-      }
-      const newUserChannel = newState.channel;
-      const oldUserChannel = oldState.channel;
-      const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === newState.guild.id);
-      if (typeof voiceConnection !== "undefined") {
-        const newUser = newState.member.displayName;
-        if (newUserChannel && newUserChannel.id === voiceConnection.channel.id) {
-          // User joins voice channel of bot
-          const line = Math.floor(Math.random() * voiceLines.join.length);
-          const messageJoin = voiceLines.join[line].replace("#User", this.phoneticNicknameFor(newUser));
-          this.announceMessage(messageJoin, voiceConnection);
-        } else if (oldUserChannel && oldUserChannel.id === voiceConnection.channel.id) {
-          // User leaves voice channel of bot
-          const line = Math.floor(Math.random() * voiceLines.leave.length);
-          const messageLeave = voiceLines.leave[line].replace("#User", this.phoneticNicknameFor(newUser));
-          this.announceMessage(messageLeave, voiceConnection);
-        }
-      }
-    });
-  }
-
-  /**
-   * Lookup phonetic nickname.
-   * @private
-   * @param {string} userName Username to process.
-   */
-  phoneticNicknameFor(userName) {
-    if (this.phoneticNicknames && userName in this.phoneticNicknames) {
-      return this.phoneticNicknames[userName];
-    }
-    return userName;
-  }
-
-  /**
-   * Announce the given message via tts to the given connection.
-   * @private
-   * @param {string} message Message to announce.
-   * @param {VoiceConnection} voiceConnection Discord.js Voice connection to announce to.
-   */
-  announceMessage(message, voiceConnection) {
-    this.ttsService.getStream(message).
-      then((stream) => {
-        const oldDispatcher = voiceConnection.dispatcher;
-        const dispatcher = voiceConnection.play(stream);
-        dispatcher.on("end", () => {
-          if (oldDispatcher && !oldDispatcher.paused) {
-            oldDispatcher.end();
-          }
-        });
-      }).
-      catch((err) => {
-        if (voiceConnection.dispatcher && !voiceConnection.dispatcher.paused) {
-          voiceConnection.dispatcher.end();
-        }
-        console.log(err);
-      });
   }
 }
 

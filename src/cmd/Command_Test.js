@@ -15,7 +15,7 @@ class TestCommand extends Command {
    * @param {VoiceService} voiceService - VoiceService.
    * @param {PlayerService} playerService - PlayerService.
    */
-  constructor(chatService, voiceService, ttsService, rawFileService, baseClient) {
+  constructor(chatService, voiceService, rawFileService, baseClient) {
     super(
       ["test"],
       "for testing - duh!",
@@ -23,7 +23,6 @@ class TestCommand extends Command {
     );
     this.chatService = chatService;
     this.voiceService = voiceService;
-    this.ttsService = ttsService;
     this.rawFileService = rawFileService;
     this.baseClient = baseClient;
   }
