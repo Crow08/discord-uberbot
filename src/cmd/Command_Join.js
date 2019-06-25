@@ -9,15 +9,15 @@ class JoinCommand extends Command {
 
   /**
    * Constructor.
-   * @param {BaseClient} baseClient - BaseClient.
+   * @param {VoiceService} voiceService - VoiceService.
    */
-  constructor(baseClient) {
+  constructor(voiceService) {
     super(
       ["join"],
       "ask bot nicely to join your channel",
       "<prefix>join"
     );
-    this.baseClient = baseClient;
+    this.voiceService = voiceService;
   }
 
   /**
@@ -26,8 +26,7 @@ class JoinCommand extends Command {
    * @param {Message} msg - User message this function is invoked by.
    */
   run(payload, msg) {
-    const channel = this.baseClient.channels.get(msg.member.voice.channel.id);
-    channel.join();
+    this.voiceService.getVoiceConnection(msg);
   }
 }
 module.exports = JoinCommand;

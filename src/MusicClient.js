@@ -83,7 +83,7 @@ class MusicClient {
       new AddQueueToPLCommand(this.chatService, this.queueService, this.dbService),
       new ClearCommand(this.chatService, this.queueService),
       new DeletePLCommand(this.chatService, this.dbService),
-      new JoinCommand(this.baseClient),
+      new JoinCommand(this.voiceService),
       new HelpCommand(this.chatService, this.commands, this.botPrefix),
       new LeaveCommand(this.playerService, this.voiceService),
       new ListPLCommand(this.chatService, this.dbService),
