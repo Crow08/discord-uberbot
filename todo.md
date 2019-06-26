@@ -21,6 +21,7 @@
 ##### Misc #####
 - reboot-command
 - Ability to toggle user announcements on and off.
+- plmerge and similar methods need to rename the playlist-tag of the songs
 
 ---
 
