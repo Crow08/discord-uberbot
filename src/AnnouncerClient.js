@@ -19,23 +19,22 @@ class AnnouncerClient {
     this.botPrefix = opt.botPrefix;
     this.ttsService = new TTSService(opt, client);
     this.voiceService = new VoiceService(opt, this.baseClient, {});
-    this.commands = [new JoinCommand(this.voiceService)];
+    this.commands = [];
+    this.commands.splice(
+      0, 0,
+      new JoinCommand(this.voiceService),
+    );
   }
 
   execute(cmd, payload, msg) {
     let found = false;
     this.commands.forEach((command) => {
       if (!found && command.alias.includes(cmd)) {
-        msg.react("✅");
-        console.log("\x1b[33m%s\x1b[0m", `> CMD: ${cmd}\n`);
         command.run(payload, msg);
         found = true;
       }
     });
-    if (!found) {
-      msg.react("❎");
-      console.log("\x1b[33m%s\x1b[0m", `> unrecognized command name:  ${cmd}\n`);
-    }
+    return found;
   }
 }
 

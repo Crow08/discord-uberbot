@@ -18,7 +18,7 @@ const process = (res, commandList, msg, queueService) => {
   let found = false;
   commandList.forEach((command) => {
     if (!found && command.alias.includes(cmd)) {
-      console.log("\x1b[33m%s\x1b[0m", `> CMD: ${cmd}\n`);
+      console.log("\x1b[37m%s\x1b[0m", `> CMD: ${cmd}\n`);
       command.run(`${song.title} ${song.artist}`, msg);
       found = true;
     }
