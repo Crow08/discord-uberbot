@@ -9,17 +9,15 @@ class LeaveCommand extends Command {
 
   /**
    * Constructor.
-   * @param {PlayerService} playerService - PlayerService.
    * @param {VoiceService} voiceService - VoiceService.
    */
-  constructor(playerService, voiceService) {
+  constructor(voiceService) {
     super(
       ["leave"],
       "leave the current voice channel.",
       "<prefix>leave"
     );
     this.voiceService = voiceService;
-    this.playerService = playerService;
   }
 
   /**
@@ -28,7 +26,6 @@ class LeaveCommand extends Command {
    * @param {Message} msg - User message this function is invoked by.
    */
   run(payload, msg) {
-    this.playerService.stop(msg);
     this.voiceService.disconnectVoiceConnection(msg);
   }
 }

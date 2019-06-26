@@ -87,7 +87,7 @@ class MusicClient {
       new DeletePLCommand(this.chatService, this.dbService),
       new JoinCommand(this.voiceService),
       new HelpCommand(this.chatService, this.commands, this.botPrefix),
-      new LeaveCommand(this.playerService, this.voiceService),
+      new LeaveCommand(this.voiceService),
       new ListPLCommand(this.chatService, this.dbService),
       new ListSongsCommand(this.chatService, this.dbService),
       new LoadPLCommand(this.chatService, this.queueService),
