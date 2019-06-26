@@ -1,7 +1,10 @@
+const ChatService = require("./ChatService");
 const TTSService = require("./TTSService");
 const VoiceService = require("./VoiceService");
 
+const HelpCommand = require("./cmd/Command_Help");
 const JoinCommand = require("./cmd/Command_Join");
+const LeaveCommand = require("./cmd/Command_Leave");
 
 /**
  * Class representing the announcer bot.
@@ -17,11 +20,14 @@ class AnnouncerClient {
   constructor(client, DiscordMessageEmbed, opt) {
     this.baseClient = client;
     this.botPrefix = opt.botPrefix;
+    this.chatService = new ChatService(DiscordMessageEmbed);
     this.ttsService = new TTSService(opt, client);
     this.voiceService = new VoiceService(opt, this.baseClient, {});
     this.commands = [];
     this.commands.splice(
       0, 0,
+      new HelpCommand(this.chatService, this.commands, this.botPrefix),
+      new LeaveCommand(this.voiceService),
       new JoinCommand(this.voiceService),
     );
   }
