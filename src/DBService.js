@@ -157,7 +157,11 @@ class DBService {
   renamePL(plName, newName) {
     return new Promise((resolve, reject) => {
       this.db.collection(plName).rename(newName).
-        then(resolve).
+        then(() => {
+          this.db.collection(newName).updateMany({}, {"$set": {"playlist": "newName"}}).
+            then(resolve).
+            catch(reject);
+        }).
         catch(reject);
     });
   }
@@ -290,6 +294,7 @@ class DBService {
     return new Promise((resolve, reject) => {
       this.db.collection(source).find().
         forEach((song) => {
+          song.playlist = target;
           this.db.collection(target).insertOne(song);
         }).
         then(resolve).

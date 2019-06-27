@@ -5,8 +5,6 @@
 ### README.md ###
 - Add announcement feature.
 - Add some pictures (possibly gifs)
-- Update commands table.
-	- (write a small script to get updated table...)
 
 ---
 
@@ -21,7 +19,6 @@
 ##### Misc #####
 - reboot-command
 - Ability to toggle user announcements on and off.
-- plmerge and similar methods need to rename the playlist-tag of the songs
 
 ---
 
