@@ -76,7 +76,16 @@
       "#User has joined the channel! It's super effective!",
       "#User is here, as the prophecy foretold.",
       "#User is here to kick butt and chew bubblegum. And #User is all out of gum.",
-      "Hello. Is it #User you're looking for?"
+      "Hello. Is it #User you're looking for?",
+      "Oh #User, I missed you so much.",
+      "Hi #User, please don´t leave me, I am so lonely.",
+      "Welcome aboard #User.",
+      "Hi #User, welcome to this awesome channel.",
+      "Mom, get the camera, #User is here!",
+      "Congratulations #User, you managed to join our server.",
+      "On behalf of all the other idiots here, I welcome #User in this channel.",
+      "Hi #User. Can I go now?",
+      "Damn #User you´re late!"
    ],
    "leave":[  
       "#User ran away.",
@@ -124,6 +133,11 @@
       "Dear god, why #User?",
       "#User is gone, now the evil will prevail!",
       "#User couldn't take it anymore.",
-      "#User will return, no doubt. "
+      "#User will return, no doubt. ",
+      "My best friend #User just left.",
+      "#User is gone, now I need a new best friend.",
+      "#User left the channel, shame on you.",
+      "#User left us, I hope he comes back soon.",
+      "Oh wow, #User abandoned us."
    ]
 }
