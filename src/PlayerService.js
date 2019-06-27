@@ -203,7 +203,7 @@ class PlayerService {
    */
   pause(msg) {
     if (!this.audioDispatcher) {
-      this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, "There no playback to be paused!", this.chatService.msgType.FAIL);
     } else if (this.audioDispatcher.paused) {
       this.chatService.simpleNote(msg, "Playback already paused!", this.chatService.msgType.FAIL);
     } else {
@@ -218,7 +218,7 @@ class PlayerService {
    */
   stop(msg) {
     if (!this.audioDispatcher) {
-      this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
+      this.chatService.simpleNote(msg, "Playback already stopped!", this.chatService.msgType.FAIL);
       return;
     }
     this.endStream();
@@ -231,7 +231,7 @@ class PlayerService {
    */
   skip(msg) {
     if (!this.audioDispatcher) {
-      this.chatService.simpleNote(msg, "Audio stream not found!", this.chatService.msgType.FAIL);
+      this.playNext(msg);
       return;
     }
     this.chatService.simpleNote(msg, "Skipping song!", this.chatService.msgType.MUSIC);

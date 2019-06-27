@@ -1,7 +1,10 @@
+const ChatService = require("./ChatService");
 const TTSService = require("./TTSService");
 const VoiceService = require("./VoiceService");
 
+const HelpCommand = require("./cmd/Command_Help");
 const JoinCommand = require("./cmd/Command_Join");
+const LeaveCommand = require("./cmd/Command_Leave");
 
 /**
  * Class representing the announcer bot.
@@ -17,25 +20,27 @@ class AnnouncerClient {
   constructor(client, DiscordMessageEmbed, opt) {
     this.baseClient = client;
     this.botPrefix = opt.botPrefix;
+    this.chatService = new ChatService(DiscordMessageEmbed);
     this.ttsService = new TTSService(opt, client);
     this.voiceService = new VoiceService(opt, this.baseClient, {});
-    this.commands = [new JoinCommand(this.voiceService)];
+    this.commands = [];
+    this.commands.splice(
+      0, 0,
+      new HelpCommand(this.chatService, this.commands, this.botPrefix),
+      new LeaveCommand(this.voiceService),
+      new JoinCommand(this.voiceService),
+    );
   }
 
   execute(cmd, payload, msg) {
     let found = false;
     this.commands.forEach((command) => {
       if (!found && command.alias.includes(cmd)) {
-        msg.react("✅");
-        console.log("\x1b[33m%s\x1b[0m", `> CMD: ${cmd}\n`);
         command.run(payload, msg);
         found = true;
       }
     });
-    if (!found) {
-      msg.react("❎");
-      console.log("\x1b[33m%s\x1b[0m", `> unrecognized command name:  ${cmd}\n`);
-    }
+    return found;
   }
 }
 

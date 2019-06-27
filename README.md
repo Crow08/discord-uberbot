@@ -38,170 +38,152 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 
 ```prolog
 +----------------------------Commands--------------------------+
-| Name:   add                                                  |
+| Alias:  add, a                                               |
 | Usage:  !add <url | query>                                   |
 | About:  add a song to the current queue by url or query.     |
-| Alias:  add, a                                               |
 +--------------------------------------------------------------+
-| Name:   pladd                                                |
+| Alias:  pladd                                                |
 | Usage:  !pladd <pl name> <url | query>                       |
 | About:  add a song to the specified playlist by url or       |
 |         query.                                               |
 +--------------------------------------------------------------+
-| Name:   autopl                                               |
+| Alias:  autopl, apl, auto                                    |
 | Usage:  !autopl [<playlist name>|"unset"]                    |
 | About:  get or set a playlist name to be the auto playlist.  |
 |         (playlist name to set, no parameter to get and       |
 |         "unset" to unset).                                   |
-| Alias:  autopl, apl, auto                                    |
 +--------------------------------------------------------------+
-| Name:   addsongtopl                                          |
+| Alias:  addsongtopl, as2pl, as2p                             |
 | Usage:  !addsongtopl <playlist>                              |
 | About:  adds current song to given playlist                  |
-| Alias:  addsongtopl, as2pl, as2p                             |
 +--------------------------------------------------------------+
-| Name:   addqueuetopl                                         |
+| Alias:  addqueuetopl, aq2pl, aq2p                            |
 | Usage:  !addqueuetopl <playlist>                             |
 | About:  adds queue to given playlist                         |
-| Alias:  addqueuetopl, aq2pl, aq2p                            |
 +--------------------------------------------------------------+
-| Name:   clear                                                |
+| Alias:  clear                                                |
 | Usage:  !clear                                               |
 | About:  delete all songs from current queue.                 |
 +--------------------------------------------------------------+
-| Name:   pldelete                                             |
+| Alias:  pldelete                                             |
 | Usage:  !pldelete <pl name>                                  |
 | About:  deletes a playlist permanently.                      |
 +--------------------------------------------------------------+
-| Name:   getautopl                                            |
-| Usage:  !auto                                                |
-| About:  returns name of current auto playlist                |
+| Alias:  join                                                 |
+| Usage:  !join                                                |
+| About:  ask bot nicely to join your channel                  |
 +--------------------------------------------------------------+
-| Name:   help                                                 |
+| Alias:  help, ?, medic                                       |
 | Usage:  !help                                                |
 | About:  list all implemented commands                        |
-| Alias:  help, ?                                              |
 +--------------------------------------------------------------+
-| Name:   leave                                                |
+| Alias:  leave                                                |
 | Usage:  !leave                                               |
 | About:  leave the current voice channel.                     |
 +--------------------------------------------------------------+
-| Name:   pllist                                               |
+| Alias:  pllist, l                                            |
 | Usage:  !pllist                                              |
 | About:  lists available playlists                            |
-| Alias:  pllist, l                                            |
 +--------------------------------------------------------------+
-| Name:   listsongs                                            |
+| Alias:  listsongs, ls                                        |
 | Usage:  !listsongs <playlist>                                |
 | About:  lists all songs of the specified playlist            |
-| Alias:  listsongs, ls                                        |
 +--------------------------------------------------------------+
-| Name:   plload                                               |
+| Alias:  plload                                               |
 | Usage:  !plload <pl name>                                    |
 | About:  load a playlist replacing the current queue.         |
 +--------------------------------------------------------------+
-| Name:   loop                                                 |
+| Alias:  loop                                                 |
 | Usage:  !loop [1]                                            |
 | About:  toggle loop mode of the queue.                       |
 |         add 1 to loop only the current song.                 |
 +--------------------------------------------------------------+
-| Name:   merge                                                |
+| Alias:  plmerge, merge                                       |
 | Usage:  !merge <sourcepl> <targetpl>                         |
 | About:  copies one playlist into another!                    |
 +--------------------------------------------------------------+
-| Name:   nowplaying                                           |
+| Alias:  nowplaying, np                                       |
 | Usage:  !nowplaying                                          |
 | About:  returns first song in history (current song)         |
-| Alias:  nowplaying, np                                       |
 +--------------------------------------------------------------+
-| Name:   pause                                                |
+| Alias:  pause                                                |
 | Usage:  !pause                                               |
 | About:  pause current playback.                              |
 +--------------------------------------------------------------+
-| Name:   play                                                 |
+| Alias:  play, p                                              |
 | Usage:  !play <url | query>                                  |
 | About:  play a song by url or query.                         |
-| Alias:  play, p                                              |
 +--------------------------------------------------------------+
-| Name:   playnext                                             |
+| Alias:  playnext, pn                                         |
 | Usage:  !playnext <queue position>                           |
 | About:  moves song at given position to top                  |
-| Alias:  playnext, pn                                         |
 +--------------------------------------------------------------+
-| Name:   preferdsrc                                           |
+| Alias:  preferdsrc, searchsrc, src                           |
 | Usage:  !preferdsrc [yt|sc|sp]                               |
 | About:  set a source to be the default source for all        |
 |         searches.                                            |
 |         (valid sources to set are:                           |
 |         "yt":youtube,"sc":soundcloud,"sp":spotify.           |
 |         no parameter to get current source)                  |
-| Alias:  preferdsrc, searchsrc, src                           |
 +--------------------------------------------------------------+
-| Name:   remove                                               |
+| Alias:  remove                                               |
 | Usage:  !remove <queue number>                               |
 | About:  removes a song from the current queue.               |
 +--------------------------------------------------------------+
-| Name:   plremove                                             |
+| Alias:  plremove, plrm                                       |
 | Usage:  !plremove <pl name> <song name>                      |
 | About:  remove given song from given playlist                |
-| Alias:  plremove, plrm                                       |
 +--------------------------------------------------------------+
-| Name:   plrename                                             |
+| Alias:  plrename, rename                                     |
 | Usage:  !rename <playlist> <new name>                        |
 | About:  renames given playlist                               |
-| Alias:  plrename, rename                                     |
 +--------------------------------------------------------------+
-| Name:   rename                                               |
+| Alias:  rename, renamesong, r                                |
 | Usage:  !rename <"t"|"a"> <playlist name> <song number>      |
 |         <new name>                                           |
 | About:  rename title or artist of song.                      |
 |         (first parameter "t" for title and "a" for artist.)  |
-| Alias:  rename, renamesong, r                                |
 +--------------------------------------------------------------+
-| Name:   search                                               |
+| Alias:  search                                               |
 | Usage:  !search <query>                                      |
 |         => "cancel" |                                        |
 |         ["play"|"add"] <song number> |                       |
 |          "pladd" <pl name> <song number>                     |
 | About:  search for a song and choose from multiple results.  |
 +--------------------------------------------------------------+
-| Name:   plsearch                                             |
+| Alias:  plsearch, pls                                        |
 | Usage:  !plsearch <pl name> <song name>                      |
 | About:  search given song in given playlist                  |
-| Alias:  plsearch, pls                                        |
 +--------------------------------------------------------------+
-| Name:   seek                                                 |
+| Alias:  seek                                                 |
 | Usage:  !seek <number>                                       |
 | About:  seek playback position.                              |
 +--------------------------------------------------------------+
-| Name:   showhistory                                          |
+| Alias:  showhistory, h, history                              |
 | Usage:  !showhistory                                         |
 | About:  displays all songs from current history.             |
-| Alias:  showhistory, h, history                              |
 +--------------------------------------------------------------+
-| Name:   showqueue                                            |
+| Alias:  showqueue, q, queue                                  |
 | Usage:  !showqueue                                           |
 | About:  displays all songs from current queue.               |
-| Alias:  showqueue, q, queue                                  |
 +--------------------------------------------------------------+
-| Name:   shuffle                                              |
+| Alias:  shuffle                                              |
 | Usage:  !shuffle                                             |
 | About:  shuffle the current queue.                           |
 +--------------------------------------------------------------+
-| Name:   skip                                                 |
+| Alias:  skip, s                                              |
 | Usage:  !skip                                                |
 | About:  skip current song.                                   |
-| Alias:  skip, s                                              |
 +--------------------------------------------------------------+
-| Name:   start                                                |
+| Alias:  start                                                |
 | Usage:  !start <pl name>                                     |
 | About:  loads a playlist shuffles it and starts playing.     |
 +--------------------------------------------------------------+
-| Name:   stop                                                 |
+| Alias:  stop                                                 |
 | Usage:  !stop                                                |
 | About:  stop current playback.                               |
 +--------------------------------------------------------------+
-| Name:   upload                                               |
+| Alias:  upload                                               |
 | Usage:  !upload [<playlist name>]                            |
 |         => attach file to the message                        |
 |         txt files with a query each row or csv files with 3  |
@@ -209,10 +191,9 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 | About:  add a songs from a file to the queue or to a         |
 |         playlist.                                            |
 +--------------------------------------------------------------+
-| Name:   volume                                               |
+| Alias:  volume, vol, v                                       |
 | Usage:  !volume <number>                                     |
 | About:  sets volume, or returns volume if no parameter given |
-| Alias:  volume, vol, v                                       |
 +--------------------------------------------------------------+
 ```
 

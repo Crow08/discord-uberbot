@@ -1,4 +1,6 @@
+const ChatService = require("./ChatService");
 const DBService = require("./DBService");
+const PlayerService = require("./PlayerService");
 const QueueService = require("./QueueService");
 const RatingService = require("./RatingService");
 const SearchService = require("./SearchService");
@@ -10,7 +12,6 @@ const AddPLCommand = require("./cmd/Command_PL_Add");
 const AutoPLCommand = require("./cmd/Command_AutoPL");
 const AddSongToPLCommand = require("./cmd/Command_AddSongToPL");
 const AddQueueToPLCommand = require("./cmd/Command_AddQueueToPL");
-const ChatService = require("./ChatService");
 const ClearCommand = require("./cmd/Command_Clear");
 const DeletePLCommand = require("./cmd/Command_PL_Delete");
 const HelpCommand = require("./cmd/Command_Help");
@@ -24,7 +25,6 @@ const ListSongsCommand = require("./cmd/Command_List_Songs");
 const NowPlayingCommand = require("./cmd/Command_NowPlaying");
 const PauseCommand = require("./cmd/Command_Pause");
 const PlayCommand = require("./cmd/Command_Play");
-const PlayerService = require("./PlayerService");
 const PlayNextCommand = require("./cmd/Command_PlayNext");
 const PreferredSrcCommand = require("./cmd/Command_PreferredSrc");
 const RemoveCommand = require("./cmd/Command_Remove");
@@ -87,7 +87,7 @@ class MusicClient {
       new DeletePLCommand(this.chatService, this.dbService),
       new JoinCommand(this.voiceService),
       new HelpCommand(this.chatService, this.commands, this.botPrefix),
-      new LeaveCommand(this.playerService, this.voiceService),
+      new LeaveCommand(this.voiceService),
       new ListPLCommand(this.chatService, this.dbService),
       new ListSongsCommand(this.chatService, this.dbService),
       new LoadPLCommand(this.chatService, this.queueService),
@@ -131,16 +131,11 @@ class MusicClient {
     let found = false;
     this.commands.forEach((command) => {
       if (!found && command.alias.includes(cmd)) {
-        msg.react("✅");
-        console.log("\x1b[33m%s\x1b[0m", `> CMD: ${cmd}\n`);
         command.run(payload, msg);
         found = true;
       }
     });
-    if (!found) {
-      msg.react("❎");
-      console.log("\x1b[33m%s\x1b[0m", `> unrecognized command name:  ${cmd}\n`);
-    }
+    return found;
   }
 }
 

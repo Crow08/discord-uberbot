@@ -13,6 +13,7 @@ let settingsPath = "./settings.json";
 let settingsUrl = "";
 
 let settings = {};
+let loadSettings = null;
 let baseClient = null;
 let musicClient = null;
 let announcerClient = null;
@@ -44,8 +45,8 @@ if (disableWeb === false && typeof process.env.disable_web !== "undefined") {
 if (disableBot === false && typeof process.env.disable_bot !== "undefined") {
   disableBot = typeof process.env.disable_bot;
 }
-if (disableAnnouncer === false && typeof process.env.disable_bot !== "undefined") {
-  disableAnnouncer = typeof process.env.disable_bot;
+if (disableAnnouncer === false && typeof process.env.disable_announcer !== "undefined") {
+  disableAnnouncer = typeof process.env.disable_announcer;
 }
 if (settingsUrl === "" && typeof process.env.settings_url !== "undefined") {
   settingsUrl = process.env.settings_url;
@@ -53,43 +54,6 @@ if (settingsUrl === "" && typeof process.env.settings_url !== "undefined") {
 if (settingsPath === "" && typeof process.env.settings_path !== "undefined") {
   settingsPath = process.env.settings_url;
 }
-
-// Load settings.
-const loadSettings = () => new Promise((resolve, reject) => {
-  fs.access(settingsPath, fs.constants.F_OK, (existsErr) => {
-    // If settings file exists:
-    if (!existsErr) {
-      // Read settings file.
-      fs.readFile(settingsPath, (readErr, rawData) => {
-        if (readErr) {
-          reject(readErr);
-          return;
-        }
-        resolve(JSON.parse(rawData));
-      });
-    // If settingsUrl is set:
-    } else if (settingsUrl.length > 0) {
-      // Download settings file.
-      http.get(settingsUrl, (response) => {
-        response.setEncoding("utf8");
-        let rawData = "";
-        response.on("data", (chunk) => {
-          rawData += chunk;
-        });
-        response.on("end", () => {
-          resolve(JSON.parse(rawData));
-        });
-      }).on("error", (httpErr) => {
-        reject(httpErr);
-      });
-    } else {
-      reject(new Error("Failed to load settings file!\n" +
-        "Please provide a settings file at the default location (\"./settings.json\") " +
-        "or set a path through the \"settings_path\" argument.\n" +
-        "Alternatively you can provide \"settings_url\" as argument to refer a remote settings file."));
-    }
-  });
-});
 
 // Message processing for receiving bot commands.
 const processMsg = (msg) => {
@@ -105,18 +69,20 @@ const processMsg = (msg) => {
       const cmd = message.substr(settings.botPrefix.length).split(" ", 1)[0].toLowerCase();
       const payload = message.substr(cmd.length + settings.botPrefix.length + 1);
       // Process command here.
-      if (musicClient) {
-        musicClient.execute(cmd, payload, msg);
-      }
-      if (announcerClient) {
-        announcerClient.execute(cmd, payload, msg);
+      if ((musicClient && musicClient.execute(cmd, payload, msg)) ||
+          (announcerClient && announcerClient.execute(cmd, payload, msg))) {
+        msg.react("✅");
+        console.log("\x1b[37m%s\x1b[0m", `> CMD: ${cmd}\n`);
+      } else {
+        msg.react("❎");
+        console.log("\x1b[37m%s\x1b[0m", `> unrecognized command name: ${cmd}\n`);
       }
     }
   });
 };
 
 // Setup Listeners for Discord.js events on base client.
-const setBotEventListeners = () => {
+const setDiscordEventListeners = () => {
   // Catch new message event.
   baseClient.on("message", (msg) => processMsg(msg));
 
@@ -141,20 +107,6 @@ const setBotEventListeners = () => {
         }
       });
     });
-    if (musicClient) {
-      // Poll for DB connection.
-      const timeout = new Date().getTime() + 30000;
-      const checkDBConnection = () => {
-        if (musicClient.dbService.isConnected()) {
-          console.log("\x1b[32m%s\x1b[0m", "-------- UberBot is fully charged!  --------\n");
-        } else if (new Date().getTime() < timeout) {
-          setTimeout(checkDBConnection, 100);
-        } else {
-          throw new Error("DB connection timed out!");
-        }
-      };
-      checkDBConnection();
-    }
   });
 
   // Print debug info from base client.
@@ -179,13 +131,18 @@ const setConsoleEventListeners = () => {
     if (message.startsWith(settings.botPrefix)) {
       const cmd = message.substr(settings.botPrefix.length).split(" ", 1)[0];
       const payload = message.substr(cmd.length + settings.botPrefix.length + 1);
-      musicClient.execute(cmd, payload, {"author": {"username": "debug_console"}});
+      if ((musicClient && musicClient.execute(cmd, payload, {"author": {"username": "debug_console"}})) ||
+          (announcerClient && announcerClient.execute(cmd, payload, {"author": {"username": "debug_console"}}))) {
+        console.log("\x1b[37m%s\x1b[0m", `> CMD: ${cmd}\n`);
+      } else {
+        console.log("\x1b[37m%s\x1b[0m", `> unrecognized command name: ${cmd}\n`);
+      }
     }
   });
 };
 
 // Fill in missing settings with default values and validate settings.
-const validateSettings = (() => {
+const validateSettings = (() => new Promise((resolve, reject) => {
   // Set default values if necessary.
   settings.bitRat = typeof settings.bitRate === "undefined" ? 96000 : parseInt(settings.bitRate, 10);
   settings.botPrefix = typeof settings.botPrefix === "undefined" ? "!" : settings.botPrefix;
@@ -193,73 +150,129 @@ const validateSettings = (() => {
   settings.ratingCooldown = typeof settings.ratingCooldown === "undefined" ? 86400
     : parseInt(settings.ratingCooldown, 10);
   // Check for missing credentials.
-  return ((typeof settings.scClientId !== "undefined" && settings.scClientId !== "SOUNDCLOUD_CLIENT_ID") ||
-    (typeof settings.spotifyClientId !== "undefined" && settings.spotifyClientId !== "SPOTIFY_CLIENT_ID") ||
-    (typeof settings.spotifyClientSecret !== "undefined" && settings.spotifyClientSecret !== "SPOTIFY_CLIENT_SECRET") ||
-    (typeof settings.youtubeApiKey !== "undefined" && settings.youtubeApiKey !== "YOUTUBE_API_KEY") ||
-    (typeof settings.ttsApiKey !== "undefined" && settings.ttsApiKey !== "TTS_API_KEY"));
-});
+  const missingInfoError = new Error("Your setting file is missing some necessary information!\n" +
+  "Please check your settings file for missing API credentials.\n" +
+  "Take a look at settings.example.json for reference.");
+  if (!disableBot && (typeof settings.youtubeApiKey === "undefined" || settings.youtubeApiKey === "YOUTUBE_API_KEY")) {
+    reject(missingInfoError);
+  } else if (!disableAnnouncer && (typeof settings.ttsApiKey === "undefined" || settings.ttsApiKey === "TTS_API_KEY")) {
+    reject(missingInfoError);
+  }
+  resolve();
+}));
 
-// Script starts here:
-if (!disableBot) {
-  console.log("\x1b[32m%s\x1b[0m", "--------    UberBot is charging!    --------\n");
-  loadSettings().then((json) => {
-    settings = json;
-    // Check if all necessary settings are set.
-    if (!validateSettings()) {
-      console.log("\x1b[31m%s\x1b[0m", new Error("Your setting file is missing some necessary information!\n" +
-        "Please check your settings file for missing API credentials.\n" +
-        "Take a look at settings.example.json for reference."));
-      return;
-    }
-
-    // Create base client (discord.js client) and music client (uberbot client).
-    // These provide the main functionality of the bot.
-    if (!baseClient) {
-      baseClient = new Discord.Client();
-    }
-    musicClient = new MusicClient(baseClient, Discord.MessageEmbed, settings);
-
+// Initialize and set up discord.js client to receive discord events.
+const initBaseClient = (() => {
+  if (!baseClient) {
+    baseClient = new Discord.Client();
     // Set up event listeners for Discord events like incoming messages.
-    setBotEventListeners();
-
+    setDiscordEventListeners();
     // Setup console listeners for debugging purposes.
     setConsoleEventListeners();
-
     // Login to Discord.
-    baseClient.login(settings.token).
-      catch((err) => console.log(err));
+    return baseClient.login(settings.token);
+  }
+  return new Promise((resolve) => resolve());
+
+});
+
+// Settings are needed for announcer or music bot functionality.
+if (!disableBot || !disableAnnouncer) {
+  // Load settings.
+  loadSettings = new Promise((resolve, reject) => {
+    fs.access(settingsPath, fs.constants.F_OK, (existsErr) => {
+      // If settings file exists:
+      if (!existsErr) {
+        // Read settings file.
+        fs.readFile(settingsPath, (readErr, rawData) => {
+          if (readErr) {
+            reject(readErr);
+            return;
+          }
+          settings = JSON.parse(rawData);
+          // Check if all necessary settings are set.
+          validateSettings().
+            then(resolve).
+            catch(reject);
+        });
+      // If settingsUrl is set:
+      } else if (settingsUrl.length > 0) {
+        // Download settings file.
+        http.get(settingsUrl, (response) => {
+          response.setEncoding("utf8");
+          let rawData = "";
+          response.on("data", (chunk) => {
+            rawData += chunk;
+          });
+          response.on("end", () => {
+            settings = JSON.parse(rawData);
+            // Check if all necessary settings are set.
+            validateSettings().
+              then(resolve).
+              catch(reject);
+          });
+        }).on("error", (httpErr) => {
+          reject(httpErr);
+        });
+      } else {
+        reject(new Error("Failed to load settings file!\n" +
+          "Please provide a settings file at the default location (\"./settings.json\") " +
+          "or set a path through the \"settings_path\" argument.\n" +
+          "Alternatively you can provide \"settings_url\" as argument to refer a remote settings file."));
+      }
+    });
+  });
+}
+
+// Start music bot if enabled.
+if (!disableBot) {
+  console.log("\x1b[32m%s\x1b[0m", "--------    UberBot is charging!    --------\n");
+  loadSettings.then(() => {
+    // Create base client (discord.js client) and event listeners
+    initBaseClient().
+      catch((err) => {
+        throw new Error(err);
+      });
+    // Create music client for all music functions.
+    musicClient = new MusicClient(baseClient, Discord.MessageEmbed, settings);
+
+    // Poll for DB connection.
+    const timeout = new Date().getTime() + 30000;
+    const checkDBConnection = () => {
+      if (musicClient.dbService.isConnected()) {
+        console.log("\x1b[32m%s\x1b[0m", "-------- UberBot is fully charged!  --------\n");
+      } else if (new Date().getTime() < timeout) {
+        setTimeout(checkDBConnection, 100);
+      } else {
+        throw new Error("DB connection timeout!");
+      }
+    };
+    checkDBConnection();
   }).
     catch((err) => {
       console.log("\x1b[31m%s\x1b[0m", err);
     });
 }
 
+// Start announcer bot if enabled.
 if (!disableAnnouncer) {
-  console.log("\x1b[32m%s\x1b[0m", "--------    Announcer is starting!    --------\n");
-  loadSettings().then((json) => {
-    settings = json;
-
-    // Create base client (discord.js client) and music client (uberbot client).
-    // These provide the main functionality of the bot.
-    if (!baseClient) {
-      baseClient = new Discord.Client();
-    }
+  console.log("\x1b[33m%s\x1b[0m", "--------    Announcer is starting!    --------\n");
+  loadSettings.then(() => {
+    // Create base client (discord.js client) and event listeners
+    initBaseClient().
+      then(() => console.log("\x1b[33m%s\x1b[0m", "--------    Announcer successfully started!     --------\n")).
+      catch((err) => {
+        throw new Error(err);
+      });
+    // Create announcer client for tts announcements.
     announcerClient = new AnnouncerClient(baseClient, Discord.MessageEmbed, settings);
-
-    // Set up event listeners for Discord events like incoming messages.
-    setBotEventListeners();
-
-    // Login to Discord.
-    baseClient.login(settings.token).
-      then(() => console.log("\x1b[32m%s\x1b[0m", "--------    Announcer successfully started!     --------\n")).
-      catch((err) => console.log(err));
   }).
     catch((err) => {
       console.log("\x1b[31m%s\x1b[0m", err);
     });
 }
 
+// Start web server if enabled.
 if (!disableWeb) {
   console.log("\x1b[34m%s\x1b[0m", "--------    WebServer is starting!    --------\n");
   http.createServer((request, response) => {
