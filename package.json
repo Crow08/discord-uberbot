@@ -6,10 +6,14 @@
   "author": "Crow08",
   "license": "MIT",
   "scripts": {
+    "announcer": "node ./src/index.js disable_bot disable_web",
+    "bot": "node ./src/index.js disable_announcer disable_web",
     "build": "npm install",
     "debug": "node ./src/index.js debug",
     "docs": "node_modules/.bin/jsdoc -r -c jsdoc.json",
-    "start": "node ./src/index.js"
+    "start": "node ./src/index.js",
+    "tools_cmdTable": "node ./src/tools/createCmdTable.js",
+    "web": "node ./src/index.js disable_announcer disable_bot"
   },
   "private": true,
   "repository": {
