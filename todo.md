@@ -23,8 +23,6 @@
 
 ##### Announcer #####
 
-- .say "String"
-
 - .sfx \<number>
 	- list all numbers, if none given  
 	1: Airhorn  

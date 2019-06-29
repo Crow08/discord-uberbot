@@ -5,6 +5,7 @@ const VoiceService = require("./VoiceService");
 const HelpCommand = require("./cmd/Command_Help");
 const JoinCommand = require("./cmd/Command_Join");
 const LeaveCommand = require("./cmd/Command_Leave");
+const SayCommand = require("./cmd/Command_Say");
 
 /**
  * Class representing the announcer bot.
@@ -29,6 +30,7 @@ class AnnouncerClient {
       new HelpCommand(this.chatService, this.commands, this.botPrefix),
       new LeaveCommand(this.voiceService),
       new JoinCommand(this.voiceService),
+      new SayCommand(this.voiceService, this.ttsService)
     );
   }
 
