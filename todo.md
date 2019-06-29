@@ -23,14 +23,6 @@
 
 ##### Announcer #####
 
-- .sfx \<number>
-	- list all numbers, if none given  
-	1: Airhorn  
-	2: Spaß Spaß Spaß  
-	3: WC3 Voicelines (Das kann ich, Arbeit sit vollbracht, ich geh dann mal)  
-	4: GLaDOS VoiceLines (https://theportalwiki.com/wiki/GLaDOS_voice_lines)  
-	5: AOE 2 Voicelines (Yes, No, etc.)
-
 - .joke
 	- random joke
 
