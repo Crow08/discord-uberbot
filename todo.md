@@ -23,6 +23,11 @@
 
 ##### Announcer #####
 
+- We need a system to order the sfx. Like a table, with groups (WC3, Portal, etc.)
+
+- Voice some errors (caused by wrong input) through Announcer (for ultimate devastation)
+    - maybe only user errors with announcer-bot (already added some)
+
 - .joke
 	- random joke
 
@@ -73,3 +78,4 @@ request.end();
 - sometimes in stream does not end, when the song has ended playing.
 	- can be solved via skip song.
 	- hard to reproduce reliable.
+- say and sfx wont be deleted after 10 seconds (works local though)

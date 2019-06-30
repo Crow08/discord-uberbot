@@ -13,15 +13,16 @@ class SfxCommand extends Command {
    * @param {VoiceService} voiceService - VoiceService.
    * @param {RawFileService} rawFileService - RawFileService.
    */
-  constructor(voiceService, rawFileService, chatService) {
+  constructor(voiceService, rawFileService, chatService, ttsService) {
     super(
       ["sfx"],
       "make the bot play dumb stuff",
-      "<prefix>sfx [index of sfx]"
+      "<prefix>sfx [index of sfx / empty for whole list]"
     );
     this.voiceService = voiceService;
     this.rawFileService = rawFileService;
     this.chatService = chatService;
+    this.ttsService = ttsService;
   }
 
   /**
@@ -30,7 +31,19 @@ class SfxCommand extends Command {
    * @param {Message} msg - User message this function is invoked by.
    */
   run(payload, msg) {
-    if (payload === "undefined" || payload === "") {
+    if (payload > voiceLines.sfx.length - 1) {
+      this.say("This is a voice line from the future. You have to add it first!", msg);
+      return;
+    }
+    if (payload < 0) {
+      this.say("Oh I know, let's enter a negative number, that will show her. Pathetic!", msg);
+      return;
+    }
+    if (isNaN(payload)) {
+      this.say("Oh my goodness, what are you doing? Please enter a number. You know? Like 1 or 2?", msg);
+      return;
+    }
+    if (payload === "undefined" || payload === "" || payload.length === 0) {
       let list = "```asciidoc\n[Sound effects]\n\n";
       voiceLines.sfx.forEach((element, index) => {
         console.log(`${index} :: ${element.title}\n`);
@@ -51,6 +64,15 @@ class SfxCommand extends Command {
       msg.delete({"timeout": 10000});
     }
 
+  }
+
+  say(text, msg) {
+    this.voiceService.getVoiceConnection(msg).
+      then((voiceConnection) => {
+        this.ttsService.announceMessage(text, voiceConnection);
+      }).
+      catch((err) => console.log(err));
+    msg.delete({"timeout": 10000});
   }
 }
 module.exports = SfxCommand;

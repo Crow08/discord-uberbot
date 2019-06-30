@@ -34,7 +34,7 @@ class AnnouncerClient {
       new LeaveCommand(this.voiceService),
       new JoinCommand(this.voiceService),
       new SayCommand(this.voiceService, this.ttsService),
-      new SfxCommand(this.voiceService, this.RawFileService, this.chatService)
+      new SfxCommand(this.voiceService, this.RawFileService, this.chatService, this.ttsService)
     );
   }
 
