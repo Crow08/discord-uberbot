@@ -78,4 +78,3 @@ request.end();
 - sometimes in stream does not end, when the song has ended playing.
 	- can be solved via skip song.
 	- hard to reproduce reliable.
-- say and sfx wont be deleted after 10 seconds (works local though)
