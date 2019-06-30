@@ -39,16 +39,12 @@ class DBService {
       // Disconnect first before opening a new connection.
       return new Promise((resolve, reject) => {
         this.disconnectDB().
-          then(() => {
-            this.connectDB().
-              then(resolve).
-              catch(reject);
-          }).
           catch((err) => {
-            // Try to connect regardless.
             console.log(err);
             this.client = null;
             this.db = null;
+          }).
+          finally(() => {
             this.connectDB().
               then(resolve).
               catch(reject);

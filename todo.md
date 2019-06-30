@@ -19,26 +19,22 @@
 ##### Misc #####
 - reboot-command
 - Ability to toggle user announcements on and off.
+- User group to allow bot-interaction (protects from strangers and trolls)
 
 ##### Announcer #####
 
-.say "String"
+- We need a system to order the sfx. Like a table, with groups (WC3, Portal, etc.)
 
-.sfx <number>
-	- list all numbers, if none given
-	1: Airhorn
-	2: Spaß Spaß Spaß
-	3: WC3 Voicelines (Das kann ich, Arbeit sit vollbracht, ich geh dann mal)
-	4: GLaDOS VoiceLines (https://theportalwiki.com/wiki/GLaDOS_voice_lines)
-	5: AOE 2 Voicelines (Yes, No, etc.)
+- Voice some errors (caused by wrong input) through Announcer (for ultimate devastation)
+    - maybe only user errors with announcer-bot (already added some)
 
-.joke
-	-random joke
+- .joke
+	- random joke
 
-.dadjoke
+- .dadjoke
 	- random dadjoke (god help us)
 
-.randomfact(takes first fact of this site)
+- .randomfact(takes first fact of this site)
 
 ```js
 var http = require('http');
@@ -65,12 +61,6 @@ request.on('error', function (e) {
 });
 request.end();
 ```
-
-----
-
-Misc.:
-
--Usergroup to allow bot-interaction (protects from strangers and trolls)
 
 ---
 

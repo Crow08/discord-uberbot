@@ -58,7 +58,9 @@ class TTSService {
       const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === newState.guild.id);
       if (typeof voiceConnection !== "undefined") {
         const newUser = newState.member.displayName;
-        if (newUserChannel && newUserChannel.id === voiceConnection.channel.id) {
+        if (newUserChannel && oldUserChannel && newUserChannel.id === oldUserChannel.id) {
+          // Do nothing!
+        } else if (newUserChannel && newUserChannel.id === voiceConnection.channel.id) {
           // User joins voice channel of bot
           const line = Math.floor(Math.random() * voiceLines.join.length);
           const messageJoin = voiceLines.join[line].replace("#User", this.phoneticNicknameFor(newUser));
