@@ -143,7 +143,7 @@
    "sfx":{  
       "Kev":[  
          {  
-            "url":"https://instaud.io/_/3SGs.mp3",
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595686349286408199/DJSpass.mp3",
             "title":"SpaßSpaßSpaß"
          },
          {  
@@ -181,7 +181,7 @@
       ],
       "Tobi":[  
          {  
-            "url":"https://instaud.io/_/private/7f50dedba70e395e31d20e15d24134ce43ff7098.mp3",
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595686881698644109/BabyLaugh.mp3",
             "title":"Baby laugh"
          },
          {  
@@ -215,6 +215,38 @@
          {  
             "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830863363997706/Glados_BrokeIt.wav",
             "title":"You broke it"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683157244641297/Glados_DidYouSaySth.wav",
+            "title":"Did you say sth?"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683153926946818/Glados_IHateYou.wav",
+            "title":"I hate you"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683151955886080/Glados_QuiteWell.wav",
+            "title":"Quite well"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683148512362528/Glados_ExcellentWork.wav",
+            "title":"Exellent work"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683147941806081/Glados_IKillYou.wav",
+            "title":"I kill you"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683147153408045/Glados_GoodBye.wav",
+            "title":"Goodbye"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683144321990673/Glados_AreYouListening.wav",
+            "title":"U listening?"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683142258655258/Glados_DoneReasoning.wav",
+            "title":"Done reasoning"
          }
       ]
    }
