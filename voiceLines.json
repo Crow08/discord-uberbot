@@ -140,56 +140,114 @@
       "#User left us, I hope he comes back soon.",
       "Oh wow, #User abandoned us."
    ],
-      "sfx": [{
-         "url": "https://instaud.io/_/3SGs.mp3",
-         "title": "SpaßSpaßSpaß"
-      }, {
-         "url": "https://instaud.io/_/private/7f50dedba70e395e31d20e15d24134ce43ff7098.mp3",
-         "title": "Baby laugh"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483660409929748/WTF_Boom.mp3",
-         "title": "WTF Boom"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483655078838283/Weil_das_ja_klar_ist.wav",
-         "title": "Weil das ja klar ist"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483651300032513/Taste_the_Rainbow.wav",
-         "title": "Taste the rainbow"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483642416234496/Schuing.wav",
-         "title": "Schuing"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483639031693312/NO.mp3",
-         "title": "NO!"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483639161454592/Ololooooo.wav",
-         "title": "Wololoo"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483637622276099/JibJib.wav",
-         "title": "JibJib"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483614289362945/Its_Over_9000.mp3",
-         "title": "Over 9000"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594486830045462531/arrow.mp3",
-         "title": "Arrow"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830914211676175/ArbeitArbeit.wav",
-         "title": "Arbeit Arbeit"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830909581033472/Mehr_Arbeit.wav",
-         "title": "Mehr Arbeit?"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830905739051029/IchGehdannMal.wav",
-         "title": "Ich geh dann mal"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830903415537664/HilfeHilfeIchWerdeUnterdruckt.wav",
-         "title": "Hilfe"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830890870505504/DasKannIch.wav",
-         "title": "Das kann ich"
-      }, {
-         "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830863363997706/Glados_BrokeIt.wav",
-         "title": "You broke it"
-      }]
+   "sfx":{  
+      "Kev":[  
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595686349286408199/DJSpass.mp3",
+            "title":"SpaßSpaßSpaß"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483660409929748/WTF_Boom.mp3",
+            "title":"WTF Boom"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483655078838283/Weil_das_ja_klar_ist.wav",
+            "title":"Weil das ja klar ist"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483651300032513/Taste_the_Rainbow.wav",
+            "title":"Taste the rainbow"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483642416234496/Schuing.wav",
+            "title":"Schuing"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483639031693312/NO.mp3",
+            "title":"NO!"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483639161454592/Ololooooo.wav",
+            "title":"Wololoo"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483637622276099/JibJib.wav",
+            "title":"JibJib"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483614289362945/Its_Over_9000.mp3",
+            "title":"Over9000"
+         }
+      ],
+      "Tobi":[  
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595686881698644109/BabyLaugh.mp3",
+            "title":"Baby laugh"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594486830045462531/arrow.mp3",
+            "title":"Arrow"
+         }
+      ],
+      "WC3":[  
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830914211676175/ArbeitArbeit.wav",
+            "title":"Arbeit Arbeit"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830909581033472/Mehr_Arbeit.wav",
+            "title":"Mehr Arbeit?"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830905739051029/IchGehdannMal.wav",
+            "title":"Ich geh dann mal"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830903415537664/HilfeHilfeIchWerdeUnterdruckt.wav",
+            "title":"Hilfe"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830890870505504/DasKannIch.wav",
+            "title":"Das kann ich"
+         }
+      ],
+      "Portal":[  
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830863363997706/Glados_BrokeIt.wav",
+            "title":"You broke it"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683157244641297/Glados_DidYouSaySth.wav",
+            "title":"Did you say sth?"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683153926946818/Glados_IHateYou.wav",
+            "title":"I hate you"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683151955886080/Glados_QuiteWell.wav",
+            "title":"Quite well"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683148512362528/Glados_ExcellentWork.wav",
+            "title":"Exellent work"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683147941806081/Glados_IKillYou.wav",
+            "title":"I kill you"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683147153408045/Glados_GoodBye.wav",
+            "title":"Goodbye"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683144321990673/Glados_AreYouListening.wav",
+            "title":"U listening?"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683142258655258/Glados_DoneReasoning.wav",
+            "title":"Done reasoning"
+         }
+      ]
+   }
 }
