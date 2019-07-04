@@ -119,7 +119,7 @@ class SfxCommand extends Command {
     maxColumLength.forEach((length) => {
       splitter += `${"".padEnd(length + 5, "-")}|`;
     });
-    tableString = tableString.replace(/\n/, `\n${splitter}\n`);
+    tableString = tableString.replace(/\n/u, `\n${splitter}\n`);
     return (`${splitter}\n${tableString}${splitter}`);
   }
 }
