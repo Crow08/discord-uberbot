@@ -6,6 +6,7 @@ const VoiceService = require("./VoiceService");
 const HelpCommand = require("./cmd/Command_Help");
 const JoinCommand = require("./cmd/Command_Join");
 const LeaveCommand = require("./cmd/Command_Leave");
+const RandomFactCommand = require("./cmd/Command_RandomFact");
 const SayCommand = require("./cmd/Command_Say");
 const SfxCommand = require("./cmd/Command_Sfx");
 
@@ -31,8 +32,9 @@ class AnnouncerClient {
     this.commands.splice(
       0, 0,
       new HelpCommand(this.chatService, this.commands, this.botPrefix),
-      new LeaveCommand(this.voiceService),
       new JoinCommand(this.voiceService),
+      new LeaveCommand(this.voiceService),
+      new RandomFactCommand(this.chatService),
       new SayCommand(this.voiceService, this.ttsService),
       new SfxCommand(this.voiceService, this.RawFileService, this.chatService, this.ttsService)
     );
