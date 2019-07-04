@@ -41,7 +41,7 @@
     "ytpl": "^0.1.14",
     "zlib-sync": "^0.1.4",
     "zucc": "^0.1.2",
-    "snyk": "^1.189.0"
+    "snyk": "^1.191.0"
   },
   "devDependencies": {
     "better-docs": "^1.1.6",
