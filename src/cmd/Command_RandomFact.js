@@ -12,13 +12,14 @@ class RandomFactCommand extends Command {
    * Constructor.
    * @param {ChatService} chatService - ChatService.
    */
-  constructor(chatService) {
+  constructor(voiceService, ttsService) {
     super(
       ["randomfact", "rf"],
       "displays random fact, so useful!",
-      "<prefix>rf"
+      "<prefix>randomfact"
     );
-    this.chatService = chatService;
+    this.ttsService = ttsService;
+    this.voiceService = voiceService;
   }
 
   /**
@@ -41,8 +42,14 @@ class RandomFactCommand extends Command {
         console.log("request:");
         const array = data.split("id='z'");
         let line = array[1].substr(0, array[1].indexOf("<br"));
-        line = line.replace(">", "").replace("\"", "").replace("\\", "");
-        this.chatService.simpleNote(msg, line, this.chatService.msgType.INFO);
+        line = line.replace(">", "").replace("\"", "").
+          replace("\\", "");
+        this.voiceService.getVoiceConnection(msg).
+          then((voiceConnection) => {
+            this.ttsService.announceMessage(line, voiceConnection);
+          }).
+          catch((err) => console.log(err));
+        msg.delete({"timeout": 10000});
       });
     });
     request.on("error", (err) => {

@@ -6,9 +6,12 @@ const VoiceService = require("./VoiceService");
 const HelpCommand = require("./cmd/Command_Help");
 const JoinCommand = require("./cmd/Command_Join");
 const LeaveCommand = require("./cmd/Command_Leave");
+const PickupLineCommand = require("./cmd/Command_Pickupline");
 const RandomFactCommand = require("./cmd/Command_RandomFact");
+const DramaticRebootCommand = require("./cmd/Command_DramaticReboot");
 const SayCommand = require("./cmd/Command_Say");
 const SfxCommand = require("./cmd/Command_Sfx");
+const YoMamaCommand = require("./cmd/Command_YoMama");
 
 /**
  * Class representing the announcer bot.
@@ -34,9 +37,12 @@ class AnnouncerClient {
       new HelpCommand(this.chatService, this.commands, this.botPrefix),
       new JoinCommand(this.voiceService),
       new LeaveCommand(this.voiceService),
-      new RandomFactCommand(this.chatService),
+      new PickupLineCommand(this.voiceService, this.ttsService),
+      new RandomFactCommand(this.voiceService, this.ttsService),
+      new DramaticRebootCommand(this.voiceService, this.RawFileService, this.chatService),
       new SayCommand(this.voiceService, this.ttsService),
-      new SfxCommand(this.voiceService, this.RawFileService, this.chatService, this.ttsService)
+      new SfxCommand(this.voiceService, this.RawFileService, this.chatService, this.ttsService),
+      new YoMamaCommand(this.voiceService, this.ttsService)
     );
   }
 

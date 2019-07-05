@@ -140,6 +140,9 @@
       "#User left us, I hope he comes back soon.",
       "Oh wow, #User abandoned us."
    ],
+   "special":{
+      "die" : "https://cdn.discordapp.com/attachments/561903849330442261/596737606646104103/GLaDOS_Dies.wav"
+   },
    "sfx":{  
       "Kev":[  
          {  
