@@ -28,34 +28,45 @@ class RandomFactCommand extends Command {
    * @param {Message} msg - User message this function is invoked by.
    */
   run(payload, msg) {
-    const options = {
-      "host": "randomfactgenerator.net",
-      "path": "/"
-    };
-    const request = http.request(options, (res) => {
-      let data = "";
-      res.on("data", (chunk) => {
-        data += chunk;
-      });
+    if (payload === "") {
+      const options = {
+        "host": "randomfactgenerator.net",
+        "path": "/"
+      };
+      const request = http.request(options, (res) => {
+        let data = "";
+        res.on("data", (chunk) => {
+          data += chunk;
+        });
 
-      res.on("end", () => {
-        console.log("request:");
-        const array = data.split("id='z'");
-        let line = array[1].substr(0, array[1].indexOf("<br"));
-        line = line.replace(">", "").replace("\"", "").
-          replace("\\", "");
-        this.voiceService.getVoiceConnection(msg).
-          then((voiceConnection) => {
-            this.ttsService.announceMessage(line, voiceConnection);
-          }).
-          catch((err) => console.log(err));
-        msg.delete({"timeout": 10000});
+        res.on("end", () => {
+          console.log("request:");
+          const array = data.split("id='z'");
+          let line = array[1].substr(0, array[1].indexOf("<br"));
+          line = line.replace(">", "").replace("\"", "").
+            replace("\\", "");
+          this.voiceService.getVoiceConnection(msg).
+            then((voiceConnection) => {
+              this.ttsService.announceMessage(line, voiceConnection);
+            }).
+            catch((err) => console.log(err));
+          msg.delete({"timeout": 10000});
+        });
       });
-    });
-    request.on("error", (err) => {
-      console.log(err.message);
-    });
-    request.end();
+      request.on("error", (err) => {
+        console.log(err.message);
+      });
+      request.end();
+    } else {
+      this.voiceService.getVoiceConnection(msg).
+        then((voiceConnection) => {
+          const shame = "Did you know, that this command works without parameters too? No, you don´t, because you only think about yourself";
+          this.ttsService.announceMessage(shame, voiceConnection);
+        }).
+        catch((err) => console.log(err));
+      msg.delete({"timeout": 10000});
+    }
   }
+
 }
 module.exports = RandomFactCommand;
