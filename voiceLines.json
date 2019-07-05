@@ -140,6 +140,9 @@
       "#User left us, I hope he comes back soon.",
       "Oh wow, #User abandoned us."
    ],
+   "special":{
+      "die" : "https://cdn.discordapp.com/attachments/561903849330442261/596737606646104103/GLaDOS_Dies.wav"
+   },
    "sfx":{  
       "Kev":[  
          {  
@@ -177,6 +180,10 @@
          {  
             "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483614289362945/Its_Over_9000.mp3",
             "title":"Over9000"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595690399226658826/Schande.mp3",
+            "title":"Schande"
          }
       ],
       "Tobi":[  
@@ -209,6 +216,10 @@
          {  
             "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830890870505504/DasKannIch.wav",
             "title":"Das kann ich"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/596818814583439361/Keine_Lust.wav",
+            "title":"Keine Lust"
          }
       ],
       "Portal":[  

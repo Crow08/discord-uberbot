@@ -34,34 +34,6 @@
 - .dadjoke
 	- random dadjoke (god help us)
 
-- .randomfact(takes first fact of this site)
-
-```js
-var http = require('http');
-
-var options = {
-    host: 'randomfactgenerator.net',
-    path: '/'
-}
-var request = http.request(options, function (res) {
-    var data = '';
-    res.on('data', function (chunk) {
-        data += chunk;
-    });
-    res.on('end', function () {
-    console.log("request:");
-    var array = data.split("id='z'");
-    var line = array[1].substr(0, array[1].indexOf('<br'));
-    line = line.replace('>','').replace('"','').replace('\\','')
-    console.log(line);
-    });
-});
-request.on('error', function (e) {
-    console.log(e.message);
-});
-request.end();
-```
-
 ---
 
 ### Known Bugs: ###

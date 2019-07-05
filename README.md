@@ -31,6 +31,19 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 - Import songs
   - Import songs by uploading txt files with links or queries oer line.
   - Import songs via csv file to additional define the exact title and artist of the song.
+  
+### Announcer: ###
+- Brings some sweet robotic voice to your server. Uses WaveNets Text-to-Speech
+- Disabled in default bot, because announcing sth will pause the current song and skip it afterwards, can be activated though.
+- Best to be run standalone in another instance as extra bot (Paramter to be added)
+
+#### Features ####
+- Announces joining users with some witty voicelines
+- Comments on users that dare to leave
+- \<prefix\>say - Says everything you want it to say
+- \<prefix\>randomfact - tells you a random fact
+- \<prefix\>yomama - cracks a random Yo Mama joke
+- \<prefix\>pickupline - provides you a random pickupline
 
 ---
 

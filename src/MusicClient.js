@@ -27,6 +27,7 @@ const PauseCommand = require("./cmd/Command_Pause");
 const PlayCommand = require("./cmd/Command_Play");
 const PlayNextCommand = require("./cmd/Command_PlayNext");
 const PreferredSrcCommand = require("./cmd/Command_PreferredSrc");
+const RebootCommand = require("./cmd/Command_Reboot");
 const RemoveCommand = require("./cmd/Command_Remove");
 const RemovePLCommand = require("./cmd/Command_PL_Remove");
 const RenamePLCommand = require("./cmd/Command_PL_Rename");
@@ -98,6 +99,7 @@ class MusicClient {
       new PlayCommand(this.chatService, this.playerService, this.searchService),
       new PlayNextCommand(this.chatService, this.queueService),
       new PreferredSrcCommand(this.chatService, this.searchService),
+      new RebootCommand(this.chatService),
       new RemoveCommand(this.chatService, this.queueService),
       new RemovePLCommand(this.chatService, this.dbService),
       new RenamePLCommand(this.chatService, this.dbService),
