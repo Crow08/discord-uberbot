@@ -3,7 +3,7 @@
 ---
 
 ### README.md ###
-- Add announcement feature.
+
 - Add some pictures (possibly gifs)
 
 ---
@@ -11,7 +11,6 @@
 ### Features: ###
 
 ##### Playlists #####
-- .start command should clear queue and stop playback to be used while song is playing
 
 ##### Search #####
 - Add a "did you mean"-feature for all failed searches with strings (closest name - Levenshtein distance / fuzzy search).
@@ -22,17 +21,7 @@
 - User group to allow bot-interaction (protects from strangers and trolls)
 
 ##### Announcer #####
-
-- We need a system to order the sfx. Like a table, with groups (WC3, Portal, etc.)
-
-- Voice some errors (caused by wrong input) through Announcer (for ultimate devastation)
-    - maybe only user errors with announcer-bot (already added some)
-
-- .joke
-	- random joke
-
-- .dadjoke
-	- random dadjoke (god help us)
+- more SFX?
 
 ---
 
