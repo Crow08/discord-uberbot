@@ -22,6 +22,7 @@
 
 ##### Announcer #####
 - more SFX?
+- alarm/reminder function (time like 10:30 or 2h + Text to read)
 
 ---
 
