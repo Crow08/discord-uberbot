@@ -15,7 +15,7 @@ class RemindMeCommand extends Command {
   constructor(voiceService, ttsService) {
     super(
       ["remindme", "remind"],
-      "let the bot remind you (must be today)",
+      "let the bot remind you (<= 6 h)",
       "<prefix>remindme 2h|23:20 time to go to bed"
     );
     this.ttsService = ttsService;
@@ -70,15 +70,15 @@ class RemindMeCommand extends Command {
     if (time) {
       return (time);
     }
-    time = this.checkDate(timer);
+    time = this.checkTime(timer);
     if (time) {
       return (time);
     }
     return (false);
   }
 
-  checkDate(time) {
-    if (time.includes(":") && time.length === 5) {
+  checkTime(time) {
+    if (time.includes(":") && time.length <= 5) {
       const hours = time.split(":")[0];
       const minutes = time.split(":")[1];
       if (hours < 24 && hours >= 0 && minutes < 60 && minutes >= 0) {
@@ -88,7 +88,11 @@ class RemindMeCommand extends Command {
         const year = now.getFullYear();
         const month = months[now.getMonth()];
         const day = now.getDate();
-        const date = Date.parse(`${day} ${month} ${year} ${hours}:${minutes}`);
+        let date = Date.parse(`${day} ${month} ${year} ${hours}:${minutes}`);
+        // Add 24h if reminder is tomorrow
+        if ((date - now) < 0) {
+          date += (1000 * 60 * 60 * 24);
+        }
         // Return time difference in ms
         return (date - now);
       }
@@ -100,6 +104,9 @@ class RemindMeCommand extends Command {
 
   checkPeriod(time) {
     this.time = time;
+    if (this.time.includes("-")) {
+      return ("Don't look back, a bright future awaits you");
+    }
     if (this.time[this.time.length - 1] === "h") {
       this.time = this.time.slice(0, -1);
       if (isNaN(this.time)) {
@@ -125,6 +132,7 @@ class RemindMeCommand extends Command {
   }
 
   generateMessage(time) {
+    // No longer than 6 hours allowed
     if (time > (1000 * 60 * 60 * 6)) {
       return ("I can't remember things that long, I already forgot your name");
     }
