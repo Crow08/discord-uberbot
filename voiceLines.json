@@ -194,6 +194,14 @@
          {  
             "url":"https://cdn.discordapp.com/attachments/561903849330442261/594486830045462531/arrow.mp3",
             "title":"Arrow"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/597370885149687818/HOLYGRENADE.WAV",
+            "title":"Hallelujah"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/597371706344079371/ara-ara.mp3",
+            "title":"Ara ara"
          }
       ],
       "WC3":[  
@@ -220,6 +228,10 @@
          {  
             "url":"https://cdn.discordapp.com/attachments/561903849330442261/596818814583439361/Keine_Lust.wav",
             "title":"Keine Lust"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/599624877053575198/Richtig.wav",
+            "title":"Richtig"
          }
       ],
       "Portal":[  
