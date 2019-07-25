@@ -162,9 +162,9 @@ class ChatService {
    * Display a song in pretty markdown and add reaction based user rating.
    * @param {Message} msg - User message this function is invoked by.
    * @param {Song} song - Song to be displayed.
-   * @param {function} reactionFunctions - Function to be invoked if a reaction was given.
+   * @param {function} reactionFunc - Function to be invoked if a reaction was given.
    */
-  displayPlayer(msg, song, reactionFunctions) {
+  displayPlayer(msg, song, reactionFunc, playerIdObj) {
     this.debugPrint(song);
     if (typeof msg.channel === "undefined") {
       return this.buildDummyMessage();
@@ -177,7 +177,8 @@ class ChatService {
         this.postReactionEmojis(playerMsg, [upVoteEmojiId, downVoteEmojiId, "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"]).
           then(() => {
             // Add listeners to reactions.
-            this.addReactionListener(playerMsg, upVoteEmojiName, downVoteEmojiName, song, reactionFunctions);
+            this.addReactionListener(playerMsg, upVoteEmojiName, downVoteEmojiName, song, reactionFunc, playerIdObj);
+            playerIdObj.id = playerMsg.id;
             resolve(playerMsg);
           }).
           catch(reject);
@@ -194,7 +195,7 @@ class ChatService {
    * @param {Song} song - Song to be displayed / rated.
    * @param {function} reactionFunctions - Function to be invoked if a reaction was given.
    */
-  addReactionListener(playerMsg, upVoteEmojiName, downVoteEmojiName, song, reactionFunctions) {
+  addReactionListener(playerMsg, upVoteEmojiName, downVoteEmojiName, song, reactionFunctions, playerIdObj) {
     const reactionCollector = playerMsg.createReactionCollector((reaction, user) => (
       [upVoteEmojiName, downVoteEmojiName, "⏪", "⏯", "⏩", "⏹", "🔀", "🔁"].includes(reaction.emoji.name) &&
       (!user.bot)), {"time": 600000});
@@ -217,10 +218,11 @@ class ChatService {
     reactionCollector.on("end", () => {
       if (!playerMsg.deleted) {
         if (playerMsg.channel.lastMessageID === playerMsg.id) {
-          this.addReactionListener(playerMsg, upVoteEmojiName, downVoteEmojiName, song, reactionFunctions);
+          this.addReactionListener(playerMsg, upVoteEmojiName, downVoteEmojiName, song, reactionFunctions, playerIdObj);
         } else {
           playerMsg.delete();
-          this.displayPlayer(playerMsg, song, reactionFunctions);
+          playerIdObj.id = null;
+          this.displayPlayer(playerMsg, song, reactionFunctions, playerIdObj);
         }
       }
     });

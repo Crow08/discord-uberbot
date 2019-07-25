@@ -33,12 +33,16 @@ class QueueService {
   }
 
   /**
-   * Get current Song with is position 0 of the history.
+   * Get current Song which is position 0 of the history.
    * @returns {Song} - The current song.
    */
   getCurrentSong() {
     return new Promise((resolve, reject) => {
-      resolve(this.history[0]).catch(reject);
+      if (this.history.length > 0) {
+        resolve(this.history[0]);
+      } else {
+        reject(new Error("No current song available!"));
+      }
     });
   }
 

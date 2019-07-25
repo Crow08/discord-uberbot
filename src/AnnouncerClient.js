@@ -8,6 +8,7 @@ const JoinCommand = require("./cmd/Command_Join");
 const LeaveCommand = require("./cmd/Command_Leave");
 const PickupLineCommand = require("./cmd/Command_PickupLine");
 const RandomFactCommand = require("./cmd/Command_RandomFact");
+const RemindMeCommand = require("./cmd/Command_RemindMe");
 const DramaticRebootCommand = require("./cmd/Command_DramaticReboot");
 const SayCommand = require("./cmd/Command_Say");
 const SfxCommand = require("./cmd/Command_Sfx");
@@ -39,6 +40,7 @@ class AnnouncerClient {
       new LeaveCommand(this.voiceService),
       new PickupLineCommand(this.voiceService, this.ttsService),
       new RandomFactCommand(this.voiceService, this.ttsService),
+      new RemindMeCommand(this.voiceService, this.ttsService),
       new DramaticRebootCommand(this.voiceService, this.RawFileService, this.chatService),
       new SayCommand(this.voiceService, this.ttsService),
       new SfxCommand(this.voiceService, this.RawFileService, this.chatService, this.ttsService),

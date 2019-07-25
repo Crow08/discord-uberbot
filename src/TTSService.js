@@ -21,7 +21,7 @@ class TTSService {
   getStream(text) {
     return new Promise((resolve, reject) => {
       request.post({
-        "body": `{"input":{"text":"${text}"},` +
+        "body": `{"input":{"ssml":"<speak>${text}</speak>"},` +
           "\"voice\":{\"languageCode\":\"en-US\",\"name\":\"en-US-Wavenet-F\"}," +
           "\"audioConfig\":{\"audioEncoding\":\"OGG_OPUS\",\"pitch\":0,\"speakingRate\":1}}",
         "headers": {"content-type": "text/plain"},
