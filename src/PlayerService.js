@@ -19,7 +19,7 @@ class PlayerService {
     this.chatService = chatService;
     this.ratingService = ratingService;
 
-    this.playerMsg = null;
+    this.playerIdObj = {"id": null};
   }
 
   /**
@@ -87,17 +87,21 @@ class PlayerService {
   rebuildPlayer(msg) {
     this.queueService.getCurrentSong().
       then((song) => {
-        console.log(song);
         const reactionFunctions = this.buildReactionFunctions(msg);
-        if (this.playerMsg && !this.playerMsg.deleted) {
-          this.playerMsg.delete();
+        if (this.playerIdObj.id) {
+          msg.channel.messages.fetch(this.playerIdObj.id).
+            then((curPlayer) => {
+              if (curPlayer) {
+                curPlayer.delete();
+                this.playerIdObj.id = null;
+              }
+            }).
+            finally(() => {
+              this.chatService.displayPlayer(msg, song, reactionFunctions, this.playerIdObj);
+            });
+        } else {
+          this.chatService.displayPlayer(msg, song, reactionFunctions, this.playerIdObj);
         }
-        this.chatService.displayPlayer(msg, song, reactionFunctions).then((playerMsg) => {
-          if (this.playerMsg && !this.playerMsg.deleted) {
-            this.playerMsg.delete();
-          }
-          this.playerMsg = playerMsg;
-        });
       }).
       catch((err) => {
         console.log(err);
