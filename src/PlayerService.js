@@ -85,19 +85,23 @@ class PlayerService {
    * @param {Message} msg - User message the playback was is invoked by.
    */
   rebuildPlayer(msg) {
-    this.queueService.getCurrentSong().then((song) => {
-      console.log(song);
-      const reactionFunctions = this.buildReactionFunctions(msg);
-      if (this.playerMsg && !this.playerMsg.deleted) {
-        this.playerMsg.delete();
-      }
-      this.chatService.displayPlayer(msg, song, reactionFunctions).then((playerMsg) => {
+    this.queueService.getCurrentSong().
+      then((song) => {
+        console.log(song);
+        const reactionFunctions = this.buildReactionFunctions(msg);
         if (this.playerMsg && !this.playerMsg.deleted) {
           this.playerMsg.delete();
         }
-        this.playerMsg = playerMsg;
+        this.chatService.displayPlayer(msg, song, reactionFunctions).then((playerMsg) => {
+          if (this.playerMsg && !this.playerMsg.deleted) {
+            this.playerMsg.delete();
+          }
+          this.playerMsg = playerMsg;
+        });
+      }).
+      catch((err) => {
+        console.log(err);
       });
-    });
   }
 
   /**
