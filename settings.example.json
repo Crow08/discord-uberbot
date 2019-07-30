@@ -13,5 +13,7 @@
     "mongodbUrl": "",
     "mongodbUser": "",
     "mongodbPassword": "",
+    "defaultTextChannel": "",
+    "defaultVoiceChannel": "",
     "phoneticNicknames": {}
 }

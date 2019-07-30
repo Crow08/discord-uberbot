@@ -100,10 +100,17 @@ const setDiscordEventListeners = () => {
       guild.channels.forEach((channel) => {
         if (channel.type === "voice") {
           channel.members.forEach((member) => {
-            if (member.id === guild.me.id) {
-              channel.join().then(() => channel.leave());
+            if (member.id === guild.me.id && channel.id !== settings.defaultVoiceChannel) {
+              channel.join().finally(() => channel.leave());
             }
           });
+          // (Re-) Join default channel.
+          if (settings.defaultVoiceChannel && channel.id === settings.defaultVoiceChannel) {
+            channel.join();
+            if (settings.defaultTextChannel) {
+              guild.channels.get(settings.defaultTextChannel).send("UberBot is fully charged!");
+            }
+          }
         }
       });
     });
