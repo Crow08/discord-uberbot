@@ -34,7 +34,7 @@
     "node-spotify-api": "^1.1.1",
     "prism-media": "^1.0.2",
     "request": "^2.88.0",
-    "snyk": "^1.199.2",
+    "snyk": "^1.208.0",
     "ytdl-core-discord": "github:Crow08/ytdl-core-discord",
     "ytpl": "^0.1.14",
     "zlib-sync": "^0.1.4",
