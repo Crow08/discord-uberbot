@@ -13,9 +13,7 @@
     "docs": "node_modules/.bin/jsdoc -r -c jsdoc.json",
     "start": "node ./src/index.js",
     "tools_cmdTable": "node ./src/tools/createCmdTable.js",
-    "web": "node ./src/index.js disable_announcer disable_bot",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "web": "node ./src/index.js disable_announcer disable_bot"
   },
   "private": true,
   "repository": {
@@ -34,7 +32,6 @@
     "node-spotify-api": "^1.1.1",
     "prism-media": "^1.0.2",
     "request": "^2.88.0",
-    "snyk": "^1.199.2",
     "ytdl-core-discord": "github:Crow08/ytdl-core-discord",
     "ytpl": "^0.1.14",
     "zlib-sync": "^0.1.4",
@@ -43,6 +40,5 @@
   "devDependencies": {
     "better-docs": "^1.1.6",
     "eslint": "^6.1.0"
-  },
-  "snyk": true
+  }
 }
