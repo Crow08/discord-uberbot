@@ -28,6 +28,8 @@ class AnnouncerClient {
   constructor(client, DiscordMessageEmbed, opt) {
     this.baseClient = client;
     this.botPrefix = opt.botPrefix;
+    this.defaultTextChannel = opt.defaultTextChannel;
+    this.defaultVoiceChannel = opt.defaultVoiceChannel;
     this.chatService = new ChatService(DiscordMessageEmbed);
     this.RawFileService = new RawFileService();
     this.ttsService = new TTSService(opt, client);
@@ -57,6 +59,14 @@ class AnnouncerClient {
       }
     });
     return found;
+  }
+
+  ready() {
+    if (this.defaultTextChannel) {
+      this.baseClient.guilds.forEach((guild) => {
+        guild.channels.get(this.defaultTextChannel).send("Cake will be available at the conclusion of the test.");
+      });
+    }
   }
 }
 

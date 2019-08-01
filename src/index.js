@@ -107,13 +107,15 @@ const setDiscordEventListeners = () => {
           // (Re-) Join default channel.
           if (settings.defaultVoiceChannel && channel.id === settings.defaultVoiceChannel) {
             channel.join();
-            if (settings.defaultTextChannel) {
-              guild.channels.get(settings.defaultTextChannel).send("UberBot is fully charged!");
-            }
           }
         }
       });
     });
+    if (musicClient) {
+      musicClient.ready();
+    } else if (announcerClient) {
+      announcerClient.ready();
+    }
   });
 
   // Print debug info from base client.
