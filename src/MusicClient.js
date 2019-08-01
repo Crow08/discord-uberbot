@@ -45,7 +45,6 @@ const StopCommand = require("./cmd/Command_Stop");
 const UploadCommand = require("./cmd/Command_Upload");
 const VolumeCommand = require("./cmd/Command_Volume");
 
-
 /**
  * Class representing the music bot.
  */
@@ -61,6 +60,8 @@ class MusicClient {
     this.commands = [];
     this.baseClient = client;
     this.botPrefix = opt.botPrefix;
+    this.defaultTextChannel = opt.defaultTextChannel;
+    this.defaultVoiceChannel = opt.defaultVoiceChannel;
     console.log("\x1b[35m%s\x1b[0m", "> Loading services\n> ...");
     this.chatService = new ChatService(DiscordMessageEmbed);
     this.streamSourceService = new StreamSourceService(opt);
@@ -122,11 +123,16 @@ class MusicClient {
 
   connectDB() {
     console.log("\x1b[35m%s\x1b[0m", "> Connecting to DB\n> ...");
-    this.dbService.connectDB().
-      then(() => console.log("\x1b[35m%s\x1b[0m", "> DB Connected!\n")).
-      catch((err) => {
-        throw err;
-      });
+    return new Promise((resolve) => {
+      this.dbService.connectDB().
+        then(() => {
+          console.log("\x1b[35m%s\x1b[0m", "> DB Connected!\n");
+          resolve();
+        }).
+        catch((err) => {
+          throw err;
+        });
+    });
   }
 
   execute(cmd, payload, msg) {
@@ -138,6 +144,14 @@ class MusicClient {
       }
     });
     return found;
+  }
+
+  ready() {
+    if (this.defaultTextChannel) {
+      this.baseClient.guilds.forEach((guild) => {
+        guild.channels.get(this.defaultTextChannel).send("UberBot is fully charged!");
+      });
+    }
   }
 }
 
