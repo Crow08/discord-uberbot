@@ -25,7 +25,7 @@
     "bufferutil": "^4.0.1",
     "discord.js": "github:discordjs/discord.js",
     "erlpack": "github:discordapp/erlpack",
-    "ffmpeg-static": "^2.5.0",
+    "ffmpeg-static": "^2.6.0",
     "libsodium-wrappers": "^0.7.5",
     "mongodb": "^3.3.1",
     "node-opus": "^0.3.2",
