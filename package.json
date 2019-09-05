@@ -25,20 +25,20 @@
     "bufferutil": "^4.0.1",
     "discord.js": "github:discordjs/discord.js",
     "erlpack": "github:discordapp/erlpack",
-    "ffmpeg-static": "^2.5.0",
+    "ffmpeg-static": "^2.6.0",
     "libsodium-wrappers": "^0.7.5",
-    "mongodb": "^3.2.7",
+    "mongodb": "^3.3.2",
     "node-opus": "^0.3.2",
     "node-spotify-api": "^1.1.1",
-    "prism-media": "^1.0.2",
+    "prism-media": "^1.1.0",
     "request": "^2.88.0",
     "ytdl-core-discord": "github:Crow08/ytdl-core-discord",
-    "ytpl": "^0.1.15",
+    "ytpl": "^0.1.16",
     "zlib-sync": "^0.1.5",
     "zucc": "^0.1.2"
   },
   "devDependencies": {
     "better-docs": "^1.1.6",
-    "eslint": "^6.1.0"
+    "eslint": "^6.3.0"
   }
 }
