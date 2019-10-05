@@ -63,12 +63,18 @@ class TTSService {
         } else if (newUserChannel && newUserChannel.id === voiceConnection.channel.id) {
           // User joins voice channel of bot
           const line = Math.floor(Math.random() * voiceLines.join.length);
-          const messageJoin = voiceLines.join[line].replace("#User", this.phoneticNicknameFor(newUser));
+          const messageJoin = voiceLines.join[line].replace(
+            new RegExp("#User", "gu"),
+            this.phoneticNicknameFor(newUser)
+          );
           this.announceMessage(messageJoin, voiceConnection);
         } else if (oldUserChannel && oldUserChannel.id === voiceConnection.channel.id) {
           // User leaves voice channel of bot
           const line = Math.floor(Math.random() * voiceLines.leave.length);
-          const messageLeave = voiceLines.leave[line].replace("#User", this.phoneticNicknameFor(newUser));
+          const messageLeave = voiceLines.leave[line].replace(
+            new RegExp("#User", "gu"),
+            this.phoneticNicknameFor(newUser)
+          );
           this.announceMessage(messageLeave, voiceConnection);
         }
       }
