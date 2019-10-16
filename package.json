@@ -28,7 +28,7 @@
     "ffmpeg-static": "^2.6.0",
     "libsodium-wrappers": "^0.7.5",
     "mongodb": "^3.3.2",
-    "node-opus": "^0.3.2",
+    "node-opus": "^0.3.3",
     "node-spotify-api": "^1.1.1",
     "prism-media": "^1.1.0",
     "request": "^2.88.0",
