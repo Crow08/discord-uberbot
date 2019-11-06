@@ -34,7 +34,7 @@
     "request": "^2.88.0",
     "ytdl-core-discord": "github:Crow08/ytdl-core-discord",
     "ytpl": "^0.1.17",
-    "zlib-sync": "^0.1.5",
+    "zlib-sync": "^0.1.6",
     "zucc": "^0.1.2"
   },
   "devDependencies": {
