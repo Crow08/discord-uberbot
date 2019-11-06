@@ -26,7 +26,7 @@
     "discord.js": "github:discordjs/discord.js",
     "erlpack": "github:discordapp/erlpack",
     "ffmpeg-static": "^2.7.0",
-    "libsodium-wrappers": "^0.7.5",
+    "libsodium-wrappers": "^0.7.6",
     "mongodb": "^3.3.3",
     "node-opus": "^0.3.3",
     "node-spotify-api": "^1.1.1",
