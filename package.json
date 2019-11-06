@@ -5,6 +5,9 @@
   "main": "uberbot",
   "author": "Crow08",
   "license": "MIT",
+  "engines": {
+    "node": "10.15.3"
+  },
   "scripts": {
     "announcer": "node ./src/index.js disable_bot disable_web",
     "bot": "node ./src/index.js disable_announcer disable_web",
