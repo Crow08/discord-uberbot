@@ -39,6 +39,6 @@
   },
   "devDependencies": {
     "better-docs": "^1.1.6",
-    "eslint": "^6.5.1"
+    "eslint": "^6.6.0"
   }
 }
