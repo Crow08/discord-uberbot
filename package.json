@@ -27,7 +27,7 @@
     "erlpack": "github:discordapp/erlpack",
     "ffmpeg-static": "^2.7.0",
     "libsodium-wrappers": "^0.7.6",
-    "mongodb": "^3.3.3",
+    "mongodb": "^3.3.4",
     "node-opus": "^0.3.3",
     "node-spotify-api": "^1.1.1",
     "prism-media": "^1.1.0",
