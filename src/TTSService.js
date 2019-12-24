@@ -12,6 +12,7 @@ class TTSService {
     this.client = client;
     this.phoneticNicknames = options.phoneticNicknames;
     this.setupVoiceStateListener();
+    this.defaultTextChannel = options.defaultTextChannel;
   }
 
   /**
@@ -68,6 +69,12 @@ class TTSService {
             this.phoneticNicknameFor(newUser)
           );
           this.announceMessage(messageJoin, voiceConnection);
+          if (this.defaultTextChannel) {
+            this.client.guilds.forEach((guild) => {
+              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} joined the channel(${this.formatDate()})`);
+            });
+          }
+          
         } else if (oldUserChannel && oldUserChannel.id === voiceConnection.channel.id) {
           // User leaves voice channel of bot
           const line = Math.floor(Math.random() * voiceLines.leave.length);
@@ -76,6 +83,11 @@ class TTSService {
             this.phoneticNicknameFor(newUser)
           );
           this.announceMessage(messageLeave, voiceConnection);
+          if (this.defaultTextChannel) {
+            this.client.guilds.forEach((guild) => {
+              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} left the channel (${this.formatDate()})`);
+            });
+          } 
         }
       }
     });
@@ -117,6 +129,17 @@ class TTSService {
         console.log(err);
       });
   }
+
+  formatDate() {
+    let date = new Date
+    let day = date.getDate().toString().padStart(2,'0');
+    let month = date.getMonth().toString().padStart(2,'0');
+    let year = date.getFullYear();
+    let hour = date.getHours().toString().padStart(2,'0');
+    let minutes = date.getMinutes().toString().padStart(2,'0');
+    let seconds = date.getSeconds().toString().padStart(2,'0');
+    return day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + seconds;
+  }  
 }
 
 module.exports = TTSService;
