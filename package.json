@@ -38,7 +38,7 @@
     "zucc": "^0.1.2"
   },
   "devDependencies": {
-    "better-docs": "^1.4.2",
+    "better-docs": "^1.4.7",
     "eslint": "^6.6.0"
   }
 }
