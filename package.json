@@ -33,7 +33,7 @@
     "prism-media": "^1.1.0",
     "request": "^2.88.0",
     "ytdl-core-discord": "github:Crow08/ytdl-core-discord",
-    "ytpl": "^0.1.17",
+    "ytpl": "^0.1.19",
     "zlib-sync": "^0.1.6",
     "zucc": "^0.1.2"
   },
