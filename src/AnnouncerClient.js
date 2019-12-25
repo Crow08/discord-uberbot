@@ -30,6 +30,7 @@ class AnnouncerClient {
     this.botPrefix = opt.botPrefix;
     this.defaultTextChannel = opt.defaultTextChannel;
     this.defaultVoiceChannel = opt.defaultVoiceChannel;
+    this.AddTime = opt.AddTime;
     this.chatService = new ChatService(DiscordMessageEmbed);
     this.RawFileService = new RawFileService();
     this.ttsService = new TTSService(opt, client);
