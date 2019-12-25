@@ -50,6 +50,7 @@
         "yoda": "warn",
 
         "array-element-newline": "off",
+        "function-call-argument-newline": "off",
         "linebreak-style": "off",
         "line-comment-position": "off",
         "multiline-comment-style": "off",
