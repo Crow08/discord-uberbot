@@ -57,13 +57,6 @@ class TTSService {
       const newUserChannel = newState.channel;
       const oldUserChannel = oldState.channel;
       const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === newState.guild.id);
-      let SummerTimeTrue = this.SummerTime()
-      let GermanTime = 0
-      if (SummerTimeTrue == true){
-       GermanTime = this.formatDate(2)
-      } else {
-       GermanTime = this.formatDate(1)
-      }
 
       if (typeof voiceConnection !== "undefined") {
         const newUser = newState.member.displayName;
@@ -76,7 +69,7 @@ class TTSService {
           this.announceMessage(messageJoin, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.forEach((guild) => {
-              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} joined the channel (${GermanTime})`);
+              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} joined the channel (${this.formatDate(1)})`);
             });
           }
           
@@ -87,7 +80,7 @@ class TTSService {
           this.announceMessage(messageLeave, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.forEach((guild) => {
-              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} left the channel (${GermanTime})`);
+              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} left the channel (${this.formatDate(1)})`);
             });
           } 
         }
@@ -131,46 +124,10 @@ class TTSService {
         console.log(err);
       });
   }
-
-  SummerTime(){
-    let actual_date = this.formatDate()
-    let datesplit = actual_date.split(".")
-    let day = parseInt(datesplit[0])
-    let month = parseInt(datesplit[1])
-    let year = datesplit[2].split(" ")
-    let hour = year[1].split(":")
-        hour = hour[0]
-        year = year[0]
- 
-    let actual_weekday = month + " " + day + " " + year
-        actual_weekday = new Date(actual_weekday)
-        actual_weekday = actual_weekday.getDay() 
-
-    let end_march = "03 31 " + year
-        end_march = new Date(end_march)
-    let end_march_weekday = end_march.getDay()
-    let last_sunday_march = String(31 - end_march_weekday)
-  
-    let end_october = "10 31 " + year
-        end_october = new Date(end_october)
-    let end_october_weekday = end_october.getDay()
-    let last_sunday_october = String(31 - end_october_weekday)
    
-    let Summertime = false
-    
-    if (month >= 4 && month <= 9 ){
-      Summertime = true
-    } else if (month == 3 && (day > last_sunday_march || (day == last_sunday_march && hour >= 2))){
-      Summertime = true;
-    } else if (month == 10 && (day < last_sunday_october || (day == last_sunday_october && hour < 3))){
-      Summertime = true;
-      } 
-    return Summertime
-    }
-    
  formatDate(addhour) {
-    let date = new Date()  
-    let Time = parseInt(Date.parse(date))
+    let date = Date.now() 
+    let Time = Date.now()
     if (typeof addhour != "number" || Number.isNaN(addhour) == true) {
       addhour = 0;
     }
@@ -179,14 +136,10 @@ class TTSService {
     let day = date.getDate().toString().padStart(2,'0');
     let month = parseInt(date.getMonth().toString().padStart(2,'0')) + 1;
     let year = date.getFullYear();
-    let hour = date.getHours().toString().padStart(2,'0') - 1;
+    let hour = date.getHours().toString().padStart(2,'0');
     let minutes = date.getMinutes().toString().padStart(2,'0');
     let seconds = date.getSeconds().toString().padStart(2,'0');
-   
-    if (this.defaultTextChannel) {
-      this.client.guilds.forEach((guild) => {
-        guild.channels.get(this.defaultTextChannel).send("formateDate", addhour, hour, date);
-
+    
     let actual_date = day + "." + month + "." + year;
     return day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + seconds;
 
