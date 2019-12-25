@@ -60,9 +60,9 @@ class TTSService {
       let SummerTimeTrue = this.SummerTime()
       let GermanTime = 0
       if (SummerTimeTrue = true){
-       GermanTime = this.formatDate(2)
+       GermanTime = this.formatDate(3)
       } else {
-       GermanTime = this.formatDate(1)
+       GermanTime = this.formatDate(2)
       }
 
       if (typeof voiceConnection !== "undefined") {
@@ -87,7 +87,6 @@ class TTSService {
           this.announceMessage(messageLeave, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.forEach((guild) => {
-              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} left the channel (${GermanTime})`);
               guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} left the channel (${GermanTime})`);
             });
           } 
