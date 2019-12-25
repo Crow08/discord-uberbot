@@ -13,6 +13,7 @@ class TTSService {
     this.phoneticNicknames = options.phoneticNicknames;
     this.setupVoiceStateListener();
     this.defaultTextChannel = options.defaultTextChannel;
+    this.AddTime = options.AddTime;
   }
 
   /**
@@ -69,7 +70,7 @@ class TTSService {
           this.announceMessage(messageJoin, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.forEach((guild) => {
-              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} joined the channel (${this.formatDate(1)})`);
+              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} joined the channel (${this.formatDate(this.AddTime)})`);
             });
           }
           
@@ -80,7 +81,7 @@ class TTSService {
           this.announceMessage(messageLeave, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.forEach((guild) => {
-              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} left the channel (${this.formatDate(1)})`);
+              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} left the channel (${this.formatDate(this.AddTime)})`);
             });
           } 
         }
@@ -139,7 +140,7 @@ class TTSService {
     let hour = date.getHours().toString().padStart(2,'0');
     let minutes = date.getMinutes().toString().padStart(2,'0');
     let seconds = date.getSeconds().toString().padStart(2,'0');
-    
+
     let actual_date = day + "." + month + "." + year;
     return day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + seconds;
 
