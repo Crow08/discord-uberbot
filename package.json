@@ -30,18 +30,18 @@
     "erlpack": "github:discordapp/erlpack",
     "ffmpeg-static": "^2.7.0",
     "libsodium-wrappers": "^0.7.6",
-    "mongodb": "^3.3.3",
+    "mongodb": "^3.4.1",
     "node-opus": "^0.3.3",
     "node-spotify-api": "^1.1.1",
     "prism-media": "^1.1.0",
     "request": "^2.88.0",
     "ytdl-core-discord": "github:Crow08/ytdl-core-discord",
-    "ytpl": "^0.1.17",
+    "ytpl": "^0.1.19",
     "zlib-sync": "^0.1.6",
     "zucc": "^0.1.2"
   },
   "devDependencies": {
-    "better-docs": "^1.4.2",
-    "eslint": "^6.6.0"
+    "better-docs": "^1.4.7",
+    "eslint": "^6.8.0"
   }
 }
