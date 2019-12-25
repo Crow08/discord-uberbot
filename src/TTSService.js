@@ -82,7 +82,6 @@ class TTSService {
           if (this.defaultTextChannel) {
             this.client.guilds.forEach((guild) => {
               guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} left the channel (${this.formatDate(this.AddTime)})`);
-              console.log(AddTime)
             });
           } 
         }
