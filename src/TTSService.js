@@ -183,6 +183,10 @@ class TTSService {
     let minutes = date.getMinutes().toString().padStart(2,'0');
     let seconds = date.getSeconds().toString().padStart(2,'0');
    
+    if (this.defaultTextChannel) {
+      this.client.guilds.forEach((guild) => {
+        guild.channels.get(this.defaultTextChannel).send("formateDate", addhour, hour, date);
+
     let actual_date = day + "." + month + "." + year;
     return day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + seconds;
 
