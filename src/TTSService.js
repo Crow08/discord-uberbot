@@ -59,10 +59,10 @@ class TTSService {
       const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === newState.guild.id);
       let SummerTimeTrue = this.SummerTime()
       let GermanTime = 0
-      if (SummerTimeTrue = true){
-       GermanTime = this.formatDate(3)
-      } else {
+      if (SummerTimeTrue == true){
        GermanTime = this.formatDate(2)
+      } else {
+       GermanTime = this.formatDate(1)
       }
 
       if (typeof voiceConnection !== "undefined") {
@@ -169,9 +169,9 @@ class TTSService {
     }
     
  formatDate(addhour) {
-    let date = new Date  
+    let date = new Date()  
     let Time = parseInt(Date.parse(date))
-    if (Number.isNaN(addhour) == false) {
+    if (typeof addhour != "number" || Number.isNaN(addhour) == true) {
       addhour = 0;
     }
     Time = Time + addhour * 3600000
@@ -179,12 +179,13 @@ class TTSService {
     let day = date.getDate().toString().padStart(2,'0');
     let month = parseInt(date.getMonth().toString().padStart(2,'0')) + 1;
     let year = date.getFullYear();
-    let hour = date.getHours().toString().padStart(2,'0');
+    let hour = date.getHours().toString().padStart(2,'0') - 1;
     let minutes = date.getMinutes().toString().padStart(2,'0');
     let seconds = date.getSeconds().toString().padStart(2,'0');
    
     let actual_date = day + "." + month + "." + year;
     return day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + seconds;
+
   }  
 }
 
