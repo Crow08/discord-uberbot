@@ -70,7 +70,7 @@ class TTSService {
           this.announceMessage(messageJoin, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.forEach((guild) => {
-              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} joined the channel (${this.formatDate(this.AddTime)})`);
+              guild.channels.get(this.defaultTextChannel).send(`${newUser} joined the channel (${this.formatDate(this.AddTime)})`);
             });
           }
           
@@ -81,7 +81,7 @@ class TTSService {
           this.announceMessage(messageLeave, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.forEach((guild) => {
-              guild.channels.get(this.defaultTextChannel).send(`${this.phoneticNicknameFor(newUser)} left the channel (${this.formatDate(this.AddTime)})`);
+              guild.channels.get(this.defaultTextChannel).send(`${newUser} left the channel (${this.formatDate(this.AddTime)})`);
             });
           } 
         }
