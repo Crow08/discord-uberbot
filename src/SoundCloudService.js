@@ -92,7 +92,13 @@ class SoundCloudService {
           if (error) {
             return reject(error);
           }
-          const result = JSON.parse(body);
+          let result = null;
+          try {
+            result = JSON.parse(body);
+          } catch (parseError) {
+            console.log(parseError);
+            return reject(new Error(`Unable to parse JSON [SC]: ${body}`));
+          }
           if (!result) {
             return reject(new Error("Something went wrong. Try again! [SC]"));
           }
