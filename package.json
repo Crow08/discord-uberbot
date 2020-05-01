@@ -16,7 +16,9 @@
     "docs": "node_modules/.bin/jsdoc -r -c jsdoc.json",
     "start": "node ./src/index.js",
     "tools_cmdTable": "node ./src/tools/createCmdTable.js",
-    "web": "node ./src/index.js disable_announcer disable_bot"
+    "web": "node ./src/index.js disable_announcer disable_bot",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "private": true,
   "repository": {
@@ -38,10 +40,12 @@
     "ytdl-core-discord": "github:Crow08/ytdl-core-discord",
     "ytpl": "^0.1.19",
     "zlib-sync": "^0.1.6",
-    "zucc": "^0.1.2"
+    "zucc": "^0.1.2",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "better-docs": "^1.4.7",
     "eslint": "^6.8.0"
-  }
+  },
+  "snyk": true
 }
