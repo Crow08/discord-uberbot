@@ -96,8 +96,8 @@ const setDiscordEventListeners = () => {
   // Catch ready event, which will be called after login to Discord was successful.
   baseClient.on("ready", () => {
     // Disconnect from any voice channels currently connected to.
-    baseClient.guilds.forEach((guild) => {
-      guild.channels.forEach((channel) => {
+    baseClient.guilds.cache.forEach((guild) => {
+      guild.channels.cache.forEach((channel) => {
         if (channel.type === "voice") {
           channel.members.forEach((member) => {
             if (member.id === guild.me.id && channel.id !== settings.defaultVoiceChannel) {
