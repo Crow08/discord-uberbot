@@ -1,6 +1,7 @@
 {  
    "join":[  
       "Hide your wifes, #User is here.",
+      "Careful it´s #User. Don´t tell him anything about what we just talked about.",
       "Oh my gosh #User joined your channel.",
       "Look, #User is here for you.",
       "Begone loneliness, #User joined.",
@@ -89,6 +90,7 @@
    ],
    "leave":[  
       "#User ran away.",
+      "Finally #User is gone. Now we can talk about that thing again.",
       "#User is gone.",
       "#User bites the dust.",
       "#User abandoned you.",
@@ -206,6 +208,10 @@
          {  
             "url":"https://cdn.discordapp.com/attachments/561903849330442261/606630061289766953/karate.mp3",
             "title":"Karate"
+         },
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/706526390081683507/Botlaaaane.mp3",
+            "title":"Botlaaane"
          }
       ],
       "WC3":[  
