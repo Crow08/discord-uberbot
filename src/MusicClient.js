@@ -148,8 +148,8 @@ class MusicClient {
 
   ready() {
     if (this.defaultTextChannel) {
-      this.baseClient.guilds.forEach((guild) => {
-        guild.channels.get(this.defaultTextChannel).send("UberBot is fully charged!");
+      this.baseClient.guilds.cache.forEach((guild) => {
+        guild.channels.cache.get(this.defaultTextChannel).send("UberBot is fully charged!");
       });
     }
   }

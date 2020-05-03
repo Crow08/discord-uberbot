@@ -69,8 +69,8 @@ class TTSService {
           const messageJoin = voiceLines.join[line].replace(/#User/gu, this.phoneticNicknameFor(newUser));
           this.announceMessage(messageJoin, voiceConnection);
           if (this.defaultTextChannel) {
-            this.client.guilds.forEach((guild) => {
-              guild.channels.get(this.defaultTextChannel).send(`${newUser} joined the channel (${this.formatDate(this.AddTime)})`);
+            this.client.guilds.cache.forEach((guild) => {
+              guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} joined the channel (${this.formatDate(this.AddTime)})`);
             });
           }
           
@@ -80,8 +80,8 @@ class TTSService {
           const messageLeave = voiceLines.leave[line].replace(/#User/gu, this.phoneticNicknameFor(newUser));
           this.announceMessage(messageLeave, voiceConnection);
           if (this.defaultTextChannel) {
-            this.client.guilds.forEach((guild) => {
-              guild.channels.get(this.defaultTextChannel).send(`${newUser} left the channel (${this.formatDate(this.AddTime)})`);
+            this.client.guilds.cache.forEach((guild) => {
+              guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} left the channel (${this.formatDate(this.AddTime)})`);
             });
           } 
         }

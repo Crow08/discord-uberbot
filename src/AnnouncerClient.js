@@ -64,8 +64,8 @@ class AnnouncerClient {
 
   ready() {
     if (this.defaultTextChannel) {
-      this.baseClient.guilds.forEach((guild) => {
-        guild.channels.get(this.defaultTextChannel).send("Cake will be available at the conclusion of the test.");
+      this.baseClient.guilds.cache.forEach((guild) => {
+        guild.channels.cache.get(this.defaultTextChannel).send("Cake will be available at the conclusion of the test.");
       });
     }
   }

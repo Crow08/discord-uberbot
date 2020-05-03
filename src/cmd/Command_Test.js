@@ -33,7 +33,7 @@ class TestCommand extends Command {
    * @param {Message} msg - User message this function is invoked by.
    */
   run(payload, msg) {
-    const channel = this.baseClient.channels.get(msg.member.voice.channel.id);
+    const channel = this.baseClient.channels.cache.get(msg.member.voice.channel.id);
     channel.join();
   }
 }
