@@ -120,6 +120,7 @@ class UploadCommand extends Command {
       replace("\n", "").
       replace("\r", "").
       split(";");
+      this.chatService.simpleNote(msg, row.length, this.chatService.msgType.INFO);
     if (row.length === 3) {
       const searchQuery = row[0];
       const artist = row[1];
@@ -141,7 +142,7 @@ class UploadCommand extends Command {
           this.addCSVRecursively(lines, msg, count, statusMsg, plName);
         });
     } else {
-      const note = "Skipping row: invalid csv!\n3 columns per row <artist>;<title>;<query>";
+      const note = "Skipping row: invalid csv!\n3 columns per row <query>;<artist>;<title>";
       this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
       this.addCSVRecursively(lines, msg, count, statusMsg, plName);
     }
