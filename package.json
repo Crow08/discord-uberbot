@@ -6,7 +6,7 @@
   "author": "Crow08",
   "license": "MIT",
   "engines": {
-    "node": "10.15.3"
+    "node": "12.16.3"
   },
   "scripts": {
     "announcer": "node ./src/index.js disable_bot disable_web",
@@ -36,7 +36,7 @@
     "prism-media": "^1.2.2",
     "request": "^2.88.2",
     "ytdl-core-discord": "github:Crow08/ytdl-core-discord",
-    "ytpl": "^0.1.20",
+    "ytpl": "^0.1.21",
     "zlib-sync": "^0.1.6",
     "zucc": "^0.1.2"
   },
