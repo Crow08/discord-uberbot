@@ -80,7 +80,7 @@ class UploadCommand extends Command {
   addRecursively(lines, msg, count, statusMsg, plName) {
     if (lines.length <= 0) {
       statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
-      this.chatService.simpleNote(msg, "Import successful!", this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "Done, still hungry!", this.chatService.msgType.INFO);
       return;
     }
     this.searchService.search(lines.pop()).
@@ -113,7 +113,7 @@ class UploadCommand extends Command {
   addCSVRecursively(lines, msg, count, statusMsg, plName) {
     if (lines.length <= 0) {
       statusMsg.edit(statusMsg.content.replace(/\d+/u, count));
-      this.chatService.simpleNote(msg, "Import successful!", this.chatService.msgType.INFO);
+      this.chatService.simpleNote(msg, "Done, still hungry!", this.chatService.msgType.INFO);
       return;
     }
     const row = lines.pop().
@@ -141,7 +141,7 @@ class UploadCommand extends Command {
           this.addCSVRecursively(lines, msg, count, statusMsg, plName);
         });
     } else {
-      const note = "Skipping row: invalid csv!\n3 columns per row <artist>;<title>;<query>";
+      const note = `Skipping row: invalid csv!\n3 columns per row <query>;<artist>;<title>\nfound ${row.length} columns`;
       this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
       this.addCSVRecursively(lines, msg, count, statusMsg, plName);
     }
