@@ -34,10 +34,12 @@ class PlayerService {
       // Try to reset everything.
       this.chatService.simpleNote(msg, "Song ended to quickly: Try to reset voice.", this.chatService.msgType.FAIL);
       this.endStream();
-      this.voiceService.disconnectVoiceConnection(msg);
-      this.voiceService.getVoiceConnection(msg).
-        then(() => this.playNext(msg)).
-        catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
+      setTimeout(() => {
+        this.voiceService.disconnectVoiceConnection(msg);
+        setTimeout(this.voiceService.getVoiceConnection(msg).
+          then(() => this.playNext(msg)).
+          catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL)), 2000);
+      }, 2000);
       return;
     }
     this.playNext(msg);
