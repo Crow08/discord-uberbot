@@ -36,9 +36,11 @@ class PlayerService {
       this.endStream();
       setTimeout(() => {
         this.voiceService.disconnectVoiceConnection(msg);
-        setTimeout(this.voiceService.getVoiceConnection(msg).
-          then(() => this.playNext(msg)).
-          catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL)), 2000);
+        setTimeout(() => {
+          this.voiceService.getVoiceConnection(msg).
+            then(() => this.playNext(msg)).
+            catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
+        }, 2000);
       }, 2000);
       return;
     }
