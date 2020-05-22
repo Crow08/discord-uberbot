@@ -237,14 +237,14 @@ class ChatService {
   getRatingEmojis(msg) {
     let upVoteEmojiId = "👍";
     let upVoteEmojiName = "👍";
-    const upVoteEmoji = msg.guild.emojis.find((emoji) => emoji.name === "sparkle_heart");
+    const upVoteEmoji = msg.guild.emojis.cache.find((emoji) => emoji.name === "sparkle_heart");
     if (typeof upVoteEmoji !== "undefined") {
       upVoteEmojiId = upVoteEmoji.id;
       upVoteEmojiName = upVoteEmoji.name;
     }
     let downVoteEmojiId = "👎";
     let downVoteEmojiName = "👎";
-    const downVoteEmoji = msg.guild.emojis.find((emoji) => emoji.name === "turd");
+    const downVoteEmoji = msg.guild.emojis.cache.find((emoji) => emoji.name === "turd");
     if (typeof downVoteEmoji !== "undefined") {
       downVoteEmojiId = downVoteEmoji.id;
       downVoteEmojiName = downVoteEmoji.name;
