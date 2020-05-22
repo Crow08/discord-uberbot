@@ -92,7 +92,7 @@ class ChatService {
             );
             // Handle reactions.
             reactionCollector.on("collect", (reaction) => {
-              reaction.users.remove(msg.author);
+              reaction.users.cache.delete(msg.author);
               switch (reaction.emoji.name) {
               case "⏪":
                 page = (page > 0) ? --page : pages.length - 1;
@@ -308,8 +308,8 @@ class ChatService {
    * @param {boolean} ignoreCd - Flag to indicate if the cooldown should be ignored.
    */
   handleRatingReaction(reaction, song, delta, processRating, ignoreCd = false) {
-    reaction.users.filter((user) => !user.bot).forEach((user) => {
-      reaction.users.remove(user);
+    reaction.users.cache.filter((user) => !user.bot).forEach((user) => {
+      reaction.users.cache.delete(user);
       processRating(song, user, delta, ignoreCd).
         then((note) => {
           reaction.message.edit(this.buildSongEmbed(song));
@@ -328,8 +328,8 @@ class ChatService {
    * @param {function} processFunction - Function to be invoked if rating was given.
    */
   handleReaction(reaction, processFunction) {
-    reaction.users.filter((user) => !user.bot).forEach((user) => {
-      reaction.users.remove(user);
+    reaction.users.cache.filter((user) => !user.bot).forEach((user) => {
+      reaction.users.cache.delete(user);
       processFunction();
     });
   }
