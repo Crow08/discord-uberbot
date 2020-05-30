@@ -119,7 +119,7 @@ class YoutubeService {
    * @param {string} url - Url to get audio stream from.
    */
   getStream(url) {
-    return ytdlDiscord(url);
+    return ytdlDiscord(url, {"range": {"start": "0"}});
   }
 
   /**
