@@ -6,7 +6,7 @@
   "author": "Crow08",
   "license": "MIT",
   "engines": {
-    "node": "12.16.3"
+    "node": "14.3.0"
   },
   "scripts": {
     "announcer": "node ./src/index.js disable_bot disable_web",
