@@ -69,7 +69,7 @@ class PlayerService {
         this.queueService.addSongToHistory(song);
         this.audioDispatcher = dispatcher;
         const startTime = new Date();
-        this.audioDispatcher.on("finish", () => this.handleSongEnd(msg, startTime));
+        this.audioDispatcher.once("close", () => this.handleSongEnd(msg, startTime));
         this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
         this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
 
