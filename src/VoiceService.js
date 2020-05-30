@@ -30,7 +30,7 @@ class VoiceService {
    */
   playStream(song, msg, seek = 0) {
     return new Promise((resolve, reject) => {
-      const opt = {"bitrate": this.bitRate, "fec": false, "highWaterMark": 64, seek, "volume": (this.volume / 100)};
+      const opt = {"bitrate": this.bitRate, "fec": true, "highWaterMark": 64, seek, "volume": (this.volume / 100)};
       if (song.src === Song.srcType.YT) {
         opt.type = "opus";
       }
