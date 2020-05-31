@@ -20,6 +20,7 @@ class PlayerService {
     this.ratingService = ratingService;
 
     this.playerIdObj = {"id": null};
+    this.skipCount = 0;
   }
 
   /**
@@ -31,6 +32,10 @@ class PlayerService {
   handleSongEnd(msg, startTime) {
     const delta = (new Date()) - startTime;
     if (delta < 2000) {
+      if (this.skipCount >= 3) {
+        this.stop(msg);
+        return;
+      }
       // Try to reset everything.
       this.chatService.simpleNote(msg, "Song ended to quickly: Try to reset voice.", this.chatService.msgType.FAIL);
       this.endStream();
@@ -42,7 +47,11 @@ class PlayerService {
             catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
         }, 2000);
       }, 2000);
+      ++this.skipCount;
       return;
+    }
+    if (this.skipCount > 0) {
+      --this.skipCount;
     }
     this.playNext(msg);
   }
@@ -69,7 +78,7 @@ class PlayerService {
         this.queueService.addSongToHistory(song);
         this.audioDispatcher = dispatcher;
         const startTime = new Date();
-        this.audioDispatcher.once("close", () => this.handleSongEnd(msg, startTime));
+        this.audioDispatcher.once("finish", () => this.handleSongEnd(msg, startTime));
         this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
         this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
 
