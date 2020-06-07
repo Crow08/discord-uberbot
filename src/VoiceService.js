@@ -1,4 +1,5 @@
 const Song = require("./Song");
+const ytdl = require("ytdl-core-discord");
 
 /**
  * Class representing a voice service.
@@ -28,18 +29,14 @@ class VoiceService {
    * @param {number} seek - position in seconds to start the stream from.
    * @returns {Object} - Stream dispatcher.
    */
-  playStream(song, msg, seek = 0) {
-    return new Promise((resolve, reject) => {
-      const opt = {"bitrate": this.bitRate, "fec": true, "highWaterMark": 64, seek, "volume": (this.volume / 100)};
-      if (song.src === Song.srcType.YT) {
-        opt.type = "opus";
-      }
-      this.getVoiceConnection(msg).
-        then((conn) => this.getStream(song).
-          then((stream) => resolve(conn.play(stream, opt))).
-          catch((err) => reject(err))).
-        catch((err) => reject(err));
-    });
+  async playStream(song, msg, seek = 0) {
+    const connection = await this.getVoiceConnection(msg);
+    const opt = {"bitrate": this.bitRate, "fec": true, "highWaterMark": 64, seek, "volume": (this.volume / 100)};
+    if (song.src === Song.srcType.YT) {
+      opt.type = "opus";
+      return connection.play(await ytdl(song.url), opt);
+    }
+    return connection.play(await this.getStream(song), opt);
   }
 
   /**
