@@ -71,25 +71,29 @@ class PlayerService {
    * @param {Song} song - Song to be played.
    * @param {Message} msg - User message the playback was is invoked by.
    */
-  playNow(song, msg) {
+  async playNow(song, msg) {
     this.endStream();
-    this.voiceService.playStream(song, msg).
-      then((dispatcher) => {
-        this.queueService.addSongToHistory(song);
-        this.audioDispatcher = dispatcher;
-        const startTime = new Date();
-        this.audioDispatcher.once("finish", () => this.handleSongEnd(msg, startTime));
-        this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
-        this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
+    const dispatcherResult = await this.voiceService.playStream(song, msg);
+    if (typeof dispatcherResult === Error) {
+      this.chatService.simpleNote(msg, dispatcherResult, this.chatService.msgType.FAIL);
+      if (this.voiceService.isVoiceConnected(msg)) {
+        this.playNext(msg);
+      }
+    } else if (typeof dispatcherResult === "undefined") {
+      this.chatService.simpleNote(msg, "Something went wrong dispatching this Stream!", this.chatService.msgType.FAIL);
+      if (this.voiceService.isVoiceConnected(msg)) {
+        this.playNext(msg);
+      }
+    } else {
+      this.queueService.addSongToHistory(song);
+      this.audioDispatcher = dispatcherResult;
+      const startTime = new Date();
+      this.audioDispatcher.once("finish", () => this.handleSongEnd(msg, startTime));
+      this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
+      this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
 
-        this.rebuildPlayer(msg, song);
-      }).
-      catch((error) => {
-        this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL);
-        if (this.voiceService.isVoiceConnected(msg)) {
-          this.playNext(msg);
-        }
-      });
+      this.rebuildPlayer(msg, song);
+    }
   }
 
   /**
