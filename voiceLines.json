@@ -224,16 +224,30 @@
          {  
             "url":"https://cdn.discordapp.com/attachments/561903849330442261/709082354001379408/Nice.mp3",
             "title":"Nice!"
-         },
+         }
+      ],
+      "Meme":[
          {  
             "url":"https://cdn.discordapp.com/attachments/690695842897723413/715915707040137316/MedievalCoffin.mp3",
             "title":"Medieval Coffin"
         },
+<<<<<<< HEAD
         {  
             "url":"https://cdn.discordapp.com/attachments/690695842897723413/715915694444904560/Mooncake.mp3",
             "title":"Mooncake"
         }
       ],
+=======
+         {  
+            "url":"https://cdn.discordapp.com/attachments/561903849330442261/709082354001379408/Nice.mp3",
+            "title":"Nice!"
+         },
+          {  
+            "url":"https://cdn.discordapp.com/attachments/690695842897723413/726217323530158191/Yasss.mp3",
+            "title":"Yasss!"
+         }
+         ],
+>>>>>>> master
       "WC3":[  
          {  
             "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830914211676175/ArbeitArbeit.wav",
