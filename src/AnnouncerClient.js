@@ -12,6 +12,7 @@ const RemindMeCommand = require("./cmd/Command_RemindMe");
 const DramaticRebootCommand = require("./cmd/Command_DramaticReboot");
 const SayCommand = require("./cmd/Command_Say");
 const SfxCommand = require("./cmd/Command_Sfx");
+const WalrusCommand = require("./cmd/Command_Walrus");
 const YoMamaCommand = require("./cmd/Command_YoMama");
 
 /**
