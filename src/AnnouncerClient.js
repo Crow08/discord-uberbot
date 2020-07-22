@@ -47,6 +47,7 @@ class AnnouncerClient {
       new DramaticRebootCommand(this.voiceService, this.RawFileService, this.chatService),
       new SayCommand(this.voiceService, this.ttsService),
       new SfxCommand(this.voiceService, this.RawFileService, this.chatService, this.ttsService),
+      new WalrusCommand(this.voiceService, this.RawFileService),
       new YoMamaCommand(this.voiceService, this.ttsService)
     );
   }
