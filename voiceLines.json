@@ -1,5 +1,5 @@
-{  
-   "join":[  
+{
+   "join": [
       "Hide your wifes, #User is here.",
       "Careful it´s #User. Don´t tell him anything about what we just talked about.",
       "Oh my gosh #User joined your channel.",
@@ -88,7 +88,7 @@
       "Hi #User. Can I go now?",
       "Damn #User you´re late!"
    ],
-   "leave":[  
+   "leave": [
       "#User ran away.",
       "Finally #User is gone. Now we can talk about that thing again.",
       "#User is gone.",
@@ -142,190 +142,190 @@
       "#User left us, I hope he comes back soon.",
       "Oh wow, #User abandoned us."
    ],
-   "special":{
-      "die" : "https://cdn.discordapp.com/attachments/561903849330442261/596737606646104103/GLaDOS_Dies.wav"
+   "special": {
+      "die": "https://cdn.discordapp.com/attachments/561903849330442261/596737606646104103/GLaDOS_Dies.wav"
    },
-   "sfx":{  
-      "Kev":[  
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595686349286408199/DJSpass.mp3",
-            "title":"SpaßSpaßSpaß"
+   "sfx": {
+      "Kev": [
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595686349286408199/DJSpass.mp3",
+            "title": "SpaßSpaßSpaß"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483660409929748/WTF_Boom.mp3",
-            "title":"WTF Boom"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483660409929748/WTF_Boom.mp3",
+            "title": "WTF Boom"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483655078838283/Weil_das_ja_klar_ist.wav",
-            "title":"Weil das ja klar ist"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483655078838283/Weil_das_ja_klar_ist.wav",
+            "title": "Weil das ja klar ist"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/735566563150790757/Oh_no_no_no_laugh.mp3",
-            "title":"Schadenfreude"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/735566563150790757/Oh_no_no_no_laugh.mp3",
+            "title": "Schadenfreude"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483642416234496/Schuing.wav",
-            "title":"Schuing"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483642416234496/Schuing.wav",
+            "title": "Schuing"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483639031693312/NO.mp3",
-            "title":"NO!"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483639031693312/NO.mp3",
+            "title": "NO!"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483639161454592/Ololooooo.wav",
-            "title":"Wololoo"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483639161454592/Ololooooo.wav",
+            "title": "Wololoo"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483637622276099/JibJib.wav",
-            "title":"JibJib"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483637622276099/JibJib.wav",
+            "title": "JibJib"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594483614289362945/Its_Over_9000.mp3",
-            "title":"Over9000"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594483614289362945/Its_Over_9000.mp3",
+            "title": "Over9000"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595690399226658826/Schande.mp3",
-            "title":"Schande"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595690399226658826/Schande.mp3",
+            "title": "Schande"
          }
       ],
-      "Tobi":[  
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595686881698644109/BabyLaugh.mp3",
-            "title":"Baby laugh"
+      "Tobi": [
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595686881698644109/BabyLaugh.mp3",
+            "title": "Baby laugh"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594486830045462531/arrow.mp3",
-            "title":"Arrow"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594486830045462531/arrow.mp3",
+            "title": "Arrow"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/597370885149687818/HOLYGRENADE.WAV",
-            "title":"Hallelujah"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/597370885149687818/HOLYGRENADE.WAV",
+            "title": "Hallelujah"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/597371706344079371/ara-ara.mp3",
-            "title":"Ara ara"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/597371706344079371/ara-ara.mp3",
+            "title": "Ara ara"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/606630061289766953/karate.mp3",
-            "title":"Karate"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/606630061289766953/karate.mp3",
+            "title": "Karate"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/706557423879585822/Botlaaaane.mp3",
-            "title":"Botlaaane"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/706557423879585822/Botlaaaane.mp3",
+            "title": "Botlaaane"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/707976582756696154/Oooooohhh.mp3",
-            "title":"Ooouuuhhhh"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/707976582756696154/Oooooohhh.mp3",
+            "title": "Ooouuuhhhh"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/707976578562523216/Chuckedi.mp3",
-            "title":"Chookity"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/707976578562523216/Chuckedi.mp3",
+            "title": "Chookity"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/709082354001379408/Nice.mp3",
-            "title":"Nice!"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/709082354001379408/Nice.mp3",
+            "title": "Nice!"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/731036018102239312/Aulos.mp3",
-            "title":"Aulos"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/731036018102239312/Aulos.mp3",
+            "title": "Aulos"
          }
       ],
-      "Meme":[
-         {  
-            "url":"https://cdn.discordapp.com/attachments/690695842897723413/715915707040137316/MedievalCoffin.mp3",
-            "title":"Medieval Coffin"
-        },
-        {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/709082354001379408/Nice.mp3",
-            "title":"Nice!"
-        },
-        {  
-            "url":"https://cdn.discordapp.com/attachments/690695842897723413/726217323530158191/Yasss.mp3",
-            "title":"Yasss!"
+      "Meme": [
+         {
+            "url": "https://cdn.discordapp.com/attachments/690695842897723413/715915707040137316/MedievalCoffin.mp3",
+            "title": "Medieval Coffin"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/731029892031840266/hello-trailer_01.mp3",
-            "title":"Hello!"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/709082354001379408/Nice.mp3",
+            "title": "Nice!"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/731036039489257482/Wow.mp3",
-            "title":"Wow!"
+         {
+            "url": "https://cdn.discordapp.com/attachments/690695842897723413/726217323530158191/Yasss.mp3",
+            "title": "Yasss!"
+         },
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/731029892031840266/hello-trailer_01.mp3",
+            "title": "Hello!"
+         },
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/731036039489257482/Wow.mp3",
+            "title": "Wow!"
          }
       ],
-      "WC3":[  
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830914211676175/ArbeitArbeit.wav",
-            "title":"Arbeit Arbeit"
+      "WC3": [
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830914211676175/ArbeitArbeit.wav",
+            "title": "Arbeit Arbeit"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830909581033472/Mehr_Arbeit.wav",
-            "title":"Mehr Arbeit?"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830909581033472/Mehr_Arbeit.wav",
+            "title": "Mehr Arbeit?"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830905739051029/IchGehdannMal.wav",
-            "title":"Ich geh dann mal"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830905739051029/IchGehdannMal.wav",
+            "title": "Ich geh dann mal"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830903415537664/HilfeHilfeIchWerdeUnterdruckt.wav",
-            "title":"Hilfe"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830903415537664/HilfeHilfeIchWerdeUnterdruckt.wav",
+            "title": "Hilfe"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830890870505504/DasKannIch.wav",
-            "title":"Das kann ich"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830890870505504/DasKannIch.wav",
+            "title": "Das kann ich"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/596818814583439361/Keine_Lust.wav",
-            "title":"Keine Lust"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/596818814583439361/Keine_Lust.wav",
+            "title": "Keine Lust"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/599624877053575198/Richtig.wav",
-            "title":"Richtig"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/599624877053575198/Richtig.wav",
+            "title": "Richtig"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/599711484804726823/Arbeit_ist_vollbracht.wav",
-            "title":"Arbeit ist vollbracht"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/599711484804726823/Arbeit_ist_vollbracht.wav",
+            "title": "Arbeit ist vollbracht"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/599711837935894538/Das_wars.wav",
-            "title":"Das wars"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/599711837935894538/Das_wars.wav",
+            "title": "Das wars"
          }
       ],
-      "Portal":[  
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/594830863363997706/Glados_BrokeIt.wav",
-            "title":"You broke it"
+      "Portal": [
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/594830863363997706/Glados_BrokeIt.wav",
+            "title": "You broke it"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683157244641297/Glados_DidYouSaySth.wav",
-            "title":"Did you say sth?"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595683157244641297/Glados_DidYouSaySth.wav",
+            "title": "Did you say sth?"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683153926946818/Glados_IHateYou.wav",
-            "title":"I hate you"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595683153926946818/Glados_IHateYou.wav",
+            "title": "I hate you"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683151955886080/Glados_QuiteWell.wav",
-            "title":"Quite well"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595683151955886080/Glados_QuiteWell.wav",
+            "title": "Quite well"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683148512362528/Glados_ExcellentWork.wav",
-            "title":"Exellent work"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595683148512362528/Glados_ExcellentWork.wav",
+            "title": "Exellent work"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683147941806081/Glados_IKillYou.wav",
-            "title":"I kill you"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595683147941806081/Glados_IKillYou.wav",
+            "title": "I kill you"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683147153408045/Glados_GoodBye.wav",
-            "title":"Goodbye"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595683147153408045/Glados_GoodBye.wav",
+            "title": "Goodbye"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683144321990673/Glados_AreYouListening.wav",
-            "title":"U listening?"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595683144321990673/Glados_AreYouListening.wav",
+            "title": "U listening?"
          },
-         {  
-            "url":"https://cdn.discordapp.com/attachments/561903849330442261/595683142258655258/Glados_DoneReasoning.wav",
-            "title":"Done reasoning"
+         {
+            "url": "https://cdn.discordapp.com/attachments/561903849330442261/595683142258655258/Glados_DoneReasoning.wav",
+            "title": "Done reasoning"
          }
       ]
    }

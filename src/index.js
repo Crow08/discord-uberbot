@@ -3,6 +3,7 @@ const MusicClient = require("./MusicClient.js");
 const AnnouncerClient = require("./AnnouncerClient.js");
 const readline = require("readline");
 const http = require("http");
+const https = require("https");
 const fs = require("fs");
 
 let debug = false;
@@ -207,7 +208,7 @@ if (!disableBot || !disableAnnouncer) {
       // If settingsUrl is set:
       } else if (settingsUrl.length > 0) {
         // Download settings file.
-        http.get(settingsUrl, (response) => {
+        https.get(settingsUrl, (response) => {
           response.setEncoding("utf8");
           let rawData = "";
           response.on("data", (chunk) => {
