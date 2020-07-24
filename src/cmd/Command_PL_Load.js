@@ -35,7 +35,7 @@ class LoadPLCommand extends Command {
     }
     const plName = payload.trim();
     const note = `playlist loaded: ${plName}`;
-    this.queueService.loadPlaylist(plName).
+    this.queueService.loadPlaylist(plName, msg).
       then(() => this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC)).
       catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
   }

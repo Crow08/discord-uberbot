@@ -40,7 +40,7 @@ class StartCommand extends Command {
     }
     const plName = payload.trim();
     const message = `playlist loaded: ${plName}`;
-    this.queueService.loadPlaylist(plName).
+    this.queueService.loadPlaylist(plName, msg).
       then(() => {
         this.chatService.simpleNote(msg, message, this.chatService.msgType.MUSIC);
         // Shuffle playlist
