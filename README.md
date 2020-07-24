@@ -215,13 +215,14 @@ The UberBot is fully charged with music bot goodness! A feature rich bot for pla
 ### Installation: ###
 
 1. Install node (with npm >= 10) and mongodb on the host computer.
-2. Run `npm install` in the project directory.  
+2. Install git
+3. Run `npm install` in the project directory.  
 (On Windows you may need to install [windows build tools](https://www.npmjs.com/package/windows-build-tools) first: `npm install -g windows-build-tools`)
-3. Copy the `settings.example.json` and rename it to `settings.json`
-4. Open `settings.json` and replace the dummy values with your actual credentials:  
+4. Copy the `settings.example.json` and rename it to `settings.json`
+5. Open `settings.json` and replace the dummy values with your actual credentials:  
 discord bot token, YouTube API key, SoundCloud client id and Spotify client id and secret.
-5. Run `npm run start` in the project directory.
-6. Enjoy your bot!
+6. Run `npm run start` in the project directory.
+7. Enjoy your amazing bot!
 
 ---
 

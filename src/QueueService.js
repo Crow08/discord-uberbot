@@ -107,7 +107,8 @@ class QueueService {
    * The resulting queue from only fairly added songs should contain songs form all requesters in Round Robin fashion.
    * @param {Song} song - The song to be added.
    */
-  addFairlyToQueue(song) {
+  addFairlyToQueue(song, msg) {
+    song.requester = msg.author.username;
     const songRequestBalanceHelper = {};
     songRequestBalanceHelper[song.requester] = 1;
     for (let index = 0; index < this.queue.length; index++) {
@@ -131,9 +132,9 @@ class QueueService {
    * The resulting queue from only fairly added songs should contain songs form all requesters in Round Robin fashion.
    * @param {Song[]} songs - Array of songs to be added.
    */
-  addMultipleFairlyToQueue(songs) {
+  addMultipleFairlyToQueue(songs, msg) {
     songs.forEach((newSong) => {
-      this.addFairlyToQueue(newSong);
+      this.addFairlyToQueue(newSong, msg);
     });
   }
 
@@ -163,11 +164,11 @@ class QueueService {
    * Adds the given playlist from the DB to the current queue.
    * @param {string} plName - playlist name to load.
    */
-  loadPlaylist(plName) {
+  loadPlaylist(plName, msg) {
     return new Promise((resolve, reject) => {
       this.dbService.getPlaylist(plName).
         then((songs) => {
-          this.addMultipleFairlyToQueue(this.shuffle(songs));
+          this.addMultipleFairlyToQueue(this.shuffle(songs), msg);
           resolve();
         }).
         catch((error) => reject(error));
