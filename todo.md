@@ -15,14 +15,18 @@
 ##### Search #####
 - Add a "did you mean"-feature for all failed searches with strings (closest name - Levenshtein distance / fuzzy search).
 
+##### Replace #####
+- function to replace song with better version
+
+##### Change Volume #####
+- function to set custom volume for songs (no value = default)
+
 ##### Misc #####
-- reboot-command
 - Ability to toggle user announcements on and off.
 - User group to allow bot-interaction (protects from strangers and trolls)
 
+
 ##### Announcer #####
-- more SFX?
-- alarm/reminder function (time like 10:30 or 2h + Text to read)
 
 ---
 
