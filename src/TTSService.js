@@ -73,7 +73,7 @@ class TTSService {
               guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} joined the channel (${this.formatDate(this.AddTime)})`);
             });
           }
-          
+
         } else if (oldUserChannel && oldUserChannel.id === voiceConnection.channel.id) {
           // User leaves voice channel of bot
           const line = Math.floor(Math.random() * voiceLines.leave.length);
@@ -83,7 +83,7 @@ class TTSService {
             this.client.guilds.cache.forEach((guild) => {
               guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} left the channel (${this.formatDate(this.AddTime)})`);
             });
-          } 
+          }
         }
       }
     });
@@ -95,8 +95,12 @@ class TTSService {
    * @param {string} userName Username to process.
    */
   phoneticNicknameFor(userName) {
-    if (this.phoneticNicknames && userName in this.phoneticNicknames) {
-      return this.phoneticNicknames[userName];
+    if (this.phoneticNicknames) {
+      for (const [phoneticNicknameKey, phoneticNicknameValue] of Object.entries(this.phoneticNicknames)) {
+        if (userName.includes(phoneticNicknameKey)) {
+          return phoneticNicknameValue;
+        }
+      }
     }
     return userName;
   }
@@ -125,9 +129,9 @@ class TTSService {
         console.log(err);
       });
   }
-   
+
  formatDate(addhour) {
-    let date = Date.now() 
+    let date = Date.now()
     let Time = Date.now()
     if (typeof addhour != "number" || Number.isNaN(addhour) == true) {
       addhour = 0;
@@ -144,7 +148,7 @@ class TTSService {
     let actual_date = day + "." + month + "." + year;
     return day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + seconds;
 
-  }  
+  }
 }
 
 module.exports = TTSService;

@@ -10,6 +10,7 @@ jspm_packages/
 # IDE directories
 .vscode/
 .VSCodeCounter/
+.idea/
 
 # Settings and credentials
 settings.json
