@@ -23,17 +23,15 @@ class YoutubeService {
    */
   getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
-      ytdlDiscord.getBasicInfo(searchString, {}, (err, info) => {
-        if (err) {
-          return reject(err);
-        }
+      ytdlDiscord.getBasicInfo(searchString, {}).then((info) => {
         const song = new Song();
-        song.title = info.title;
-        song.url = info.video_url;
-        song.artist = info.author.name;
+        song.title = info.videoDetails.title;
+        song.url = "https://www.youtube.com/watch?v=" + info.videoDetails.videoId;
+        song.artist = info.videoDetails.author.name;
         song.src = Song.srcType.YT;
         return resolve([song]);
-      });
+      }).
+        catch(reject);
     });
   }
 
