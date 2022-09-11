@@ -1,33 +1,18 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const playerService = require("../PlayerService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for skip song command.
- * @extends Command
- * @Category Commands
- */
-class SkipCommand extends Command {
+const run = (interaction) => {
+  playerService.skip(interaction);
+  chatService.simpleNote(interaction, "Song skipped!", chatService.msgType.MUSIC, true);
+};
 
-  /**
-   * Constructor.
-   * @param {PlayerService} playerService - PlayerService.
-   */
-  constructor(playerService) {
-    super(
-      ["skip", "s"],
-      "skip current song.",
-      "<prefix>skip"
-    );
-    this.playerService = playerService;
+
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("skip").
+    setDescription("Skip current song."),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    this.playerService.skip(msg);
-  }
-}
-
-module.exports = SkipCommand;
+};

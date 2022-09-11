@@ -1,33 +1,17 @@
-const Command = require("./Command.js");
+const voiceService = require("../VoiceService");
+const chatService = require("../ChatService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for leave channel command.
- * @extends Command
- * @Category Commands
- */
-class LeaveCommand extends Command {
+const run = (interaction) => {
+  voiceService.disconnectVoiceConnection(interaction);
+  chatService.simpleNote(interaction, "Voice disconnected!", chatService.msgType.INFO, true);
+};
 
-  /**
-   * Constructor.
-   * @param {VoiceService} voiceService - VoiceService.
-   */
-  constructor(voiceService) {
-    super(
-      ["leave"],
-      "leave the current voice channel.",
-      "<prefix>leave"
-    );
-    this.voiceService = voiceService;
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("leave").
+    setDescription("leave the current voice channel."),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    this.voiceService.disconnectVoiceConnection(msg);
-  }
-}
-
-module.exports = LeaveCommand;
+};

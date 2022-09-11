@@ -1,15 +1,16 @@
+const streamSourceService = require("./StreamSourceService");
+
 /**
  * Class representing a search service.
  */
 class SearchService {
 
   /**
-   * Constructor.
    * @param {"yt"|"sc"|"sp"} defaultSrc - default source for searching song when using queries.
    * <br>&nbsp;&nbsp;"yt" : YouTube | "sc" : SoundCloud |"sp" : Spotify
    * @param {StreamSourceService} streamSourceService - StreamSourceService.
    */
-  constructor(defaultSrc, streamSourceService) {
+  init(defaultSrc) {
     this.youtubeService = streamSourceService.youtubeService;
     this.soundCloudService = streamSourceService.soundCloudService;
     this.spotifyService = streamSourceService.spotifyService;
@@ -296,4 +297,4 @@ class SearchService {
   }
 }
 
-module.exports = SearchService;
+module.exports = new SearchService();

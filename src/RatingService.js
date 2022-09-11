@@ -1,20 +1,14 @@
 const Song = require("./Song");
+const dbService = require("./DBService");
+const queueService = require("./QueueService");
 
 /**
  * Class representing a rating service.
  */
 class RatingService {
 
-  /**
-   * Constructor.
-   * @param {Number} ratingCooldown - time in seconds for the cooldown for rating the same song again.
-   * @param {DBService} dbService  - DBService.
-   * @param {QueueService} queueService - QueueService.
-   */
-  constructor(ratingCooldown, dbService, queueService) {
+  init(ratingCooldown) {
     this.ratingCooldown = ratingCooldown * 1000;
-    this.dbService = dbService;
-    this.queueService = queueService;
   }
 
   /**
@@ -90,7 +84,7 @@ class RatingService {
   checkAndAddToAutoPL(song, delta) {
     return new Promise((resolve, reject) => {
       if (delta > 0 && song.rating > 0) {
-        this.queueService.getAutoPL().
+        queueService.getAutoPL().
           then((autoPL) => {
             if (song.playlist === autoPL) {
               resolve("Song already in auto playlist!");
@@ -102,7 +96,7 @@ class RatingService {
             songCopy.requester = song.requester;
             songCopy.url = song.url;
             songCopy.playlist = autoPL;
-            this.dbService.addSong(songCopy, autoPL).
+            dbService.addSong(songCopy, autoPL).
               then(() => {
                 song.playlist = song.playlist === "-" ? autoPL : song.playlist;
                 resolve(`${song.title} added to auto playlist ${autoPL}!`);
@@ -123,7 +117,7 @@ class RatingService {
    */
   removeFromPL(song) {
     return new Promise((resolve, reject) => {
-      this.dbService.removeSong(song, song.playlist).
+      dbService.removeSong(song, song.playlist).
         then((info) => {
           if (info.deletedCount === 0) {
             reject(new Error("Song already deleted!"));
@@ -145,10 +139,10 @@ class RatingService {
   saveRating(user, song) {
     return new Promise((resolve, reject) => {
       song.ratingLog[user] = Date.now();
-      this.dbService.updateSongRating(song).
+      dbService.updateSongRating(song).
         then(() => resolve("Rating successfully saved!")).
         catch(reject);
     });
   }
 }
-module.exports = RatingService;
+module.exports = new RatingService();

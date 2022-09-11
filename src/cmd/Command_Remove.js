@@ -1,48 +1,50 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const queueService = require("../QueueService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for remove song from queue command.
- * @extends Command
- * @Category Commands
- */
-class RemoveCommand extends Command {
-
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {QueueService} queueService - QueueService.
-   */
-  constructor(chatService, queueService) {
-    super(
-      ["remove"],
-      "removes a song from the current queue.",
-      "<prefix>remove <queue number>"
-    );
-    this.chatService = chatService;
-    this.queueService = queueService;
-  }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    if (typeof payload === "undefined" || payload.length === 0 || isNaN(payload)) {
-      this.chatService.simpleNote(msg, "No queue number found!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
+const run = (interaction) => {
+  const songQuery = interaction.options.getString("song_query");
+  if (isNaN(songQuery)) {
+    for (let index = 0; index < queueService.queue.length; index++) {
+      const song = queueService.queue[index];
+      if (song.title.toLowerCase().
+        indexOf(songQuery.toLowerCase()) >= 0) {
+        queueService.remove(index);
+        const message = `${song.title} - ${song.artist} removed from the queue!`;
+        chatService.simpleNote(interaction, message, chatService.msgType.MUSIC, true);
+        return;
+      } else if (song.artist.toLowerCase().
+        indexOf(songQuery.toLowerCase()) >= 0) {
+        queueService.remove(index);
+        const message = `${song.title} - ${song.artist} removed from the queue!`;
+        chatService.simpleNote(interaction, message, chatService.msgType.MUSIC, true);
+        return;
+      }
+    }
+    chatService.simpleNote(interaction, `${songQuery} not found`, chatService.msgType.FAIL, true);
+  } else {
+    const index = parseInt(songQuery, 10) - 1;
+    if (index < 0 || index >= queueService.queue.length) {
+      chatService.simpleNote(interaction, "Queue index out of bounds!", chatService.msgType.FAIL, true);
       return;
     }
-    const index = payload - 1;
-    if (index < 0 || index >= this.queueService.queue.length) {
-      this.chatService.simpleNote(msg, "queue number out of bounds!", this.chatService.msgType.FAIL);
-      return;
-    }
-    const song = this.queueService.queue[index];
-    this.queueService.remove(index);
+
+    const song = queueService.queue[index];
+    queueService.remove(index);
     const message = `${song.title} - ${song.artist} removed from the queue!`;
-    this.chatService.simpleNote(msg, message, this.chatService.msgType.MUSIC);
+    chatService.simpleNote(interaction, message, chatService.msgType.MUSIC, true);
   }
-}
+};
 
-module.exports = RemoveCommand;
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("remove").
+    setDescription("Removes a song from the current queue.").
+    addStringOption((option) => option.
+      setName("song_query").
+      setDescription("can be the name of the song or the position in the queue").
+      setRequired(true)),
+  async execute(interaction) {
+    await run(interaction);
+  }
+};

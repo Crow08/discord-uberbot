@@ -1,44 +1,24 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const dbService = require("../DBService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for delete playlist command.
- * @extends Command
- * @Category Commands
- */
-class DeletePLCommand extends Command {
+const run = (interaction) => {
+  const plName = interaction.options.getString("playlist_name");
 
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {DbService} dbService - DbService.
-   */
-  constructor(chatService, dBService) {
-    super(
-      ["pldelete"],
-      "deletes a playlist permanently.",
-      "<prefix>pldelete <pl name>"
-    );
-    this.chatService = chatService;
-    this.dBService = dBService;
+  dbService.deletePlaylist(plName).
+    then(() => chatService.simpleNote(interaction, `playlist deleted: ${plName}`, chatService.msgType.MUSIC, true)).
+    catch((error) => chatService.simpleNote(interaction, error, chatService.msgType.FAIL), true);
+};
+
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("pl_delete").
+    setDescription("deletes a playlist permanently.").
+    addStringOption((option) => option.
+      setName("playlist_name").
+      setDescription("Playlist name to delete.").
+      setRequired(true)),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    if (typeof payload === "undefined" || payload.length === 0) {
-      this.chatService.simpleNote(msg, "No playlist name found!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
-      return;
-    }
-    const plName = payload.trim();
-    const note = `playlist deleted: ${plName}`;
-    this.dBService.deletePlaylist(plName).
-      then(() => this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC)).
-      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
-  }
-}
-
-module.exports = DeletePLCommand;
+};

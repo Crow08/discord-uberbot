@@ -1,54 +1,42 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const dbService = require("../DBService");
+const {SlashCommandBuilder,
+  EmbedBuilder
+} = require("discord.js");
 
-/**
- * Class for list all playlists command.
- * @extends Command
- * @Category Commands
- */
-class ListPLCommand extends Command {
-
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {DbService} dbService - DbService.
-   */
-  constructor(chatService, dbService) {
-    super(
-      ["pllist", "l"],
-      "lists available playlists",
-      "<prefix>pllist"
-    );
-    this.chatService = chatService;
-    this.dbService = dbService;
-  }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    this.dbService.listPlaylists().then((plNames) => {
-      const embed = new this.chatService.DiscordMessageEmbed();
+const run = (interaction) => {
+  dbService.listPlaylists().
+    then((plNames) => {
+      const embed = new EmbedBuilder();
       embed.setColor(890629);
       embed.setTitle("Playlists:");
       const promises = [];
       const playlists = [];
       for (let index = 0; index < plNames.length; index++) {
-        promises.push(this.dbService.getPlaylist(plNames[index]).
-          then((playlistSongs) => playlists.push({"name": plNames[index], "songs": playlistSongs})).
+        promises.push(dbService.getPlaylist(plNames[index]).
+          then((playlistSongs) => playlists.push({
+            "name": plNames[index],
+            "songs": playlistSongs
+          })).
           catch((err) => console.log(err)));
       }
-      Promise.all(promises).then(() => {
-        playlists.forEach((plSongs) => {
-          const plLength = plSongs.songs.length;
-          embed.addField(plSongs.name, `${plLength} Songs`, true);
+      Promise.all(promises).
+        then(() => {
+          chatService.simpleNote(interaction, "Listing Palylists:", chatService.msgType.MUSIC, true);
+          playlists.forEach((plSongs) => {
+            const plLength = plSongs.songs.length;
+            embed.addFields({"inline": true, "name": plSongs.name, "value":`${plLength} Songs`});
+          });
+          chatService.send(interaction, embed);
         });
-        this.chatService.send(msg, embed);
-      });
     });
+};
 
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("pl_list").
+    setDescription("lists available playlists"),
+  async execute(interaction) {
+    await run(interaction);
   }
-}
-
-module.exports = ListPLCommand;
+};

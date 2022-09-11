@@ -1,44 +1,31 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const queueService = require("../QueueService");
 
-/**
- * Class for loop queue command.
- * @extends Command
- * @Category Commands
- */
-class LoopCommand extends Command {
+const {SlashCommandBuilder} = require("discord.js");
 
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {QueueService} queueService - QueueService.
-   */
-  constructor(chatService, queueService) {
-    super(
-      ["loop"],
-      "toggle loop mode of the queue.\nadd 1 to loop only the current song.",
-      "<prefix>loop [1]"
-    );
-    this.chatService = chatService;
-    this.queueService = queueService;
+const run = (interaction) => {
+  const repeatOne = interaction.options.getBoolean("repeat_one");
+  if (repeatOne === true) {
+    queueService.mode = "ro";
+    chatService.simpleNote(interaction, "Loop current song!", chatService.msgType.MUSIC, true);
+  } else if (queueService.mode === "n") {
+    queueService.mode = "ra";
+    chatService.simpleNote(interaction, "Loop current queue!", chatService.msgType.MUSIC, true);
+  } else {
+    queueService.mode = "n";
+    chatService.simpleNote(interaction, "No more looping!", chatService.msgType.MUSIC, true);
   }
+};
 
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    if (payload === "1") {
-      this.queueService.mode = "ro";
-      this.chatService.simpleNote(msg, "Loop current song!", this.chatService.msgType.MUSIC);
-    } else if (this.queueService.mode === "n") {
-      this.queueService.mode = "ra";
-      this.chatService.simpleNote(msg, "Loop current queue!", this.chatService.msgType.MUSIC);
-    } else {
-      this.queueService.mode = "n";
-      this.chatService.simpleNote(msg, "No more looping!", this.chatService.msgType.MUSIC);
-    }
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("loop").
+    setDescription("toggle loop mode of the queue.").
+    addBooleanOption((option) => option.
+      setName("repeat_one").
+      setDescription("(Optional) loop current song").
+      setRequired(true)),
+  async execute(interaction) {
+    await run(interaction);
   }
-}
-
-module.exports = LoopCommand;
+};

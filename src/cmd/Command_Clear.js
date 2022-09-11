@@ -1,36 +1,18 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const queueService = require("../QueueService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for clear queue command.
- * @extends Command
- * @Category Commands
- */
-class ClearCommand extends Command {
+const run = (interaction) => {
+  queueService.clearQueue();
+  chatService.simpleNote(interaction, "Queue is now empty!", chatService.msgType.MUSIC, true);
+};
 
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {QueueService} queueService - QueueService.
-   */
-  constructor(chatService, queueService) {
-    super(
-      ["clear"],
-      "delete all songs from current queue.",
-      "<prefix>clear"
-    );
-    this.chatService = chatService;
-    this.queueService = queueService;
+
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("clear").
+    setDescription("Clear the current queue."),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    this.queueService.clearQueue();
-    this.chatService.simpleNote(msg, "Queue is now empty!", this.chatService.msgType.MUSIC);
-  }
-}
-
-module.exports = ClearCommand;
+};

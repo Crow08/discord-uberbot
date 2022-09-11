@@ -1,39 +1,22 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Temporary class for testing commands.
- * @extends Command
- * @Category Commands
- */
-class RebootCommand extends Command {
+const run = (interaction) => {
+  console.log("I´ll be back!");
+  chatService.send(interaction, "I´ll be back!", true);
+  setTimeout(
+    () => {
+      process.exit(-1);
+    },
+    5000
+  );
+};
 
-  /**
- *
- * @param {ChatService} chatService
- */
-  constructor(chatService) {
-    super(
-      ["reboot"],
-      "kills the bot, hopefully it will restart again",
-      "<prefix>reboot"
-    );
-    this.chatService = chatService;
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("reboot").
+    setDescription("kills the bot, hopefully it will restart again"),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    console.log("committing Sudoku");
-    this.chatService.send(msg, "I´ll be back!");
-    setTimeout(
-      () => {
-        process.exit(1337);
-      },
-      5000
-    );
-  }
-}
-module.exports = RebootCommand;
+};

@@ -1,4 +1,4 @@
-const ytdlDiscord = require("ytdl-core-discord");
+const ytdlDiscord = require("ytdl-core");
 const ytpl = require("ytpl");
 const request = require("request");
 const Song = require("./Song");
@@ -87,7 +87,11 @@ class YoutubeService {
             return reject(error);
           }
           if (typeof body === "undefined" || typeof JSON.parse(body).items === "undefined") {
-            return reject(new Error("Something went wrong. Try again! [YT]"));
+            let additionalInfo = "";
+            if (body.error) {
+              additionalInfo = `\n${body.error.code} - ${body.error.message}`;
+            }
+            return reject(new Error(`Something went wrong. Try again! [YT]${additionalInfo}`));
           }
           const result = JSON.parse(body).items;
           if (result.length < 1) {

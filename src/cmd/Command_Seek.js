@@ -1,39 +1,22 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const playerService = require("../PlayerService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for seek in song command.
- * @extends Command
- * @Category Commands
- */
-class StopCommand extends Command {
+const run = (interaction) => {
+  const seconds = interaction.options.getString("seconds");
+  playerService.seek(seconds, interaction);
+  chatService.simpleNote(interaction, `skipping to ${seconds} seconds.`, chatService.msgType.MUSIC, true);
+};
 
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {PlayerService} playerService - PlayerService.
-   */
-  constructor(chatService, playerService) {
-    super(
-      ["seek"],
-      "seek playback position.",
-      "<prefix>seek <number>"
-    );
-    this.playerService = playerService;
-    this.chatService = chatService;
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("seek").
+    setDescription("seek playback position.").
+    addIntegerOption((option) => option.
+      setName("seconds").
+      setDescription("Second at which the playback should resume.").
+      setRequired(true)),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    if (isNaN(payload)) {
-      this.chatService.simpleNote(msg, "Seek position must be numeric!", this.chatService.msgType.Fail);
-      return;
-    }
-    this.playerService.seek(payload, msg);
-  }
-}
-
-module.exports = StopCommand;
+};

@@ -1,33 +1,17 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const playerService = require("../PlayerService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for stop command.
- * @extends Command
- * @Category Commands
- */
-class StopCommand extends Command {
+const run = (interaction) => {
+  playerService.stop(interaction);
+  chatService.simpleNote(interaction, "Playback stopped!", chatService.msgType.MUSIC, true);
+};
 
-  /**
-   * Constructor.
-   * @param {PlayerService} playerService - PlayerService.
-   */
-  constructor(playerService) {
-    super(
-      ["stop"],
-      "stop current playback.",
-      "<prefix>stop"
-    );
-    this.playerService = playerService;
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("stop").
+    setDescription("Stop playback."),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    this.playerService.stop(msg);
-  }
-}
-
-module.exports = StopCommand;
+};

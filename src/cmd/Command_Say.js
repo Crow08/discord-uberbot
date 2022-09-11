@@ -1,39 +1,29 @@
-const Command = require("./Command.js");
+const voiceService = require("../VoiceService");
+const chatService = require("../ChatService");
+const ttsService = require("../TTSService");
 
-/**
- * Temporary class for testing commands.
- * @extends Command
- * @Category Commands
- */
-class SayCommand extends Command {
+const {SlashCommandBuilder} = require("discord.js");
 
-  /**
-   * Constructor.
-   * @param {VoiceService} voiceService - VoiceService.
-   * @param {TTSService} ttsService - TTSService.
-   */
-  constructor(voiceService, ttsService) {
-    super(
-      ["say"],
-      "make the bot say dumb stuff",
-      "<prefix>say"
-    );
-    this.ttsService = ttsService;
-    this.voiceService = voiceService;
+const run = (interaction) => {
+  const text = interaction.options.getString("text");
+  voiceService.getVoiceConnection(interaction).
+    then((voiceConnection) => {
+      ttsService.announceMessage(text, voiceConnection);
+    }).
+    catch((err) => console.log(err));
+  msg.delete({"timeout": 10000});
+  chatService.simpleNote(interaction, "TTS", chatService.msgType.INFO, true);
+};
+
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("say").
+    setDescription("make the bot say dumb stuff").
+    addStringOption((option) => option.
+      setName("text").
+      setDescription("Text to read out.").
+      setRequired(true)),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    this.voiceService.getVoiceConnection(msg).
-      then((voiceConnection) => {
-        this.ttsService.announceMessage(payload, voiceConnection);
-      }).
-      catch((err) => console.log(err));
-    msg.delete({"timeout": 10000});
-  }
-}
-module.exports = SayCommand;
+};

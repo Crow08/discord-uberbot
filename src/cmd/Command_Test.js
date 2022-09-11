@@ -1,40 +1,18 @@
-const Command = require("./Command.js");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Temporary class for testing commands.
- * @extends Command
- * @Category Commands
- */
-class TestCommand extends Command {
+const run = (interaction) => {
+  // For testing.
+};
 
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {QueueService} queueService - QueueService.
-   * @param {DbService} dbService - DbService.
-   * @param {VoiceService} voiceService - VoiceService.
-   * @param {PlayerService} playerService - PlayerService.
-   */
-  constructor(chatService, voiceService, rawFileService, baseClient) {
-    super(
-      ["test"],
-      "for testing - duh!",
-      "<prefix>test"
-    );
-    this.chatService = chatService;
-    this.voiceService = voiceService;
-    this.rawFileService = rawFileService;
-    this.baseClient = baseClient;
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("test").
+    setDescription("test").
+    addStringOption((option) => option.
+      setName("test").
+      setDescription("test").
+      setRequired(false)),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    const channel = this.baseClient.channels.cache.get(msg.member.voice.channel.id);
-    channel.join();
-  }
-}
-module.exports = TestCommand;
+};

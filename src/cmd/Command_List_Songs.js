@@ -1,65 +1,55 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const dbService = require("../DBService");
+const {SlashCommandBuilder,
+  EmbedBuilder
+} = require("discord.js");
 
-/**
- * Class for list playlist songs command.
- * @extends Command
- * @Category Commands
- */
-class ListSongsCommand extends Command {
+const run = (interaction) => {
+  const plName = interaction.options.getString("playlist_name");
 
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {DbService} dbService - DbService.
-   */
-  constructor(chatService, dbService) {
-    super(
-      ["listsongs", "ls"],
-      "lists all songs of the specified playlist",
-      "<prefix>listsongs <playlist>"
-    );
-    this.chatService = chatService;
-    this.dbService = dbService;
-  }
+  const addPage = (listText, pages, songs) => {
+    listText += `Page ${pages.length + 1} / ${Math.ceil(songs.length / 10)}`;
+    const embed = new EmbedBuilder();
+    embed.setTitle(`Playlist: ${plName}`);
+    embed.setColor(48769);
+    embed.setDescription(listText);
+    pages.push(embed);
+    return listText;
+  };
 
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    this.dbService.getPlaylist(payload).
-      then((songs) => {
-        const pages = [];
-        let listText = "";
-        songs.forEach((entry, index) => {
-          listText += `\`\`\` ${index + 1}. ${entry.title} - ${entry.artist}\`\`\`\n`;
-          if ((index + 1) % 10 === 0) {
-            listText += `Page ${pages.length + 1} / ${Math.ceil(songs.length / 10)}`;
-            const embed = new this.chatService.DiscordMessageEmbed();
-            embed.setTitle(`Playlist: ${payload}`);
-            embed.setColor(48769);
-            embed.setDescription(listText);
-            pages.push(embed);
-            listText = "";
-          }
-        });
-        if (songs.length % 10 !== 0) {
-          listText += `Page ${pages.length + 1} / ${Math.ceil(songs.length / 10)}`;
-          const embed = new this.chatService.DiscordMessageEmbed();
-          embed.setTitle(`Playlist: ${payload}`);
-          embed.setColor(48769);
-          embed.setDescription(listText);
-          pages.push(embed);
+  dbService.getPlaylist(plName).
+    then((songs) => {
+      const pages = [];
+      let listText = "";
+      songs.forEach((entry, index) => {
+        listText += `\`\`\` ${index + 1}. ${entry.title} - ${entry.artist}\`\`\`\n`;
+        if ((index + 1) % 10 === 0) {
+          addPage(listText, pages, songs);
+          listText = "";
         }
-        if (pages.length === 0) {
-          this.chatService.simpleNote(msg, "Playlist is empty!", this.chatService.msgType.INFO);
-        } else {
-          this.chatService.pagedContent(msg, pages);
-        }
-      }).
-      catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
-  }
-}
+      });
+      if (songs.length % 10 !== 0) {
+        listText = addPage(listText, pages, songs);
+      }
+      if (pages.length === 0) {
+        chatService.simpleNote(interaction, "Playlist is empty!", chatService.msgType.INFO, true);
+      } else {
+        chatService.simpleNote(interaction, "Listing Songs:", chatService.msgType.MUSIC, true);
+        chatService.pagedContent(interaction, pages);
+      }
+    }).
+    catch((err) => chatService.simpleNote(interaction, err, chatService.msgType.FAIL), true);
+};
 
-module.exports = ListSongsCommand;
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("list_songs").
+    setDescription("lists all songs of the specified playlist").
+    addStringOption((option) => option.
+      setName("playlist_name").
+      setDescription("auto playlist name to set. (\"unset\" to reset)").
+      setRequired(false)),
+  async execute(interaction) {
+    await run(interaction);
+  }
+};

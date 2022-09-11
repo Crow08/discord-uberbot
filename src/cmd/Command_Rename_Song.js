@@ -1,53 +1,52 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const dbService = require("../DBService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for rename song in playlist command.
- * @extends Command
- * @Category Commands
- */
-class RenameSongCommand extends Command {
-
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {DbService} dbService - DbService.
-   */
-  constructor(chatService, dbService) {
-    super(
-      ["rename", "renamesong", "r"],
-      "rename title or artist of song.\n(first parameter \"t\" for title and \"a\" for artist.)",
-      "<prefix>rename <\"t\"|\"a\"> <playlist name> <song number> <new name>"
-    );
-    this.chatService = chatService;
-    this.dbService = dbService;
+const run = (interaction) => {
+  const plName = interaction.options.getString("playlist_name");
+  const songQuery = interaction.options.getString("song_query");
+  const songTitle = interaction.options.getString("song_title");
+  const songArtist = interaction.options.getString("song_artist");
+  if (songTitle === null && songArtist === null) {
+    chatService.simpleNote(interaction, "please set either an new title or artist!", chatService.msgType.FAIL, true);
+    return;
   }
 
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    if (typeof payload === "undefined" || payload.split(" ").length < 4 ||
-      !["a", "t", "artist", "title"].includes(payload.split(" ")[0]) || isNaN(payload.split(" ")[2])) {
-      this.chatService.simpleNote(msg, "Wrong syntax!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
-      return;
-    }
-
-    let flag = payload.split(" ")[0];
-    flag = flag === "a" ? "artist" : flag;
-    flag = flag === "t" ? "title" : flag;
-    const plName = payload.split(" ")[1];
-    const songNr = payload.split(" ")[2];
-    const newName = payload.substr(flag.length + plName.length + songNr.length - 1);
-
-    this.dbService.getPlaylist(plName).then((songs) => {
-      const song = songs[songNr - 1];
-      this.dbService.renameSong(plName, song, flag, newName);
-      const note = `renaming ${flag} of ${song.title} into ${newName}`;
-      this.chatService.simpleNote(msg, note, this.chatService.msgType.MUSIC);
+  dbService.findSong(songQuery, plName).
+    then((song) => {
+      if (song === "null") {
+        const note = `"${songQuery}" not found in ${plName}!`;
+        chatService.simpleNote(interaction, note, chatService.msgType.FAIL, true);
+      } else {
+        dbService.renameSong(plName, song, songTitle, songArtist);
+        const note = `renaming ${song.title} - ${song.artist} into` +
+          `${songTitle === null ? song.title : songTitle} - ${songArtist === null ? song.artist : songArtist} `;
+        chatService.simpleNote(interaction, note, chatService.msgType.MUSIC, true);
+      }
     });
+};
+
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("rename_song").
+    setDescription("Rename title or artist of song.\n(first parameter \"t\" for title and \"a\" for artist.)").
+    addStringOption((option) => option.
+      setName("playlist_name").
+      setDescription("playlist to search in").
+      setRequired(true)).
+    addStringOption((option) => option.
+      setName("song_query").
+      setDescription("search term to find a song by name").
+      setRequired(true)).
+    addStringOption((option) => option.
+      setName("song_title").
+      setDescription("New song title").
+      setRequired(false)).
+    addStringOption((option) => option.
+      setName("song_artist").
+      setDescription("New song artist name").
+      setRequired(false)),
+  async execute(interaction) {
+    await run(interaction);
   }
-}
-module.exports = RenameSongCommand;
+};

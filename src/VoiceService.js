@@ -1,5 +1,9 @@
 const Song = require("./Song");
-const ytdl = require("ytdl-core-discord");
+const ytdl = require("youtube-dl-exec");
+const streamSourceService = require("./StreamSourceService");
+const {joinVoiceChannel, getVoiceConnection, createAudioPlayer,
+  demuxProbe,
+  createAudioResource} = require("@discordjs/voice");
 
 /**
  * Class representing a voice service.
@@ -7,12 +11,10 @@ const ytdl = require("ytdl-core-discord");
 class VoiceService {
 
   /**
-   * Constructor.
    * @param {Object} options - options and user settings for voice connection.
    * @param {Client} client - Discord.js client object.
-   * @param {StreamSourceService} streamSourceService - StreamSourceService.
    */
-  constructor(options, client, streamSourceService) {
+  init(options, client) {
     this.bitRate = options.bitRate;
     this.volume = options.defVolume;
     this.client = client;
@@ -24,78 +26,77 @@ class VoiceService {
 
   /**
    * Plays stream from the given song and return ste stream dispatcher.
+   * @param audioPlayer
    * @param {Song} song song to be played
-   * @param {Message} msg - User message this function is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User message this function is invoked by.
    * @param {number} seek - position in seconds to start the stream from.
    * @returns {Object} - Stream dispatcher.
    */
-  async playStream(song, msg, seek = 0) {
-    const connection = await this.getVoiceConnection(msg);
-    const opt = {"bitrate": this.bitRate, "fec": true, "highWaterMark": 64, seek, "volume": (this.volume / 100)};
-    if (song.src === Song.srcType.YT) {
-      opt.type = "opus";
-      return connection.play(await ytdl(song.url), opt);
-    }
-    return connection.play(await this.getStream(song), opt);
+  playStream(audioPlayer, song, interaction, seek = 0) {
+    return new Promise((resolve, reject) => {
+      this.getVoiceConnection(interaction).
+        then((connection) => {
+          connection.subscribe(audioPlayer);
+          this.createAudioResource(song).
+            then((audioResouce) => {
+              audioPlayer.play(audioResouce);
+              resolve();
+            }).
+            catch(reject);
+        }).
+        catch(reject);
+    });
+
   }
 
   /**
    * Disconnect current voice connection.
-   * @param {Message} msg - User message this function is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User message this function is invoked by.
    */
-  disconnectVoiceConnection(msg) {
-    const serverId = msg.guild.id;
-    this.client.voice.connections.forEach((conn) => {
-      if (conn.channel.guild.id === serverId) {
-        conn.disconnect();
-      }
-    });
+  disconnectVoiceConnection(interaction) {
+    if (typeof interaction.guild === "undefined") {
+      return;
+    }
+    const serverId = interaction.guild.id;
+    getVoiceConnection(serverId).destroy();
   }
 
   /**
    * Establish new voice connection.
    * If a connection is already established disconnect first.
-   * @param {Message} msg - User message this function is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User interaction this function is invoked by.
    */
-  getVoiceConnection(msg) {
-    if (typeof msg.guild === "undefined") {
-      return new Promise((resolve, reject) => reject(new Error("Unable to find discord server!")));
+  getVoiceConnection(interaction) {
+    if (typeof interaction.guild === "undefined") {
+      return new Promise((resolve, reject) => {
+        reject(new Error("Unable to find discord server!"));
+      });
     }
-    const serverId = msg.guild.id;
-    const voiceChannel = msg.member.voice.channel;
     return new Promise((resolve, reject) => {
-      // Search for established connection with this server.
-      const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === serverId);
-      // If not already connected try to join.
-      if (typeof voiceConnection === "undefined") {
-        if (voiceChannel && voiceChannel.joinable) {
-          voiceChannel.join().
-            then((connection) => {
-              resolve(connection);
-            }).
-            catch(() => {
-              reject(new Error("Unable to join your voice channel!"));
-            });
-        } else {
-          reject(new Error("Unable to join your voice channel!"));
-        }
-      } else {
-        resolve(voiceConnection);
+      try {
+        const connection = joinVoiceChannel({
+          "adapterCreator": interaction.guild.voiceAdapterCreator,
+          "channelId": interaction.member.voice.channel.id,
+          "guildId": interaction.guild.id
+        });
+        resolve(connection);
+      } catch (err) {
+        reject(new Error("Unable to join your voice channel!", err));
       }
     });
   }
 
   /**
    * Check if a voice connection to the server of the message is established.
-   * @param {Message} msg - User message this function is invoked by.
+   * @param {ChatInputCommandInteraction} interaction  - User message this function is invoked by.
    */
-  isVoiceConnected(msg) {
-    if (typeof msg.guild === "undefined") {
+  isVoiceConnected(interaction) {
+    if (typeof interaction.guild === "undefined") {
       return false;
     }
-    const serverId = msg.guild.id;
+    const serverId = interaction.guild.id;
     // Search for established connection with this server.
-    const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === serverId);
+    const voiceConnection = getVoiceConnection(serverId);
 
     return typeof voiceConnection !== "undefined";
   }
@@ -125,6 +126,52 @@ class VoiceService {
       }
     });
   }
+
+  /**
+   * Creates an AudioResource from Song.
+   */
+  createAudioResource(song) {
+    return new Promise((resolve, reject) => {
+      if (song.src === Song.srcType.YT) {
+        const process = ytdl.exec(
+          song.url,
+          {
+            "f": "bestaudio[ext=webm][acodec=opus][asr=48000]/bestaudio",
+            "o": "-",
+            "q": "",
+            "r": "100K"
+          },
+          {"stdio": ["ignore", "pipe", "ignore"]}
+        );
+        const stream = process.stdout;
+        const onError = (error) => {
+          if (!process.killed) {
+            process.kill();
+          }
+          stream.resume();
+          reject(error);
+        };
+        process.
+          once("spawn", () => {
+            demuxProbe(stream).
+              then((probe) => resolve(createAudioResource(probe.stream, {
+                "inputType": probe.type,
+                "metadata": song
+              }))).
+              catch(onError);
+          }).
+          catch(onError);
+      } else {
+        const stream = this.getStream(song);
+        demuxProbe(stream).
+          then((probe) => resolve(createAudioResource(probe.stream, {
+            "inputType": probe.type,
+            "metadata": song
+          }))).
+          catch(reject);
+      }
+    });
+  }
 }
 
-module.exports = VoiceService;
+module.exports = new VoiceService();

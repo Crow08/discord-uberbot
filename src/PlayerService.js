@@ -1,3 +1,11 @@
+const voiceService = require("./VoiceService");
+const queueService = require("./QueueService");
+const chatService = require("./ChatService");
+const ratingService = require("./RatingService");
+const {AudioPlayerStatus,
+  createAudioPlayer
+} = require("@discordjs/voice");
+
 /**
  * Class representing the music player.
  * The player is a active entity responsible for managing the playback of songs.
@@ -11,102 +19,64 @@ class PlayerService {
    * @param {ChatService} chatService - ChatService.
    * @param {RatingService} ratingService - RatingService.
    */
-  constructor(voiceService, queueService, chatService, ratingService) {
-    this.audioDispatcher = null;
-
-    this.voiceService = voiceService;
-    this.queueService = queueService;
-    this.chatService = chatService;
-    this.ratingService = ratingService;
-
+  init() {
     this.playerIdObj = {"id": null};
     this.skipCount = 0;
+    this.audioPlayers = new Map();
   }
 
   /**
    * Called when a song has ended. and starting the next song from queue oe auto playlist when available.
    * @private
-   * @param {Message} msg - User message the playback was is invoked by.
-   * @param {number} startTime - time in ms when the ending song hast been started.
+   * @param {ChatInputCommandInteraction} interaction - User message the playback was is invoked by.
    */
-  handleSongEnd(msg, startTime) {
-    const delta = (new Date()) - startTime;
-    if (delta < 2000) {
-      if (this.skipCount >= 3) {
-        this.stop(msg);
-        return;
-      }
-      // Try to reset everything.
-      this.chatService.simpleNote(msg, "Song ended to quickly: Try to reset voice.", this.chatService.msgType.FAIL);
-      this.endStream();
-      setTimeout(() => {
-        this.voiceService.disconnectVoiceConnection(msg);
-        setTimeout(() => {
-          this.voiceService.getVoiceConnection(msg).
-            then(() => this.playNext(msg)).
-            catch((err) => this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL));
-        }, 2000);
-      }, 2000);
-      ++this.skipCount;
-      return;
-    }
-    if (this.skipCount > 0) {
-      --this.skipCount;
-    }
-    this.playNext(msg);
+  handleSongEnd(interaction) {
+    this.playNext(interaction);
   }
 
   /**
    * Called when an error has occurred during playback.
    * @param {Error} err - Error caused by playback.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User message the playback was is invoked by.
    */
-  handleError(err, msg) {
-    this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL);
+  handleError(err, interaction) {
+    chatService.simpleNote(interaction, err, chatService.msgType.FAIL);
   }
 
   /**
    * Play the given song immediately.
    * If another song is already playing it ends immediately.
    * @param {Song} song - Song to be played.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction  - User message the playback was is invoked by.
    */
-  async playNow(song, msg) {
-    this.endStream();
-    const dispatcherResult = await this.voiceService.playStream(song, msg);
-    if (typeof dispatcherResult === Error) {
-      this.chatService.simpleNote(msg, dispatcherResult, this.chatService.msgType.FAIL);
-      if (this.voiceService.isVoiceConnected(msg)) {
-        this.playNext(msg);
-      }
-    } else if (typeof dispatcherResult === "undefined") {
-      this.chatService.simpleNote(msg, "Something went wrong dispatching this Stream!", this.chatService.msgType.FAIL);
-      if (this.voiceService.isVoiceConnected(msg)) {
-        this.playNext(msg);
+  async playNow(song, interaction) {
+    const audioPlayer = this.getAudioPlayer(interaction);
+    audioPlayer.stop();
+    const result = await voiceService.playStream(audioPlayer, song, interaction);
+    if (typeof result === Error) {
+      await chatService.simpleNote(interaction, result, chatService.msgType.FAIL);
+      if (voiceService.isVoiceConnected(interaction)) {
+        this.playNext(interaction);
       }
     } else {
-      this.queueService.addSongToHistory(song);
-      this.audioDispatcher = dispatcherResult;
-      const startTime = new Date();
-      this.audioDispatcher.once("finish", () => this.handleSongEnd(msg, startTime));
-      this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
-      this.chatService.simpleNote(msg, `Playing now: ${song.title}`, this.chatService.msgType.MUSIC);
+      queueService.addSongToHistory(song);
+      await chatService.simpleNote(interaction, `Playing now: ${song.title}`, chatService.msgType.MUSIC);
 
-      this.rebuildPlayer(msg, song);
+      this.rebuildPlayer(interaction, song);
     }
   }
 
   /**
    * (Re-) builds the player with controls.
    * Can be used to move the player down in chat.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User message the playback was is invoked by.
    */
-  rebuildPlayer(msg) {
-    this.queueService.getCurrentSong().
+  rebuildPlayer(interaction) {
+    queueService.getCurrentSong().
       then((song) => {
-        const reactionFunctions = this.buildReactionFunctions(msg);
+        const reactionFunctions = this.buildReactionFunctions(interaction);
         if (this.playerIdObj.id) {
-          msg.channel.messages.fetch(this.playerIdObj.id).
+          interaction.channel.messages.fetch(this.playerIdObj.id).
             then((curPlayer) => {
               if (curPlayer) {
                 curPlayer.delete();
@@ -114,10 +84,10 @@ class PlayerService {
               }
             }).
             finally(() => {
-              this.chatService.displayPlayer(msg, song, reactionFunctions, this.playerIdObj);
+              chatService.displayPlayer(interaction, song, reactionFunctions, this.playerIdObj);
             });
         } else {
-          this.chatService.displayPlayer(msg, song, reactionFunctions, this.playerIdObj);
+          chatService.displayPlayer(interaction, song, reactionFunctions, this.playerIdObj);
         }
       }).
       catch((err) => {
@@ -128,41 +98,42 @@ class PlayerService {
   /**
    * Build object for reaction based player functions.
    * @private
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User message the playback was is invoked by.
    */
-  buildReactionFunctions(msg) {
+  buildReactionFunctions(interaction) {
     const ratingFunc = (rSong, user, delta, ignoreCd) => new Promise((resolve, reject) => {
-      this.ratingService.rateSong(rSong, user, delta, ignoreCd).
+      ratingService.rateSong(rSong, user, delta, ignoreCd).
         then(resolve).
         catch(reject).
         finally(() => {
           if (delta < 0) {
-            this.skip(msg);
+            this.skip(interaction);
           }
         });
     });
+    const audioPlayer = this.getAudioPlayer(interaction);
     const reactionFunctions = {
-      "⏩": () => this.skip(msg),
-      "⏪": () => this.back(msg),
+      "⏩": () => this.skip(interaction),
+      "⏪": () => this.back(interaction),
       "⏯": () => {
-        if (!this.audioDispatcher || this.audioDispatcher.paused) {
-          this.play(msg);
+        if (!audioPlayer || typeof audioPlayer.state.status === AudioPlayerStatus.Paused) {
+          this.play(interaction);
         } else {
-          this.pause(msg);
+          this.pause(interaction);
         }
       },
-      "⏹": () => this.stop(msg),
+      "⏹": () => this.stop(interaction),
       "👍": ratingFunc,
       "👎": ratingFunc,
       "🔀": () => {
-        this.queueService.shuffleQueue();
-        this.chatService.simpleNote(msg, "Queue shuffled!", this.chatService.msgType.MUSIC);
+        queueService.shuffleQueue();
+        chatService.simpleNote(interaction, "Queue shuffled!", chatService.msgType.MUSIC);
       },
       "🔁": () => {
-        this.queueService.mode = this.queueService.mode === "n" ? "ra" : "n";
-        this.chatService.simpleNote(
-          msg, this.queueService.mode === "n" ? "No more looping!" : "Loop current queue!",
-          this.chatService.msgType.MUSIC
+        queueService.mode = queueService.mode === "n" ? "ra" : "n";
+        chatService.simpleNote(
+          interaction, queueService.mode === "n" ? "No more looping!" : "Loop current queue!",
+          chatService.msgType.MUSIC
         );
       }
     };
@@ -173,141 +144,143 @@ class PlayerService {
    * Given a Array of songs, play the first one immediately and queue the rest.
    * If another song is already playing it ends immediately.
    * @param {Song[]} songs - Song to be played and queued.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction- User message the playback was is invoked by.
    */
-  playMultipleNow(songs, msg) {
+  playMultipleNow(songs, interaction) {
     if (!songs && songs.length === 0) {
-      this.chatService.simpleNote(msg, "No songs Found!", this.chatService.msgType.FAIL);
+      chatService.simpleNote(interaction, "No songs Found!", chatService.msgType.FAIL);
       return;
     }
-    this.playNow(songs[0], msg);
+    this.playNow(songs[0], interaction);
     if (songs.length > 1) {
       songs.splice(0, 1);
-      this.queueService.addMultipleFairlyToQueue(songs);
+      queueService.addMultipleFairlyToQueue(songs);
     }
   }
 
   /**
    * Play the next song from the queue.
    * @private
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction  - User message the playback was is invoked by.
    */
-  playNext(msg) {
-    this.queueService.popNextSong().
+  playNext(interaction) {
+    queueService.popNextSong().
       then((song) => {
         if (song === null) {
-          this.endStream();
-          this.chatService.simpleNote(msg, "Queue is empty, playback finished!", this.chatService.msgType.MUSIC);
+          this.getAudioPlayer(interaction).stop();
+          chatService.simpleNote(interaction, "Queue is empty, playback finished!", chatService.msgType.MUSIC);
         } else {
-          this.playNow(song, msg);
+          this.playNow(song, interaction);
         }
       }).
       catch((err) => {
-        this.chatService.simpleNote(msg, err, this.chatService.msgType.FAIL);
+        chatService.simpleNote(interaction, err, chatService.msgType.FAIL);
       });
   }
 
   /**
    * Start playing if the playback ist stopped or resume playback if paused.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User message the playback was is invoked by.
    */
-  play(msg) {
-    if (!this.audioDispatcher || this.audioDispatcher.writableLength <= 0) {
-      this.playNext(msg);
-    } else if (this.audioDispatcher.paused) {
-      this.audioDispatcher.resume();
-      this.chatService.simpleNote(msg, "Now playing!", this.chatService.msgType.MUSIC);
+  play(interaction) {
+    const audioPlayer = this.getAudioPlayer(interaction);
+    if (!audioPlayer || audioPlayer.state.status === AudioPlayerStatus.Idle) {
+      this.playNext(interaction);
+    } else if (audioPlayer.state.status === AudioPlayerStatus.Paused) {
+      audioPlayer.unpause();
+      chatService.simpleNote(interaction, "Now playing!", chatService.msgType.MUSIC);
     } else {
-      this.chatService.simpleNote(msg, "Already playing!", this.chatService.msgType.FAIL);
+      chatService.simpleNote(interaction, "Already playing!", chatService.msgType.FAIL);
     }
   }
 
   /**
    * Pause playback.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction  - User message the playback was is invoked by.
    */
-  pause(msg) {
-    if (!this.audioDispatcher) {
-      this.chatService.simpleNote(msg, "There no playback to be paused!", this.chatService.msgType.FAIL);
-    } else if (this.audioDispatcher.paused) {
-      this.chatService.simpleNote(msg, "Playback already paused!", this.chatService.msgType.FAIL);
+  pause(interaction) {
+    const audioPlayer = this.getAudioPlayer(interaction);
+    if (!audioPlayer) {
+      chatService.simpleNote(interaction, "There no playback to be paused!", chatService.msgType.FAIL);
+    } else if (audioPlayer.paused) {
+      chatService.simpleNote(interaction, "Playback already paused!", chatService.msgType.FAIL);
     } else {
-      this.audioDispatcher.pause(true);
-      this.chatService.simpleNote(msg, "Playback paused!", this.chatService.msgType.MUSIC);
+      audioPlayer.pause(true);
+      chatService.simpleNote(interaction, "Playback paused!", chatService.msgType.MUSIC);
     }
   }
 
   /**
    * Stop playback.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User message the playback was is invoked by.
    */
-  stop(msg) {
-    if (!this.audioDispatcher) {
-      this.chatService.simpleNote(msg, "Playback already stopped!", this.chatService.msgType.FAIL);
+  stop(interaction) {
+    const audioPlayer = this.getAudioPlayer(interaction);
+    if (audioPlayer.state.status === AudioPlayerStatus.Idle) {
+      chatService.simpleNote(interaction, "Playback already stopped!", chatService.msgType.FAIL);
       return;
     }
-    this.endStream();
-    this.chatService.simpleNote(msg, "Playback stopped!", this.chatService.msgType.MUSIC);
+    audioPlayer.stop();
+    chatService.simpleNote(interaction, "Playback stopped!", chatService.msgType.MUSIC);
   }
 
   /**
    * Skip current song.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User message the playback was is invoked by.
    */
-  skip(msg) {
-    if (!this.audioDispatcher) {
-      this.playNext(msg);
+  skip(interaction) {
+    const audioPlayer = this.getAudioPlayer(interaction);
+    if (!audioPlayer) {
+      this.playNext(interaction);
       return;
     }
-    this.chatService.simpleNote(msg, "Skipping song!", this.chatService.msgType.MUSIC);
-    this.audioDispatcher.end();
+    audioPlayer.stop();
   }
 
   /**
    * Play last song again.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction  - User message the playback was is invoked by.
    */
-  back(msg) {
-    if (this.queueService.history.length >= 2) {
-      this.chatService.simpleNote(msg, "Loading last song!", this.chatService.msgType.MUSIC);
+  back(interaction) {
+    if (queueService.history.length >= 2) {
+      chatService.simpleNote(interaction, "Loading last song!", chatService.msgType.MUSIC);
       // Add current playing song back to queue.
-      this.queueService.queue.unshift(this.queueService.history[0]);
+      queueService.queue.unshift(queueService.history[0]);
       // Get last song
-      const lastSong = this.queueService.history[1];
+      const lastSong = queueService.history[1];
       // Remove current and last song from history.
-      this.queueService.history.splice(0, 2);
-      this.playNow(lastSong, msg);
+      queueService.history.splice(0, 2);
+      this.playNow(lastSong, interaction);
     } else {
-      this.chatService.simpleNote(msg, "No song in history!", this.chatService.msgType.FAIL);
+      chatService.simpleNote(interaction, "No song in history!", chatService.msgType.FAIL);
     }
   }
 
   /**
    * Play the current song at a given Position in seconds.
    * @param {number} position number in seconds to restart the current stream at.
-   * @param {Message} msg - User message the playback was is invoked by.
+   * @param {ChatInputCommandInteraction} interaction - User message the playback was is invoked by.
    */
-  seek(position, msg) {
-    this.endStream();
-    this.voiceService.playStream(this.queueService.getHistorySong(0), msg, position).
-      then((dispatcher) => {
-        this.audioDispatcher = dispatcher;
-        const startTime = new Date();
-        this.audioDispatcher.on("finish", () => this.handleSongEnd(msg, startTime));
-        this.audioDispatcher.on("error", (error) => this.handleError(error, msg));
-      }).
-      catch((error) => this.chatService.simpleNote(msg, error, this.chatService.msgType.FAIL));
+  seek(position, interaction) {
+    const audioPlayer = this.getAudioPlayer(interaction);
+    audioPlayer.stop();
+    voiceService.playStream(audioPlayer, queueService.getHistorySong(0), interaction, position).
+      catch((error) => chatService.simpleNote(interaction, error, chatService.msgType.FAIL));
   }
 
-  /**
-   * Destroys the audio dispatcher if necessary.
-   * @private
-   */
-  endStream() {
-    if (this.audioDispatcher) {
-      this.audioDispatcher.destroy();
-      this.audioDispatcher = null;
+  getAudioPlayer(interaction) {
+    if (this.audioPlayers.has(interaction.guild.id)) {
+      return this.audioPlayers.get(interaction.guild.id);
     }
+    const audioPlayer = createAudioPlayer();
+    this.audioPlayers.set(interaction.guild.id, audioPlayer);
+    audioPlayer.on("stateChange", (oldState, newState) => {
+      if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
+        this.handleSongEnd(interaction);
+      }
+    });
+    audioPlayer.on("error", (error) => this.handleError(error, interaction));
+    return audioPlayer;
   }
 }
-module.exports = PlayerService;
+module.exports = new PlayerService();

@@ -1,13 +1,17 @@
 const request = require("request");
 const {Readable} = require("stream");
 const voiceLines = require("../voiceLines.json");
+const {getVoiceConnection,
+  createAudioResource,
+  createAudioPlayer
+} = require("@discordjs/voice");
 
 /**
  * Class representing a text to speech service.
  */
 class TTSService {
 
-  constructor(options, client) {
+  init(options, client) {
     this.ttsApiKey = options.ttsApiKey;
     this.client = client;
     this.phoneticNicknames = options.phoneticNicknames;
@@ -20,7 +24,7 @@ class TTSService {
    *  Get text to Speech stream for given text.
    * @param {string} text text to convert
    */
-  getStream(text) {
+  getAudioResource(text) {
     return new Promise((resolve, reject) => {
       request.post({
         "body": `{"input":{"ssml":"<speak>${text}</speak>"},` +
@@ -35,13 +39,14 @@ class TTSService {
         }
         const content = JSON.parse(body);
         if (typeof content.audioContent === "undefined") {
-          return reject(new Error("Audio content not found!"));
+          const htmlError = content.error ? `${content.error.code} : ${content.error.message}` : "";
+          return reject(new Error(`Audio content not found! ${htmlError}`));
         }
         const buff = Buffer.from(content.audioContent, "base64");
         const stream = new Readable();
         stream.push(buff);
         stream.push(null);
-        return resolve(stream);
+        return resolve(createAudioResource(stream));
       });
     });
   }
@@ -57,31 +62,31 @@ class TTSService {
       }
       const newUserChannel = newState.channel;
       const oldUserChannel = oldState.channel;
-      const voiceConnection = this.client.voice.connections.find((val) => val.channel.guild.id === newState.guild.id);
+      const voiceConnection = getVoiceConnection(oldState.guild.id);
 
       if (typeof voiceConnection !== "undefined") {
         const newUser = newState.member.displayName;
         if (newUserChannel && oldUserChannel && newUserChannel.id === oldUserChannel.id) {
           // Do nothing!
-        } else if (newUserChannel && newUserChannel.id === voiceConnection.channel.id) {
+        } else if (newUserChannel && newUserChannel.id === voiceConnection.joinConfig.channelId) {
           // User joins voice channel of bot
           const line = Math.floor(Math.random() * voiceLines.join.length);
           const messageJoin = voiceLines.join[line].replace(/#User/gu, this.phoneticNicknameFor(newUser));
           this.announceMessage(messageJoin, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.cache.forEach((guild) => {
-              guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} joined the channel (${this.formatDate(this.AddTime)})`);
+              guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} joined the channel (${this.formattedDate()})`);
             });
           }
 
-        } else if (oldUserChannel && oldUserChannel.id === voiceConnection.channel.id) {
+        } else if (oldUserChannel && oldUserChannel.id === voiceConnection.joinConfig.channelId) {
           // User leaves voice channel of bot
           const line = Math.floor(Math.random() * voiceLines.leave.length);
           const messageLeave = voiceLines.leave[line].replace(/#User/gu, this.phoneticNicknameFor(newUser));
           this.announceMessage(messageLeave, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.cache.forEach((guild) => {
-              guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} left the channel (${this.formatDate(this.AddTime)})`);
+              guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} left the channel (${this.formattedDate()})`);
             });
           }
         }
@@ -112,14 +117,14 @@ class TTSService {
    * @param {VoiceConnection} voiceConnection Discord.js Voice connection to announce to.
    */
   announceMessage(message, voiceConnection) {
-    this.getStream(message).
-      then((stream) => {
-        const oldDispatcher = voiceConnection.dispatcher;
-        const dispatcher = voiceConnection.play(stream);
-        dispatcher.on("end", () => {
-          if (oldDispatcher && !oldDispatcher.paused) {
-            oldDispatcher.end();
-          }
+    this.getAudioResource(message).
+      then((audioResource) => {
+        const player = createAudioPlayer();
+        const subscription = voiceConnection.subscribe(player);
+        player.play(audioResource);
+        player.on("idle", () => {
+          subscription.unsubscribe();
+          player.stop();
         });
       }).
       catch((err) => {
@@ -130,25 +135,9 @@ class TTSService {
       });
   }
 
- formatDate(addhour) {
-    let date = Date.now()
-    let Time = Date.now()
-    if (typeof addhour != "number" || Number.isNaN(addhour) == true) {
-      addhour = 0;
-    }
-    Time = Time + addhour * 3600000
-        date = new Date(Time)
-    let day = date.getDate().toString().padStart(2,'0');
-    let month = parseInt(date.getMonth().toString().padStart(2,'0')) + 1;
-    let year = date.getFullYear();
-    let hour = date.getHours().toString().padStart(2,'0');
-    let minutes = date.getMinutes().toString().padStart(2,'0');
-    let seconds = date.getSeconds().toString().padStart(2,'0');
-
-    let actual_date = day + "." + month + "." + year;
-    return day + "." + month + "." + year + " " + hour + ":" + minutes + ":" + seconds;
-
+  formattedDate() {
+    return new Date().toLocaleString("de-DE", {timeZone: 'Europe/Berlin'});
   }
 }
 
-module.exports = TTSService;
+module.exports = new TTSService();

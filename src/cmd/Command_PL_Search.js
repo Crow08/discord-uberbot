@@ -1,51 +1,40 @@
-const Command = require("./Command.js");
+const chatService = require("../ChatService");
+const dbService = require("../DBService");
+const ratingService = require("../RatingService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for search in playlist command.
- * @extends Command
- * @Category Commands
- */
-class SearchPLCommand extends Command {
 
-  /**
-   * Constructor.
-   * @param {ChatService} chatService - ChatService.
-   * @param {DbService} dbService - DbService.
-   * @param {RatingService} ratingService - RatingService.
-   */
-  constructor(chatService, dbService, ratingService) {
-    super(
-      ["plsearch", "pls"],
-      "search given song in given playlist",
-      "<prefix>plsearch <pl name> <song name>"
-    );
-    this.chatService = chatService;
-    this.dbService = dbService;
-    this.ratingService = ratingService;
-  }
+const run = (interaction) => {
+  const plName = interaction.options.getString("playlist_name");
+  const songQuery = interaction.options.getString("song_query");
 
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    if (typeof payload === "undefined" || payload.length === 0 || payload.split(" ").length < 2) {
-      this.chatService.simpleNote(msg, "Wrong syntax!", this.chatService.msgType.FAIL);
-      this.chatService.simpleNote(msg, `Usage: ${this.usage}`, this.chatService.msgType.INFO);
-      return;
-    }
-    const plName = payload.split(" ")[0];
-    const songName = payload.substr(plName.length + 1);
-    this.dbService.findSong(songName, plName).then((song) => {
+  dbService.findSong(songQuery, plName).
+    then((song) => {
       if (song === "null") {
-        const note = `"${songName}" not found in ${plName}!`;
-        this.chatService.simpleNote(msg, note, this.chatService.msgType.FAIL);
+        const note = `"${songQuery}" not found in ${plName}!`;
+        chatService.simpleNote(interaction, note, chatService.msgType.FAIL, true);
       } else {
-        const ratingFunc = (rSong, usr, delta, ignoreCd) => this.ratingService.rateSong(rSong, usr, delta, ignoreCd);
-        this.chatService.displaySong(msg, song, ratingFunc);
+        const ratingFunc = (rSong, usr, delta, ignoreCd) => ratingService.rateSong(rSong, usr, delta, ignoreCd);
+        chatService.simpleNote(interaction, "Song found:", chatService.msgType.MUSIC, true);
+        chatService.displaySong(interaction, song, ratingFunc);
       }
     });
+};
+
+
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("pl_search").
+    setDescription("search given song in given playlist").
+    addStringOption((option) => option.
+      setName("playlist_name").
+      setDescription("playlist to search in").
+      setRequired(true)).
+    addStringOption((option) => option.
+      setName("song_query").
+      setDescription("search term to find a song by name").
+      setRequired(true)),
+  async execute(interaction) {
+    await run(interaction);
   }
-}
-module.exports = SearchPLCommand;
+};

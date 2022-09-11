@@ -1,33 +1,19 @@
-const Command = require("./Command.js");
+const voiceService = require("../VoiceService");
+const chatService = require("../ChatService");
+const {SlashCommandBuilder} = require("discord.js");
 
-/**
- * Class for join command.
- * @extends Command
- * @Category Commands
- */
-class JoinCommand extends Command {
+const run = (interaction) => {
+  voiceService.getVoiceConnection(interaction).
+    then(() => chatService.simpleNote(interaction, "Voice connected!", chatService.msgType.INFO, true)).
+    catch(() => chatService.simpleNote(interaction, "Error connecting to Voice channel!", chatService.msgType.FAIL, true));
+};
 
-  /**
-   * Constructor.
-   * @param {VoiceService} voiceService - VoiceService.
-   */
-  constructor(voiceService) {
-    super(
-      ["join"],
-      "ask bot nicely to join your channel",
-      "<prefix>join"
-    );
-    this.voiceService = voiceService;
+
+module.exports = {
+  "data": new SlashCommandBuilder().
+    setName("join").
+    setDescription("ask bot nicely to join your channel"),
+  async execute(interaction) {
+    await run(interaction);
   }
-
-  /**
-   * Function to execute this command.
-   * @param {String} payload - Payload from the user message with additional information.
-   * @param {Message} msg - User message this function is invoked by.
-   */
-  run(payload, msg) {
-    this.voiceService.getVoiceConnection(msg);
-  }
-}
-
-module.exports = JoinCommand;
+};
