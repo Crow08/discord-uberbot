@@ -5,9 +5,10 @@ const {
 const {Routes} = require("discord-api-types/v10");
 const path = require("node:path");
 const fs = require("node:fs");
+const settings = require("../../settings.json");
 
-let clientId = "";
-let token = "";
+let clientId = settings.clientId;
+let token = settings.token;
 
 const rest = new REST({"version": "10"}).setToken(token);
 

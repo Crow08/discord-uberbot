@@ -1,12 +1,19 @@
 const {EmbedBuilder, ActionRowBuilder, ButtonBuilder} = require("discord.js");
 const {ButtonStyle} = require("discord-api-types/v10");
+const queueService = require("./QueueService");
+const {
+  createAudioPlayer,
+  AudioPlayerStatus
+} = require("@discordjs/voice");
 
 /**
  * Class representing a chat service.
  */
 class ChatService {
 
-  init() {
+  init(settings) {
+    this.playerMsgs = new Map();
+    this.defaultTextChannel = settings.defaultTextChannel;
 
     /** @property {Enum} msgType - Message Type for simple Note */
     this.msgType = {
@@ -179,9 +186,8 @@ class ChatService {
    * @param {ChatInputCommandInteraction} interaction- User message this function is invoked by.
    * @param {Song} song - Song to be displayed.
    * @param {function} reactionFunc - Function to be invoked if a reaction was given.
-   * @param playerIdObj
    */
-  displayPlayer(interaction, song, reactionFunc, playerIdObj) {
+  updatePlayer(interaction, song, reactionFunc) {
     this.debugPrint(song);
     if (typeof interaction.channel === "undefined") {
       return this.buildDummyMessage();
@@ -225,63 +231,56 @@ class ChatService {
               setStyle(ButtonStyle.Primary)
           )
       ];
-      interaction.channel.send(content).
-        // Add reactions for song rating.
-        then((playerMsg) => {
-          this.addBtnListener(playerMsg, downVoteEmojiName, upVoteEmojiName, reactionFunc, song, playerIdObj);
-          playerIdObj.id = playerMsg.id;
-          resolve(playerMsg);
-        }).
-        catch(reject);
+      const oldPlayerMsg = this.getPlayerMsg(interaction);
+      if (oldPlayerMsg === null) {
+        interaction.channel.send(content).
+          // Add reactions for song rating.
+          then((playerMsg) => {
+            this.playerMsgs.set(interaction.guild.id, playerMsg);
+            this.addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunc);
+          }).
+          catch(console.error);
+      } else {
+        oldPlayerMsg.edit(content);
+      }
     });
   }
 
   /**
    * Add Reaction controls to player and refreshes listener recursively until message is destroyed.
    * @private
-   * @param {Message} playerMsg - Player Messages the Reactions are attached to.
+   * @param {ChatInputCommandInteraction} interaction - Player Messages the Reactions are attached to.
    * @param {string} downVoteEmojiName - name of the custom upvote emoji.
    * @param {string} upVoteEmojiName - name of the custom upvote emoji.
    * @param {function} reactionFunctions - Function to be invoked if a reaction was given.
-   * @param {Song} song - Song to be displayed / rated.
-   * @param playerIdObj
    */
-  addBtnListener(playerMsg, downVoteEmojiName, upVoteEmojiName, reactionFunctions, song, playerIdObj) {
+  addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions) {
     const btnIds = [downVoteEmojiName, upVoteEmojiName, "⏪", "⏯", "⏩", "🔀", "🔁"];
-    const btnCollector = playerMsg.createMessageComponentCollector({"filter":
+    const btnCollector = this.getPlayerMsg(interaction).createMessageComponentCollector({"filter":
         (btnInteraction) => btnIds.includes(btnInteraction.customId), "time": 120000});
     // Handle reactions.
     btnCollector.on("collect", (btnInteraction) => this.handleBtnAction(
       btnInteraction,
       downVoteEmojiName,
       upVoteEmojiName,
-      reactionFunctions,
-      song,
-      playerIdObj
+      reactionFunctions
     ));
     btnCollector.on("end", () => {
-      if (playerMsg.channel.lastMessageId === playerMsg.id) {
-        this.addBtnListener(playerMsg, downVoteEmojiName, upVoteEmojiName, reactionFunctions, song);
-      } else {
-        playerMsg.delete();
-        playerIdObj.id = null;
-        this.displayPlayer(playerMsg, song, reactionFunctions, playerIdObj);
-      }
+      this.addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions);
     });
-
   }
 
-  handleBtnAction(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions, song){
+  handleBtnAction(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions){
     switch (interaction.customId) {
     case downVoteEmojiName:
-      this.handleRatingReaction(interaction, song, -1, reactionFunctions["👎"]);
+      this.handleRatingReaction(interaction, -1, reactionFunctions["👎"]);
       break;
     case upVoteEmojiName:
-      this.handleRatingReaction(interaction, song, 1, reactionFunctions["👍"]);
+      this.handleRatingReaction(interaction, 1, reactionFunctions["👍"]);
       break;
     default:
       if (typeof reactionFunctions[interaction.customId] !== "undefined") {
-        this.handleReaction(interaction, reactionFunctions[interaction.customId]);
+        this.handleReaction(reactionFunctions[interaction.customId]);
       }
       break;
     }
@@ -367,31 +366,29 @@ class ChatService {
    * @param {function} processRating - Function to be invoked if rating was given.
    * @param {boolean} ignoreCd - Flag to indicate if the cooldown should be ignored.
    */
-  handleRatingReaction(reaction, song, delta, processRating, ignoreCd = false) {
+  handleRatingReaction(reaction, delta, processRating, ignoreCd = false) {
     reaction.users.cache.filter((user) => !user.bot).forEach((user) => {
       reaction.users.cache.delete(user);
-      processRating(song, user, delta, ignoreCd).
-        then((note) => {
-          reaction.message.edit(this.buildSongEmbed(song));
-          if (note) {
-            this.simpleNote(reaction.message, note, this.msgType.MUSIC);
-          }
-        }).
-        catch((err) => this.simpleNote(reaction.message, err, this.msgType.FAIL));
+      queueService.getCurrentSong().then((song) => {
+        processRating(song, user, delta, ignoreCd).
+          then((note) => {
+            reaction.message.edit(this.buildSongEmbed(song));
+            if (note) {
+              this.simpleNote(reaction.message, note, this.msgType.MUSIC);
+            }
+          }).
+          catch((err) => this.simpleNote(reaction.message, err, this.msgType.FAIL));
+      });
     });
   }
 
   /**
    * Process reactions.
    * @private
-   * @param {MessageReaction} reaction - given user reaction.
    * @param {function} processFunction - Function to be invoked if rating was given.
    */
-  handleReaction(reaction, processFunction) {
-    reaction.users.cache.filter((user) => !user.bot).forEach((user) => {
-      reaction.users.cache.delete(user);
-      processFunction();
-    });
+  handleReaction(processFunction) {
+    processFunction();
   }
 
   /**
@@ -448,6 +445,13 @@ class ChatService {
     return new Promise((resolve) => {
       resolve({"delete": () => null});
     });
+  }
+
+  getPlayerMsg(interaction) {
+    if (this.playerMsgs.has(interaction.guild.id)) {
+      return this.playerMsgs.get(interaction.guild.id);
+    }
+    return null;
   }
 }
 

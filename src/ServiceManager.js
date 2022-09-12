@@ -12,7 +12,7 @@ const ttsService = require("./TTSService");
 module.exports = {
   "setup": async(opt) => {
     await clientService.init(opt);
-    chatService.init();
+    chatService.init(opt);
     streamSourceService.init(opt);
     searchService.init("SP");
     voiceService.init(opt);

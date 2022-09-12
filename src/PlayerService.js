@@ -75,20 +75,7 @@ class PlayerService {
     queueService.getCurrentSong().
       then((song) => {
         const reactionFunctions = this.buildReactionFunctions(interaction);
-        if (this.playerIdObj.id) {
-          interaction.channel.messages.fetch(this.playerIdObj.id).
-            then((curPlayer) => {
-              if (curPlayer) {
-                curPlayer.delete();
-                this.playerIdObj.id = null;
-              }
-            }).
-            finally(() => {
-              chatService.displayPlayer(interaction, song, reactionFunctions, this.playerIdObj);
-            });
-        } else {
-          chatService.displayPlayer(interaction, song, reactionFunctions, this.playerIdObj);
-        }
+        chatService.updatePlayer(interaction, song, reactionFunctions, this.playerIdObj);
       }).
       catch((err) => {
         console.log(err);
@@ -116,7 +103,7 @@ class PlayerService {
       "⏩": () => this.skip(interaction),
       "⏪": () => this.back(interaction),
       "⏯": () => {
-        if (!audioPlayer || typeof audioPlayer.state.status === AudioPlayerStatus.Paused) {
+        if (!audioPlayer || audioPlayer.state.status === AudioPlayerStatus.Paused) {
           this.play(interaction);
         } else {
           this.pause(interaction);
@@ -202,7 +189,7 @@ class PlayerService {
     const audioPlayer = this.getAudioPlayer(interaction);
     if (!audioPlayer) {
       chatService.simpleNote(interaction, "There no playback to be paused!", chatService.msgType.FAIL);
-    } else if (audioPlayer.paused) {
+    } else if (audioPlayer.state.status === AudioPlayerStatus.Paused) {
       chatService.simpleNote(interaction, "Playback already paused!", chatService.msgType.FAIL);
     } else {
       audioPlayer.pause(true);

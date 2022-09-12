@@ -30,7 +30,7 @@ class QueueService {
 
   /**
    * Get current Song which is position 0 of the history.
-   * @returns {Song} - The current song.
+   * @returns {Promise<Song>} - The current song.
    */
   getCurrentSong() {
     return new Promise((resolve, reject) => {
