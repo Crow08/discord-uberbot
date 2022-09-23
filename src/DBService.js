@@ -216,7 +216,7 @@ class DBService {
   /**
    * Get all songs of a playlist as array.
    * @param {string} plName - Playlist name to get songs from.
-   * @returns {Song[]} - Array of all songs
+   * @returns {Promise<Song[]>} - Array of all songs
    */
   getPlaylist(plName) {
     return new Promise((resolve, reject) => {
@@ -237,7 +237,7 @@ class DBService {
   /**
    * Get a random Song from a Playlist.
    * @param {string} plName - playlist name to get the song from.
-   * @returns {Song} - A random Song from the collection.
+   * @returns {Promise<Song>} - A random Song from the collection.
    */
   getRandomSong(plName) {
     return new Promise((resolve, reject) => {
@@ -270,7 +270,7 @@ class DBService {
 
   /**
    * Gets all playlist names as string.
-   * @returns {string[]} - Array containing all playlist names.
+   * @returns {Promise<string[]>} - Array containing all playlist names.
    */
   listPlaylists() {
     return new Promise((resolve, reject) => {

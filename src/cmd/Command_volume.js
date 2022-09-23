@@ -13,9 +13,7 @@ const run = (interaction) => {
     chatService.simpleNote(interaction, note, chatService.msgType.FAIL, true);
   } else {
     voiceService.volume = volume;
-    if (playerService.audioPlayer) {
-      playerService.audioPlayer.setVolume(volume / 100);
-    }
+    playerService.restart(interaction);
     chatService.simpleNote(interaction, `Set Volume to  ${volume}`, chatService.msgType.MUSIC, true);
   }
 };

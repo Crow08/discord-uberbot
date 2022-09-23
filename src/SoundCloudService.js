@@ -17,7 +17,7 @@ class SoundCloudService {
   /**
    * Get songs via playlist url.
    * @param {string} payload - Url to get song from.
-   * @returns {Song[]} - Songs from playlist url.
+   * @returns {Promise<Song[]>} - Songs from playlist url.
    */
   getSongsViaPlaylistUrl(payload) {
     return new Promise((resolve, reject) => {
@@ -50,7 +50,7 @@ class SoundCloudService {
   /**
    * Get song via url.
    * @param {string} payload - Url to get song from.
-   * @returns {Song} - Song from url.
+   * @returns {Promise<Song>} - Song from url.
    */
   getSongViaUrl(payload) {
     return new Promise((resolve, reject) => {
@@ -77,9 +77,9 @@ class SoundCloudService {
 
   /**
    * Get songs via query.
-   * @param {string} payload - Url to get song from.
+   * @param {string} searchString - Url to get song from.
    * @param {number} count - Number of songs to be fetched.
-   * @returns {Song[]} - Array of songs from url.
+   * @returns {Promise<Song[]>} - Array of songs from url.
    */
   getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {
@@ -127,7 +127,9 @@ class SoundCloudService {
    * @param {string} url - Url to get audio stream from.
    */
   getStream(url) {
-    return new Promise((resolve) => resolve(`${url}?client_id=${this.clientId}`));
+    return new Promise((resolve) => {
+      resolve(`${url}?client_id=${this.clientId}`);
+    });
   }
 }
 

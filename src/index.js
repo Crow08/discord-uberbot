@@ -118,10 +118,8 @@ if (!disableBot || !disableAnnouncer) {
       }
     });
   });
-}
 
-// Start bot if enabled.
-if (!disableBot || !disableAnnouncer) {
+  // Start bot if enabled.
   console.log("\x1b[32m%s\x1b[0m", "--------    UberBot is charging!    --------\n");
   loadSettings.then(async() => {
     // Create base client (discord.js client) and event listeners

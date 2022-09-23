@@ -1,10 +1,8 @@
 const request = require("request");
 const {Readable} = require("stream");
 const voiceLines = require("../voiceLines.json");
-const {getVoiceConnection,
-  createAudioResource,
-  createAudioPlayer
-} = require("@discordjs/voice");
+const voiceService = require("./VoiceService");
+const {getVoiceConnection, createAudioResource, createAudioPlayer} = require("@discordjs/voice");
 
 /**
  * Class representing a text to speech service.
@@ -46,7 +44,7 @@ class TTSService {
         const stream = new Readable();
         stream.push(buff);
         stream.push(null);
-        return resolve(createAudioResource(stream));
+        return resolve(createAudioResource(stream, {"inlineVolume": true}));
       });
     });
   }
@@ -75,7 +73,8 @@ class TTSService {
           this.announceMessage(messageJoin, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.cache.forEach((guild) => {
-              guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} joined the channel (${this.formattedDate()})`);
+              const note = `${newUser} joined the channel (${this.formattedDate()})`;
+              guild.channels.cache.get(this.defaultTextChannel).send(note);
             });
           }
 
@@ -86,7 +85,8 @@ class TTSService {
           this.announceMessage(messageLeave, voiceConnection);
           if (this.defaultTextChannel) {
             this.client.guilds.cache.forEach((guild) => {
-              guild.channels.cache.get(this.defaultTextChannel).send(`${newUser} left the channel (${this.formattedDate()})`);
+              const note = `${newUser} left the channel (${this.formattedDate()})`;
+              guild.channels.cache.get(this.defaultTextChannel).send(note);
             });
           }
         }
@@ -121,6 +121,7 @@ class TTSService {
       then((audioResource) => {
         const player = createAudioPlayer();
         const subscription = voiceConnection.subscribe(player);
+        audioResource.volume.setVolume(voiceService.volume);
         player.play(audioResource);
         player.on("idle", () => {
           subscription.unsubscribe();
@@ -128,15 +129,12 @@ class TTSService {
         });
       }).
       catch((err) => {
-        if (voiceConnection.dispatcher && !voiceConnection.dispatcher.paused) {
-          voiceConnection.dispatcher.end();
-        }
         console.log(err);
       });
   }
 
   formattedDate() {
-    return new Date().toLocaleString("de-DE", {timeZone: 'Europe/Berlin'});
+    return new Date().toLocaleString("de-DE", {"timeZone": "Europe/Berlin"});
   }
 }
 

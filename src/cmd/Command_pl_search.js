@@ -16,7 +16,7 @@ const run = (interaction) => {
       } else {
         const ratingFunc = (rSong, usr, delta, ignoreCd) => ratingService.rateSong(rSong, usr, delta, ignoreCd);
         chatService.simpleNote(interaction, "Song found:", chatService.msgType.MUSIC, true);
-        chatService.displaySong(interaction, song, ratingFunc);
+        chatService.updatePlayer(interaction, song, ratingFunc);
       }
     });
 };

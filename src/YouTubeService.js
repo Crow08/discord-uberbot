@@ -18,15 +18,15 @@ class YoutubeService {
 
   /**
    * Get song via url.
-   * @param {string} payload - Url to get song from.
-   * @returns {Song} - Song from url.
+   * @param {string} searchString - Url to get song from.
+   * @returns {Promise<Song>} - Song from url.
    */
   getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
       ytdlDiscord.getBasicInfo(searchString, {}).then((info) => {
         const song = new Song();
         song.title = info.videoDetails.title;
-        song.url = "https://www.youtube.com/watch?v=" + info.videoDetails.videoId;
+        song.url = `https://www.youtube.com/watch?v=${info.videoDetails.videoId}`;
         song.artist = info.videoDetails.author.name;
         song.src = Song.srcType.YT;
         return resolve([song]);
@@ -37,8 +37,8 @@ class YoutubeService {
 
   /**
    * Get songs via playlist url.
-   * @param {string} payload - Url to get song from.
-   * @returns {Song[]} - Songs from playlist url.
+   * @param {string} searchString - Url to get song from.
+   * @returns {Promise<Song[]>} - Songs from playlist url.
    */
   getSongsViaPlaylistUrl(searchString) {
     const playId = searchString.toString().split("list=")[1];
@@ -66,9 +66,9 @@ class YoutubeService {
 
   /**
    * Get songs via query.
-   * @param {string} payload - Url to get song from.
+   * @param {string} searchString - Url to get song from.
    * @param {number} count - Number of songs to be fetched.
-   * @returns {Song[]} - Array of songs from url.
+   * @returns {Promise<Song[]>} - Array of songs from url.
    */
   getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {

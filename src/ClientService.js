@@ -10,7 +10,11 @@ const {joinVoiceChannel} = require("@discordjs/voice");
 
 class ClientService {
   async init(settings) {
-    this.baseClient = new Client({"intents": [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessageReactions]});
+    this.baseClient = new Client({"intents": [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildVoiceStates,
+      GatewayIntentBits.GuildMessageReactions
+    ]});
     // Set up event listeners for Discord events like incoming messages.
     this.setDiscordEventListeners(settings);
     // Login to Discord.
@@ -67,7 +71,7 @@ class ClientService {
     for (const cmdFile of cmdFiles) {
       const cmd = require(path.join(cmdPath, cmdFile));
       const commandName = cmdFile.substr(8, cmdFile.length - 11);
-      this.baseClient.commands.set(commandName, cmd);
+      this.baseClient.commands.set(commandName, cmd).catch(console.error);
     }
     this.baseClient.on("say", () => console.log("SAY"));
 

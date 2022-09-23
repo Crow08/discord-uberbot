@@ -2,9 +2,7 @@ const voiceService = require("./VoiceService");
 const queueService = require("./QueueService");
 const chatService = require("./ChatService");
 const ratingService = require("./RatingService");
-const {AudioPlayerStatus,
-  createAudioPlayer
-} = require("@discordjs/voice");
+const {AudioPlayerStatus, createAudioPlayer} = require("@discordjs/voice");
 
 /**
  * Class representing the music player.
@@ -12,16 +10,8 @@ const {AudioPlayerStatus,
  */
 class PlayerService {
 
-  /**
-   * Constructor.
-   * @param {VoiceService} voiceService - VoiceService.
-   * @param {QueueService} queueService - QueueService.
-   * @param {ChatService} chatService - ChatService.
-   * @param {RatingService} ratingService - RatingService.
-   */
   init() {
     this.playerIdObj = {"id": null};
-    this.skipCount = 0;
     this.audioPlayers = new Map();
   }
 
@@ -99,7 +89,7 @@ class PlayerService {
         });
     });
     const audioPlayer = this.getAudioPlayer(interaction);
-    const reactionFunctions = {
+    return {
       "⏩": () => this.skip(interaction),
       "⏪": () => this.back(interaction),
       "⏯": () => {
@@ -124,7 +114,6 @@ class PlayerService {
         );
       }
     };
-    return reactionFunctions;
   }
 
   /**
@@ -138,7 +127,7 @@ class PlayerService {
       chatService.simpleNote(interaction, "No songs Found!", chatService.msgType.FAIL);
       return;
     }
-    this.playNow(songs[0], interaction);
+    this.playNow(songs[0], interaction).catch(console.error);
     if (songs.length > 1) {
       songs.splice(0, 1);
       queueService.addMultipleFairlyToQueue(songs);
@@ -157,7 +146,7 @@ class PlayerService {
           this.getAudioPlayer(interaction).stop();
           chatService.simpleNote(interaction, "Queue is empty, playback finished!", chatService.msgType.MUSIC);
         } else {
-          this.playNow(song, interaction);
+          this.playNow(song, interaction).catch(console.error);
         }
       }).
       catch((err) => {
@@ -237,21 +226,20 @@ class PlayerService {
       const lastSong = queueService.history[1];
       // Remove current and last song from history.
       queueService.history.splice(0, 2);
-      this.playNow(lastSong, interaction);
+      this.playNow(lastSong, interaction).catch(console.error);
     } else {
       chatService.simpleNote(interaction, "No song in history!", chatService.msgType.FAIL);
     }
   }
 
   /**
-   * Play the current song at a given Position in seconds.
-   * @param {number} position number in seconds to restart the current stream at.
+   * Play the current song again.
    * @param {ChatInputCommandInteraction} interaction - User message the playback was is invoked by.
    */
-  seek(position, interaction) {
+  restart(interaction) {
     const audioPlayer = this.getAudioPlayer(interaction);
     audioPlayer.stop();
-    voiceService.playStream(audioPlayer, queueService.getHistorySong(0), interaction, position).
+    voiceService.playStream(audioPlayer, queueService.getHistorySong(0), interaction).
       catch((error) => chatService.simpleNote(interaction, error, chatService.msgType.FAIL));
   }
 

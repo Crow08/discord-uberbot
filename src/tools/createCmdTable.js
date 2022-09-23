@@ -25,14 +25,14 @@ const RenameSongCommand = require("../cmd/Command_rename_song");
 const TestCommand = require("../cmd/Command_test");
 const SearchCommand = require("../cmd/Command_search");
 const SearchPLCommand = require("../cmd/Command_pl_search");
-const SeekCommand = require("../cmd/Command_seek");
+//const SeekCommand = require("../cmd/Command_seek");
 const ShowHistoryCommand = require("../cmd/Command_show_history");
 const ShowQueueCommand = require("../cmd/Command_show_queue");
 const ShuffleCommand = require("../cmd/Command_shuffle");
 const SkipCommand = require("../cmd/Command_skip");
 const StartCommand = require("../cmd/Command_pl_start");
 const StopCommand = require("../cmd/Command_stop");
-const UploadCommand = require("../cmd/_Command_upload._js");
+//const UploadCommand = require("../cmd/Command_upload.js");
 const VolumeCommand = require("../cmd/Command_volume");
 
 const commands = [
@@ -62,7 +62,7 @@ const commands = [
   new RenameSongCommand(),
   new SearchCommand(),
   new SearchPLCommand(),
-  new SeekCommand(),
+//  new SeekCommand(),
   new ShowHistoryCommand(),
   new ShowQueueCommand(),
   new ShuffleCommand(),
@@ -70,7 +70,7 @@ const commands = [
   new StartCommand(),
   new StopCommand(),
   new TestCommand(),
-  new UploadCommand(),
+//  new UploadCommand(),
   new VolumeCommand()
 ];
 

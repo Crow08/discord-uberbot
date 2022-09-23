@@ -28,7 +28,7 @@ const run = (interaction) => {
   if (pages.length === 0) {
     chatService.simpleNote(interaction, "Queue is empty!", chatService.msgType.INFO, true);
   } else {
-    chatService.simpleNote(interaction, `Current queue:`, chatService.msgType.MUSIC, true);
+    chatService.simpleNote(interaction, "Current queue:", chatService.msgType.MUSIC, true);
     chatService.pagedContent(interaction, pages);
   }
 };

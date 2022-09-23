@@ -67,7 +67,7 @@ class RatingService {
    * @param {string} user - User name rating the song.
    */
   getUserCdForSong(song, user) {
-    if (Object.prototype.hasOwnProperty.call(song.ratingLog, user)) {
+    if (Object.hasOwn(song.ratingLog, user)) {
       const ratedDeltaTime = Date.now() - song.ratingLog[user];
       if (ratedDeltaTime < this.ratingCooldown) {
         return this.ratingCooldown - ratedDeltaTime;
@@ -80,6 +80,7 @@ class RatingService {
    * Add song to auto playlist.
    * @private
    * @param {Song} song - Song to be Added.
+   * @param delta - Delta rating score.
    */
   checkAndAddToAutoPL(song, delta) {
     return new Promise((resolve, reject) => {

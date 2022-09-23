@@ -1,10 +1,6 @@
 const {EmbedBuilder, ActionRowBuilder, ButtonBuilder} = require("discord.js");
 const {ButtonStyle} = require("discord-api-types/v10");
 const queueService = require("./QueueService");
-const {
-  createAudioPlayer,
-  AudioPlayerStatus
-} = require("@discordjs/voice");
 
 /**
  * Class representing a chat service.
@@ -28,7 +24,8 @@ class ChatService {
    * Send a simple note to Discord with an emoji depending of the given message Type.
    * @param {ChatInputCommandInteraction} interaction - User message this function is invoked by.
    * @param {string|Error} text - The text to be displayed in this note (can be of type Error).
-   * @param {string} type - Message type defined by {@link ChatService#msgType}.
+   * @param {string} type - Message type defined by
+   * @param reply - Whether to reply to this interaction with this note or simply post a standalone message.
    */
   simpleNote(interaction, text, type, reply = false) {
     this.debugPrint(text);
@@ -74,8 +71,6 @@ class ChatService {
       return interaction.channel.send(content);
     }
     return interaction.channel.send({"embeds": [content]});
-
-
   }
 
   /**
@@ -97,14 +92,15 @@ class ChatService {
       }
       content.components = [
         new ActionRowBuilder().
-          addComponents(new ButtonBuilder().
-            setCustomId("bwd").
-            setLabel("⏪").
-            setStyle(ButtonStyle.Primary),
-          new ButtonBuilder().
-            setCustomId("fwd").
-            setLabel("⏩").
-            setStyle(ButtonStyle.Primary)
+          addComponents(
+            new ButtonBuilder().
+              setCustomId("bwd").
+              setLabel("⏪").
+              setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().
+              setCustomId("fwd").
+              setLabel("⏩").
+              setStyle(ButtonStyle.Primary)
           )
       ];
       interaction.channel.send(content).
@@ -137,48 +133,25 @@ class ChatService {
     });
   }
 
-  /**
-   * Display a song in pretty markdown and add reaction based user rating.
-   * @param {ChatInputCommandInteraction} interaction - User message this function is invoked by.
-   * @param {Song} song - Song to be displayed.
-   * @param {function} processRating - Function to be invoked if rating was given.
-   */
-  displaySong(interaction, song, processRating) {
-    this.debugPrint(song);
-    if (typeof interaction.channel === "undefined") {
-      return this.buildDummyMessage();
+
+  getPlayerMsg(interaction) {
+    if (this.playerMsgs.has(interaction.guild.id)) {
+      return this.playerMsgs.get(interaction.guild.id);
     }
-    const {downVoteEmojiId, downVoteEmojiName, upVoteEmojiId, upVoteEmojiName} = this.getRatingEmojis(interaction);
-    return new Promise((resolve, reject) => {
-    // Build Song embed.
-      interaction.channel.send(this.buildSongEmbed(song)).
-        // Add reactions for song rating.
-        then((songMsg) => this.postReactionEmojis(songMsg, [upVoteEmojiId, downVoteEmojiId]).
-          then(() => {
-          // Add listeners to reactions.
-            const reactionCollector = songMsg.createReactionCollector(
-              (reaction, user) => ([upVoteEmojiName, downVoteEmojiName].includes(reaction.emoji.name) && (!user.bot)),
-              {"time": 600000}
-            );
-            // Handle reactions.
-            reactionCollector.on("collect", (reaction) => {
-              switch (reaction.emoji.name) {
-              case upVoteEmojiName:
-                this.handleRatingReaction(reaction, song, 1, processRating);
-                break;
-              case downVoteEmojiName:
-                this.handleRatingReaction(reaction, song, -1, processRating);
-                break;
-              default:
-                break;
-              }
-            });
-            reactionCollector.on("end", () => songMsg.reactions.removeAll());
-            resolve(songMsg);
-          }).
-          catch(reject)).
-        catch(reject);
-    });
+    return null;
+  }
+
+  sendNewPlayer(interaction, reactionFunc, content) {
+    if (this.playerMsgs.has(interaction.guild.id)) {
+      this.playerMsgs.get(interaction.guild.id).delete();
+    }
+    interaction.channel.send(content).
+      then((playerMsg) => {
+        const {downVoteEmojiName, upVoteEmojiName} = this.getRatingEmojis(interaction);
+        this.playerMsgs.set(interaction.guild.id, playerMsg);
+        this.addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunc);
+      }).
+      catch(console.error);
   }
 
   /**
@@ -190,15 +163,16 @@ class ChatService {
   updatePlayer(interaction, song, reactionFunc) {
     this.debugPrint(song);
     if (typeof interaction.channel === "undefined") {
-      return this.buildDummyMessage();
+      this.buildDummyMessage();
+      return;
     }
     const {downVoteEmojiId, downVoteEmojiName, upVoteEmojiId, upVoteEmojiName} = this.getRatingEmojis(interaction);
     // Build Song embed.
-    return new Promise((resolve, reject) => {
-      const content = {"embeds": [this.buildSongEmbed(song)]};
-      content.components = [
-        new ActionRowBuilder().
-          addComponents(new ButtonBuilder().
+    const content = {"embeds": [this.buildSongEmbed(song)]};
+    content.components = [
+      new ActionRowBuilder().
+        addComponents(
+          new ButtonBuilder().
             setCustomId(upVoteEmojiName).
             setEmoji(upVoteEmojiId).
             setStyle(ButtonStyle.Primary),
@@ -206,44 +180,32 @@ class ChatService {
             setCustomId(downVoteEmojiName).
             setEmoji(downVoteEmojiId).
             setStyle(ButtonStyle.Primary)
-          ),
-        new ActionRowBuilder().
-          addComponents(
-            new ButtonBuilder().
-              setCustomId("⏪").
-              setLabel("⏪").
-              setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().
-              setCustomId("⏯").
-              setLabel("⏯").
-              setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().
-              setCustomId("⏩").
-              setLabel("⏩").
-              setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().
-              setCustomId("🔀").
-              setLabel("🔀").
-              setStyle(ButtonStyle.Primary),
-            new ButtonBuilder().
-              setCustomId("🔁").
-              setLabel("🔁").
-              setStyle(ButtonStyle.Primary)
-          )
-      ];
-      const oldPlayerMsg = this.getPlayerMsg(interaction);
-      if (oldPlayerMsg === null) {
-        interaction.channel.send(content).
-          // Add reactions for song rating.
-          then((playerMsg) => {
-            this.playerMsgs.set(interaction.guild.id, playerMsg);
-            this.addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunc);
-          }).
-          catch(console.error);
-      } else {
-        oldPlayerMsg.edit(content);
-      }
-    });
+        ),
+      new ActionRowBuilder().
+        addComponents(
+          new ButtonBuilder().
+            setCustomId("⏪").
+            setLabel("⏪").
+            setStyle(ButtonStyle.Primary),
+          new ButtonBuilder().
+            setCustomId("⏯").
+            setLabel("⏯").
+            setStyle(ButtonStyle.Primary),
+          new ButtonBuilder().
+            setCustomId("⏩").
+            setLabel("⏩").
+            setStyle(ButtonStyle.Primary),
+          new ButtonBuilder().
+            setCustomId("🔀").
+            setLabel("🔀").
+            setStyle(ButtonStyle.Primary),
+          new ButtonBuilder().
+            setCustomId("🔁").
+            setLabel("🔁").
+            setStyle(ButtonStyle.Primary)
+        )
+    ];
+    this.sendNewPlayer(interaction, reactionFunc, content);
   }
 
   /**
@@ -270,7 +232,7 @@ class ChatService {
     });
   }
 
-  handleBtnAction(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions){
+  handleBtnAction(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions) {
     switch (interaction.customId) {
     case downVoteEmojiName:
       this.handleRatingReaction(interaction, -1, reactionFunctions["👎"]);
@@ -360,25 +322,21 @@ class ChatService {
   /**
    * Process reaction based user rating.
    * @private
-   * @param {MessageReaction} reaction - given user reaction.
-   * @param {Song} song - Song to be rated.
+   * @param {ChatInputCommandInteraction} interaction - given user reaction.
    * @param {number} delta - Delta rating score.
    * @param {function} processRating - Function to be invoked if rating was given.
    * @param {boolean} ignoreCd - Flag to indicate if the cooldown should be ignored.
    */
-  handleRatingReaction(reaction, delta, processRating, ignoreCd = false) {
-    reaction.users.cache.filter((user) => !user.bot).forEach((user) => {
-      reaction.users.cache.delete(user);
-      queueService.getCurrentSong().then((song) => {
-        processRating(song, user, delta, ignoreCd).
-          then((note) => {
-            reaction.message.edit(this.buildSongEmbed(song));
-            if (note) {
-              this.simpleNote(reaction.message, note, this.msgType.MUSIC);
-            }
-          }).
-          catch((err) => this.simpleNote(reaction.message, err, this.msgType.FAIL));
-      });
+  handleRatingReaction(interaction, delta, processRating, ignoreCd = false) {
+    queueService.getCurrentSong().then((song) => {
+      processRating(song, interaction.user, delta, ignoreCd).
+        then((note) => {
+          this.updatePlayer(interaction, song, processRating);
+          if (note) {
+            this.simpleNote(interaction, note, this.msgType.MUSIC);
+          }
+        }).
+        catch((err) => this.simpleNote(interaction, err, this.msgType.FAIL));
     });
   }
 
@@ -445,13 +403,6 @@ class ChatService {
     return new Promise((resolve) => {
       resolve({"delete": () => null});
     });
-  }
-
-  getPlayerMsg(interaction) {
-    if (this.playerMsgs.has(interaction.guild.id)) {
-      return this.playerMsgs.get(interaction.guild.id);
-    }
-    return null;
   }
 }
 

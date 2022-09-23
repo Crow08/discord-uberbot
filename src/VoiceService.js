@@ -1,9 +1,7 @@
 const Song = require("./Song");
 const ytdl = require("youtube-dl-exec");
 const streamSourceService = require("./StreamSourceService");
-const {joinVoiceChannel, getVoiceConnection, createAudioPlayer,
-  demuxProbe,
-  createAudioResource} = require("@discordjs/voice");
+const {joinVoiceChannel, getVoiceConnection, demuxProbe, createAudioResource} = require("@discordjs/voice");
 
 /**
  * Class representing a voice service.
@@ -29,17 +27,17 @@ class VoiceService {
    * @param audioPlayer
    * @param {Song} song song to be played
    * @param {ChatInputCommandInteraction} interaction - User message this function is invoked by.
-   * @param {number} seek - position in seconds to start the stream from.
    * @returns {Object} - Stream dispatcher.
    */
-  playStream(audioPlayer, song, interaction, seek = 0) {
+  playStream(audioPlayer, song, interaction) {
     return new Promise((resolve, reject) => {
       this.getVoiceConnection(interaction).
         then((connection) => {
           connection.subscribe(audioPlayer);
           this.createAudioResource(song).
-            then((audioResouce) => {
-              audioPlayer.play(audioResouce);
+            then((audioResource) => {
+              audioResource.volume.setVolume(this.volume);
+              audioPlayer.play(audioResource);
               resolve();
             }).
             catch(reject);
@@ -155,6 +153,7 @@ class VoiceService {
           once("spawn", () => {
             demuxProbe(stream).
               then((probe) => resolve(createAudioResource(probe.stream, {
+                "inlineVolume": true,
                 "inputType": probe.type,
                 "metadata": song
               }))).
@@ -165,6 +164,7 @@ class VoiceService {
         const stream = this.getStream(song);
         demuxProbe(stream).
           then((probe) => resolve(createAudioResource(probe.stream, {
+            "inlineVolume": true,
             "inputType": probe.type,
             "metadata": song
           }))).

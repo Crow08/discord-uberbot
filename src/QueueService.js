@@ -44,7 +44,7 @@ class QueueService {
 
   /**
    * Get next song which is position 0 of the queue.
-   * @returns {Song} - The next song.
+   * @returns {Promise<Song>} - The next song.
    */
   popNextSong() {
     return new Promise((resolve, reject) => {
@@ -194,7 +194,7 @@ class QueueService {
 
   /**
    * Gets the current auto playlist name.
-   * @returns {string} - current auto playlist name.
+   * @returns {Promise<string>} - current auto playlist name.
    */
   getAutoPL() {
     return new Promise((resolve, reject) => {
@@ -220,14 +220,9 @@ class QueueService {
    * @returns {Array} - shuffled array.
    */
   shuffle(array) {
-    let pos1 = 0,
-      pos2 = 0,
-      tmpVal = 0;
-    for (pos1 = array.length - 1; pos1 > 0; pos1--) {
-      pos2 = Math.floor(Math.random() * (pos1 + 1));
-      tmpVal = array[pos1];
-      array[pos1] = array[pos2];
-      array[pos2] = tmpVal;
+    for (let index = array.length - 1; index > 0; index--) {
+      const randIndex = Math.floor(Math.random() * (index + 1));
+      [array[index], array[randIndex]] = [array[randIndex], array[index]];
     }
     return array;
   }
