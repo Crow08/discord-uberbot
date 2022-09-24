@@ -18,5 +18,6 @@ module.exports = {
     setDescription("kills the bot, hopefully it will restart again"),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "G"
 };

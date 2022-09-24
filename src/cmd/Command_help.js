@@ -106,5 +106,6 @@ module.exports = {
     setDescription("list all implemented commands"),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "G"
 };

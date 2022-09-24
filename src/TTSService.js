@@ -15,7 +15,6 @@ class TTSService {
     this.phoneticNicknames = options.phoneticNicknames;
     this.setupVoiceStateListener();
     this.defaultTextChannel = options.defaultTextChannel;
-    this.AddTime = options.AddTime;
   }
 
   /**

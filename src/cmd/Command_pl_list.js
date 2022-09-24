@@ -38,5 +38,6 @@ module.exports = {
     setDescription("lists available playlists"),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

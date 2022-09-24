@@ -41,5 +41,6 @@ module.exports = {
     setDescription("displays all songs from playback history."),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

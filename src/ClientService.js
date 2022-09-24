@@ -1,8 +1,4 @@
-const {
-  Client,
-  GatewayIntentBits,
-  Collection
-} = require("discord.js");
+const {Client, GatewayIntentBits, Collection} = require("discord.js");
 const {ChannelType} = require("discord-api-types/v10");
 const path = require("node:path");
 const fs = require("node:fs");
@@ -70,10 +66,13 @@ class ClientService {
 
     for (const cmdFile of cmdFiles) {
       const cmd = require(path.join(cmdPath, cmdFile));
-      const commandName = cmdFile.substr(8, cmdFile.length - 11);
-      this.baseClient.commands.set(commandName, cmd);
+      if (cmd.scope === "G" ||
+        (cmd.scope === "A" && !settings.disableAnnouncer) ||
+        (cmd.scope === "M" && !settings.disableBot)) {
+        const commandName = cmdFile.substr(8, cmdFile.length - 11);
+        this.baseClient.commands.set(commandName, cmd);
+      }
     }
-    this.baseClient.on("say", () => console.log("SAY"));
 
     // Print debug info from base client.
     this.baseClient.on("debug", (info) => {

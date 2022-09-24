@@ -12,14 +12,18 @@ const ttsService = require("./TTSService");
 module.exports = {
   "setup": async(opt) => {
     await clientService.init(opt);
-    chatService.init(opt);
     streamSourceService.init(opt);
-    searchService.init("SP");
+    chatService.init(opt);
     voiceService.init(opt);
-    dbService.init(opt.mongodbUrl, opt.mongodbUser, opt.mongodbPassword);
-    queueService.init(500);
-    ratingService.init(opt.ratingCooldown);
-    playerService.init();
-    ttsService.init(opt, clientService.baseClient);
+    if (!opt.disableBot) {
+      dbService.init(opt.mongodbUrl, opt.mongodbUser, opt.mongodbPassword);
+      queueService.init(500);
+      searchService.init("sp");
+      ratingService.init(opt.ratingCooldown);
+      playerService.init();
+    }
+    if (!opt.disableAnnouncer) {
+      ttsService.init(opt, clientService.baseClient);
+    }
   }
 };

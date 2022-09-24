@@ -14,5 +14,6 @@ module.exports = {
     setDescription("pause playback."),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

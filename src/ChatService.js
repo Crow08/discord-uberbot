@@ -1,6 +1,6 @@
 const {EmbedBuilder, ActionRowBuilder, ButtonBuilder} = require("discord.js");
 const {ButtonStyle} = require("discord-api-types/v10");
-const queueService = require("./QueueService");
+
 
 /**
  * Class representing a chat service.
@@ -142,7 +142,7 @@ class ChatService {
     return null;
   }
 
-  sendNewPlayer(interaction, reactionFunc, content) {
+  sendNewPlayer(interaction, song, reactionFunc, content) {
     if (this.playerMsgs.has(interaction.guild.id)) {
       this.playerMsgs.get(interaction.guild.id).delete();
       this.playerListeners.get(interaction.guild.id).stop();
@@ -151,7 +151,7 @@ class ChatService {
       then((playerMsg) => {
         const {downVoteEmojiName, upVoteEmojiName} = this.getRatingEmojis(interaction);
         this.playerMsgs.set(interaction.guild.id, playerMsg);
-        const listener = this.addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunc);
+        const listener = this.addBtnListener(interaction, song, downVoteEmojiName, upVoteEmojiName, reactionFunc);
         this.playerListeners.set(interaction.guild.id, listener);
       }).
       catch(console.error);
@@ -164,7 +164,7 @@ class ChatService {
    * @param {function} reactionFunc - Function to be invoked if a reaction was given.
    */
   updatePlayer(interaction, song, reactionFunc) {
-    this.debugPrint(song);
+    this.debugPrint(`${song.title} - ${song.artist}`);
     if (typeof interaction.channel === "undefined") {
       this.buildDummyMessage().catch(console.error);
       return;
@@ -208,7 +208,7 @@ class ChatService {
             setStyle(ButtonStyle.Primary)
         )
     ];
-    this.sendNewPlayer(interaction, reactionFunc, content);
+    this.sendNewPlayer(interaction, song, reactionFunc, content);
   }
 
   /**
@@ -219,13 +219,14 @@ class ChatService {
    * @param {string} upVoteEmojiName - name of the custom upvote emoji.
    * @param {function} reactionFunctions - Function to be invoked if a reaction was given.
    */
-  addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions) {
+  addBtnListener(interaction, song, downVoteEmojiName, upVoteEmojiName, reactionFunctions) {
     const btnIds = [downVoteEmojiName, upVoteEmojiName, "⏪", "⏯", "⏩", "🔀", "🔁"];
     const btnCollector = this.getPlayerMsg(interaction).createMessageComponentCollector({"filter":
         (btnInteraction) => btnIds.includes(btnInteraction.customId)});
     // Handle reactions.
     btnCollector.on("collect", (btnInteraction) => this.handleBtnAction(
       btnInteraction,
+      song,
       downVoteEmojiName,
       upVoteEmojiName,
       reactionFunctions
@@ -233,13 +234,13 @@ class ChatService {
     return btnCollector;
   }
 
-  handleBtnAction(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions) {
+  handleBtnAction(interaction, song, downVoteEmojiName, upVoteEmojiName, reactionFunctions) {
     switch (interaction.customId) {
     case downVoteEmojiName:
-      this.handleRatingReaction(interaction, -1, reactionFunctions["👎"]);
+      this.handleRatingReaction(interaction, song, -1, reactionFunctions["👎"]);
       break;
     case upVoteEmojiName:
-      this.handleRatingReaction(interaction, 1, reactionFunctions["👍"]);
+      this.handleRatingReaction(interaction, song, 1, reactionFunctions["👍"]);
       break;
     default:
       if (typeof reactionFunctions[interaction.customId] !== "undefined") {
@@ -328,17 +329,15 @@ class ChatService {
    * @param {function} processRating - Function to be invoked if rating was given.
    * @param {boolean} ignoreCd - Flag to indicate if the cooldown should be ignored.
    */
-  handleRatingReaction(interaction, delta, processRating, ignoreCd = false) {
-    queueService.getCurrentSong().then((song) => {
-      processRating(song, interaction.user, delta, ignoreCd).
-        then((note) => {
-          this.updatePlayer(interaction, song, processRating);
-          if (note) {
-            this.simpleNote(interaction, note, this.msgType.MUSIC);
-          }
-        }).
-        catch((err) => this.simpleNote(interaction, err, this.msgType.FAIL));
-    });
+  handleRatingReaction(interaction, song, delta, processRating, ignoreCd = false) {
+    processRating(song, interaction.user, delta, ignoreCd).
+      then((note) => {
+        this.updatePlayer(interaction, song, processRating);
+        if (note) {
+          this.simpleNote(interaction, note, this.msgType.MUSIC);
+        }
+      }).
+      catch((err) => this.simpleNote(interaction, err, this.msgType.FAIL));
   }
 
   /**
@@ -384,7 +383,7 @@ class ChatService {
   /**
    * Print color coded debug information for all chat interactions to console log.
    * @private
-   * @param {string|MessageEmbed|Error} content Content to be logged.
+   * @param {string|Object|Error} content Content to be logged.
    */
   debugPrint(content) {
     if (content instanceof Error) {

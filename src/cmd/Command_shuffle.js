@@ -13,5 +13,6 @@ module.exports = {
     setDescription("Shuffle the current queue."),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

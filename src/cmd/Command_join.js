@@ -15,5 +15,6 @@ module.exports = {
     setDescription("ask bot nicely to join your channel"),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "G"
 };

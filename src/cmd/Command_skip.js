@@ -14,5 +14,6 @@ module.exports = {
     setDescription("Skip current song."),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

@@ -6,6 +6,7 @@ const {SlashCommandBuilder} = require("discord.js");
 const run = (interaction) => {
   const songQuery = interaction.options.getString("song_query");
   if (songQuery === null) {
+    chatService.simpleNote(interaction, "Playback started!", chatService.msgType.MUSIC, true);
     playerService.play(interaction);
     return;
   }
@@ -40,5 +41,6 @@ module.exports = {
       setRequired(false)),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

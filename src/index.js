@@ -11,7 +11,6 @@ let settingsPath = "./settings.json";
 let settingsUrl = "";
 
 let settings = {};
-let loadSettings = null;
 // Let musicClient = null;
 // Let announcerClient = null;
 
@@ -56,7 +55,6 @@ if (settingsPath === "" && typeof process.env.settings_path !== "undefined") {
 const validateSettings = (() => new Promise((resolve, reject) => {
   // Set default values if necessary.
   settings.bitRat = typeof settings.bitRate === "undefined" ? 96000 : parseInt(settings.bitRate, 10);
-  settings.botPrefix = typeof settings.botPrefix === "undefined" ? "!" : settings.botPrefix;
   settings.defVolume = typeof settings.defVolume === "undefined" ? 50 : parseInt(settings.defVolume, 10);
   settings.ratingCooldown = typeof settings.ratingCooldown === "undefined" ? 86400
     : parseInt(settings.ratingCooldown, 10);
@@ -69,64 +67,70 @@ const validateSettings = (() => new Promise((resolve, reject) => {
   } else if (!disableAnnouncer && (typeof settings.ttsApiKey === "undefined" || settings.ttsApiKey === "TTS_API_KEY")) {
     reject(missingInfoError);
   }
-  resolve();
+  settings.disableAnnouncer = disableAnnouncer;
+  settings.disableBot = disableBot;
+  resolve(settings);
 }));
 
-// Settings are needed for announcer or music bot functionality.
-if (!disableBot || !disableAnnouncer) {
-  // Load settings.
-  loadSettings = new Promise((resolve, reject) => {
-    fs.access(settingsPath, fs.constants.F_OK, (existsErr) => {
-      // If settings file exists:
-      if (!existsErr) {
-        // Read settings file.
-        fs.readFile(settingsPath, (readErr, rawData) => {
-          if (readErr) {
-            reject(readErr);
-            return;
-          }
+const loadSettings = (() => new Promise((resolve, reject) => {
+  fs.access(settingsPath, fs.constants.F_OK, (existsErr) => {
+    // If settings file exists:
+    if (!existsErr) {
+      // Read settings file.
+      fs.readFile(settingsPath, (readErr, rawData) => {
+        if (readErr) {
+          reject(readErr);
+          return;
+        }
+        settings = JSON.parse(rawData);
+        // Check if all necessary settings are set.
+        validateSettings().
+          then(resolve).
+          catch(reject);
+      });
+      // If settingsUrl is set:
+    } else if (settingsUrl.length > 0) {
+      // Download settings file.
+      https.get(settingsUrl, (response) => {
+        response.setEncoding("utf8");
+        let rawData = "";
+        response.on("data", (chunk) => {
+          rawData += chunk;
+        });
+        response.on("end", () => {
           settings = JSON.parse(rawData);
           // Check if all necessary settings are set.
           validateSettings().
             then(resolve).
             catch(reject);
         });
-      // If settingsUrl is set:
-      } else if (settingsUrl.length > 0) {
-        // Download settings file.
-        https.get(settingsUrl, (response) => {
-          response.setEncoding("utf8");
-          let rawData = "";
-          response.on("data", (chunk) => {
-            rawData += chunk;
-          });
-          response.on("end", () => {
-            settings = JSON.parse(rawData);
-            // Check if all necessary settings are set.
-            validateSettings().
-              then(resolve).
-              catch(reject);
-          });
-        }).on("error", (httpErr) => {
-          reject(httpErr);
-        });
-      } else {
-        reject(new Error("Failed to load settings file!\n" +
-          "Please provide a settings file at the default location (\"./settings.json\") " +
-          "or set a path through the \"settings_path\" argument.\n" +
-          "Alternatively you can provide \"settings_url\" as argument to refer a remote settings file."));
-      }
-    });
+      }).on("error", (httpErr) => {
+        reject(httpErr);
+      });
+    } else {
+      reject(new Error("Failed to load settings file!\n" +
+        "Please provide a settings file at the default location (\"./settings.json\") " +
+        "or set a path through the \"settings_path\" argument.\n" +
+        "Alternatively you can provide \"settings_url\" as argument to refer a remote settings file."));
+    }
   });
+}));
 
+// Settings are needed for announcer or music bot functionality.
+if (!disableBot || !disableAnnouncer) {
   // Start bot if enabled.
   console.log("\x1b[32m%s\x1b[0m", "--------    UberBot is charging!    --------\n");
-  loadSettings.then(async() => {
-    // Create base client (discord.js client) and event listeners
-    await (ServiceManager.setup(settings));
-  }).catch((err) => {
-    console.log("\x1b[31m%s\x1b[0m", err);
-  });
+  // Load settings.
+  loadSettings().
+    then(async() => {
+      // Create base client (discord.js client) and event listeners
+      console.log("Settings loaded!");
+      await (ServiceManager.setup(settings));
+      console.log("\x1b[32m%s\x1b[0m", "--------    UberBot successfully started!    --------\n");
+    }).
+    catch((err) => {
+      console.log("\x1b[31m%s\x1b[0m", err);
+    });
 }
 
 // Start web server if enabled.

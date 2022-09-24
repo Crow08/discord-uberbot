@@ -13,7 +13,7 @@ const run = (interaction) => {
       songs
     }) => {
       chatService.simpleNote(interaction, note, chatService.msgType.MUSIC).
-        then((infoMsg) => infoMsg.delete({"timeout": 5000}));
+        then((infoMsg) => setTimeout(() => infoMsg.delete(), 5000));
       if (songs.length > 1) {
         const enrichedSongs = songs.map((song) => {
           song.playlist = plName;
@@ -59,5 +59,6 @@ module.exports = {
       setRequired(true)),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

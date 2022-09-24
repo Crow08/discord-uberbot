@@ -91,7 +91,7 @@ const run = (interaction) => {
         return song;
       });
       chatService.simpleNote(interaction, note, chatService.msgType.MUSIC).
-        then((infoMsg) => infoMsg.delete({"timeout": 5000}));
+        then((infoMsg) => setTimeout(() => infoMsg.delete(), 5000));
 
       const pages = [];
       let curPage = "";
@@ -141,5 +141,6 @@ module.exports = {
       setRequired(true)),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

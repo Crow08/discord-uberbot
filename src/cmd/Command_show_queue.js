@@ -39,5 +39,6 @@ module.exports = {
     setDescription("displays all songs from current queue."),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

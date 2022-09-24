@@ -37,5 +37,6 @@ module.exports = {
       setRequired(false)),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "M"
 };

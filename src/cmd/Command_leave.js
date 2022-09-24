@@ -13,5 +13,6 @@ module.exports = {
     setDescription("leave the current voice channel."),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "G"
 };

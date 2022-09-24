@@ -11,7 +11,6 @@ const run = (interaction) => {
       ttsService.announceMessage(text, voiceConnection);
     }).
     catch((err) => console.log(err));
-  msg.delete({"timeout": 10000});
   chatService.simpleNote(interaction, "TTS", chatService.msgType.INFO, true);
 };
 
@@ -25,5 +24,6 @@ module.exports = {
       setRequired(true)),
   async execute(interaction) {
     await run(interaction);
-  }
+  },
+  "scope": "A"
 };
