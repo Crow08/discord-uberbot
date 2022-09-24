@@ -93,7 +93,8 @@ class PlayerService {
       "⏩": () => this.skip(interaction),
       "⏪": () => this.back(interaction),
       "⏯": () => {
-        if (!audioPlayer || audioPlayer.state.status === AudioPlayerStatus.Paused) {
+        if (!audioPlayer ||
+          [AudioPlayerStatus.Paused, AudioPlayerStatus.AutoPaused].includes(audioPlayer.state.status)) {
           this.play(interaction);
         } else {
           this.pause(interaction);
@@ -160,7 +161,7 @@ class PlayerService {
    */
   play(interaction) {
     const audioPlayer = this.getAudioPlayer(interaction);
-    if (!audioPlayer || audioPlayer.state.status === AudioPlayerStatus.Idle) {
+    if (!audioPlayer || [AudioPlayerStatus.Idle, AudioPlayerStatus.AutoPaused].includes(audioPlayer.state.status)) {
       this.playNext(interaction);
     } else if (audioPlayer.state.status === AudioPlayerStatus.Paused) {
       audioPlayer.unpause();
@@ -196,6 +197,7 @@ class PlayerService {
       chatService.simpleNote(interaction, "Playback already stopped!", chatService.msgType.FAIL);
       return;
     }
+    queueService.queue = [];
     audioPlayer.stop();
     chatService.simpleNote(interaction, "Playback stopped!", chatService.msgType.MUSIC);
   }
@@ -222,11 +224,12 @@ class PlayerService {
       chatService.simpleNote(interaction, "Loading last song!", chatService.msgType.MUSIC);
       // Add current playing song back to queue.
       queueService.queue.unshift(queueService.history[0]);
-      // Get last song
-      const lastSong = queueService.history[1];
+      // Add last song back to queue.
+      queueService.queue.unshift(queueService.history[1]);
       // Remove current and last song from history.
       queueService.history.splice(0, 2);
-      this.playNow(lastSong, interaction).catch(console.error);
+      // Stop current track to play the new queue.
+      this.getAudioPlayer(interaction).stop();
     } else {
       chatService.simpleNote(interaction, "No song in history!", chatService.msgType.FAIL);
     }
@@ -238,7 +241,6 @@ class PlayerService {
    */
   restart(interaction) {
     const audioPlayer = this.getAudioPlayer(interaction);
-    audioPlayer.stop();
     voiceService.playStream(audioPlayer, queueService.getHistorySong(0), interaction).
       catch((error) => chatService.simpleNote(interaction, error, chatService.msgType.FAIL));
   }

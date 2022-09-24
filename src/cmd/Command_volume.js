@@ -4,7 +4,7 @@ const playerService = require("../PlayerService");
 const {SlashCommandBuilder} = require("discord.js");
 
 const run = (interaction) => {
-  const volume = interaction.options.getString("volume");
+  const volume = interaction.options.getInteger("volume");
   if (volume === null) {
     const note = `Volume is set to  ${voiceService.volume} right now`;
     chatService.simpleNote(interaction, note, chatService.msgType.MUSIC, true);

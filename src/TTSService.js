@@ -121,11 +121,10 @@ class TTSService {
       then((audioResource) => {
         const player = createAudioPlayer();
         const subscription = voiceConnection.subscribe(player);
-        audioResource.volume.setVolume(voiceService.volume);
+        audioResource.volume.setVolume(voiceService.volume / 100);
         player.play(audioResource);
         player.on("idle", () => {
           subscription.unsubscribe();
-          player.stop();
         });
       }).
       catch((err) => {

@@ -9,6 +9,7 @@ class ChatService {
 
   init(settings) {
     this.playerMsgs = new Map();
+    this.playerListeners = new Map();
     this.defaultTextChannel = settings.defaultTextChannel;
 
     /** @property {Enum} msgType - Message Type for simple Note */
@@ -144,12 +145,14 @@ class ChatService {
   sendNewPlayer(interaction, reactionFunc, content) {
     if (this.playerMsgs.has(interaction.guild.id)) {
       this.playerMsgs.get(interaction.guild.id).delete();
+      this.playerListeners.get(interaction.guild.id).stop();
     }
     interaction.channel.send(content).
       then((playerMsg) => {
         const {downVoteEmojiName, upVoteEmojiName} = this.getRatingEmojis(interaction);
         this.playerMsgs.set(interaction.guild.id, playerMsg);
-        this.addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunc);
+        const listener = this.addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunc);
+        this.playerListeners.set(interaction.guild.id, listener);
       }).
       catch(console.error);
   }
@@ -163,7 +166,7 @@ class ChatService {
   updatePlayer(interaction, song, reactionFunc) {
     this.debugPrint(song);
     if (typeof interaction.channel === "undefined") {
-      this.buildDummyMessage();
+      this.buildDummyMessage().catch(console.error);
       return;
     }
     const {downVoteEmojiId, downVoteEmojiName, upVoteEmojiId, upVoteEmojiName} = this.getRatingEmojis(interaction);
@@ -219,7 +222,7 @@ class ChatService {
   addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions) {
     const btnIds = [downVoteEmojiName, upVoteEmojiName, "⏪", "⏯", "⏩", "🔀", "🔁"];
     const btnCollector = this.getPlayerMsg(interaction).createMessageComponentCollector({"filter":
-        (btnInteraction) => btnIds.includes(btnInteraction.customId), "time": 120000});
+        (btnInteraction) => btnIds.includes(btnInteraction.customId)});
     // Handle reactions.
     btnCollector.on("collect", (btnInteraction) => this.handleBtnAction(
       btnInteraction,
@@ -227,9 +230,7 @@ class ChatService {
       upVoteEmojiName,
       reactionFunctions
     ));
-    btnCollector.on("end", () => {
-      this.addBtnListener(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions);
-    });
+    return btnCollector;
   }
 
   handleBtnAction(interaction, downVoteEmojiName, upVoteEmojiName, reactionFunctions) {

@@ -71,7 +71,7 @@ class ClientService {
     for (const cmdFile of cmdFiles) {
       const cmd = require(path.join(cmdPath, cmdFile));
       const commandName = cmdFile.substr(8, cmdFile.length - 11);
-      this.baseClient.commands.set(commandName, cmd).catch(console.error);
+      this.baseClient.commands.set(commandName, cmd);
     }
     this.baseClient.on("say", () => console.log("SAY"));
 

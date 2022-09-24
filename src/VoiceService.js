@@ -36,7 +36,7 @@ class VoiceService {
           connection.subscribe(audioPlayer);
           this.createAudioResource(song).
             then((audioResource) => {
-              audioResource.volume.setVolume(this.volume);
+              audioResource.volume.setVolume(this.volume / 100);
               audioPlayer.play(audioResource);
               resolve();
             }).
