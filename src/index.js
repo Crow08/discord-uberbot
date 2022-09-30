@@ -140,7 +140,7 @@ if (!disableWeb) {
     const docPath = request.url === "/" ? "./docs/index.html" : `./docs${request.url}`;
     fs.readFile(docPath, (err, data) => {
       if (err) {
-        response.writeHead(404, {"Content-Type": "text/html"});
+        response.writeHead(200, {"Content-Type": "text/html"});
         response.write("<link type=\"text/css\" rel=\"stylesheet\" href=\"styles/jsdoc-default.css\">" +
         "<div style=\"text-align: center;height: 100%;width: 100%;display: table;\">" +
         "<div style=\"display: table-cell;vertical-align: middle;\">" +
