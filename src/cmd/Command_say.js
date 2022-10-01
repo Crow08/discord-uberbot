@@ -11,7 +11,8 @@ const run = (interaction) => {
       ttsService.announceMessage(text, voiceConnection);
     }).
     catch((err) => console.log(err));
-  chatService.simpleNote(interaction, "TTS", chatService.msgType.INFO, true);
+  interaction.reply("Playing TTS:");
+  setTimeout(() => interaction.deleteReply(), 5000);
 };
 
 module.exports = {
