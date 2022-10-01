@@ -116,19 +116,23 @@ class TTSService {
    * @param {VoiceConnection} voiceConnection Discord.js Voice connection to announce to.
    */
   announceMessage(message, voiceConnection) {
-    this.getAudioResource(message).
-      then((audioResource) => {
-        const player = createAudioPlayer();
-        const subscription = voiceConnection.subscribe(player);
-        audioResource.volume.setVolume(voiceService.volume / 100);
-        player.play(audioResource);
-        player.on("idle", () => {
-          subscription.unsubscribe();
+    return new Promise((resolve, reject) => {
+      this.getAudioResource(message).
+        then((audioResource) => {
+          const player = createAudioPlayer();
+          const subscription = voiceConnection.subscribe(player);
+          audioResource.volume.setVolume(voiceService.volume / 100);
+          player.play(audioResource);
+          player.on("idle", () => {
+            subscription.unsubscribe();
+          });
+          resolve(player);
+        }).
+        catch((err) => {
+          console.log(err);
+          reject(err);
         });
-      }).
-      catch((err) => {
-        console.log(err);
-      });
+    });
   }
 
   formattedDate() {

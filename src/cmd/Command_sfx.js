@@ -3,6 +3,7 @@ const chatService = require("../ChatService");
 const streamSourceService = require("../StreamSourceService");
 const ttsService = require("../TTSService");
 const voiceLines = require("../../voiceLines.json");
+const {createAudioPlayer, createAudioResource} = require("@discordjs/voice");
 const {SlashCommandBuilder} = require("discord.js");
 
 const getSfxUrl = (json, payload) => {
@@ -20,89 +21,157 @@ const getSfxUrl = (json, payload) => {
   return (sfxUrl);
 };
 
-const say = (text, interaction) => {
+const getSfx = (index) => new Promise((resolve, reject) => {
+  streamSourceService.rawFileService.getStream(getSfxUrl(voiceLines.sfx, index)).
+    then(resolve).
+    catch(reject);
+});
+
+
+const playSfx = (stream, interaction) => {
+  const audioPlayer = createAudioPlayer();
+  const audioResource = createAudioResource(stream, {"inlineVolume": true});
+  audioResource.volume.setVolume(voiceService.volume / 100);
   voiceService.getVoiceConnection(interaction).
     then((voiceConnection) => {
-      ttsService.announceMessage(text, voiceConnection);
-    }).
-    catch((err) => console.log(err));
-};
-
-const makeTable = (json) => {
-  const table = [];
-  const maxColumLength = [];
-  let maxLines = 0;
-  let count = 0;
-  Object.keys(json.sfx).
-    forEach((header) => {
-      table.push([header]);
-      maxColumLength.push(header.length);
-      json.sfx[header].forEach((element) => {
-        table[table.length - 1].push(`${count}: ${element.title}`);
-        count++;
-        // eslint-disable-next-line max-len
-        maxColumLength[table.length - 1] = maxColumLength[table.length - 1] < element.title.length ? element.title.length : maxColumLength[table.length - 1];
-      });
-      maxLines = maxLines < table[table.length - 1].length ? table[table.length - 1].length : maxLines;
+      voiceConnection.subscribe(audioPlayer);
+      audioPlayer.play(audioResource);
     });
-  let tableString = "";
-  for (let row = 0; row < maxLines; row++) {
-    for (let column = 0; column < Object.keys(json.sfx).length; column++) {
-      if (tableString[tableString.length - 1] === "|") {
-        tableString = tableString.substr(0, tableString.length - 1);
-      }
-      if (table[column].length > row) {
-        tableString += `| ${table[column][row].padEnd(maxColumLength[column] + 4, " ")}|`;
-      } else {
-        tableString += `| ${"".padEnd(maxColumLength[column] + 4, " ")}|`;
-      }
-    }
-    tableString += "\n";
-  }
-
-  let splitter = "|";
-  maxColumLength.forEach((length) => {
-    splitter += `${"".padEnd(length + 5, "-")}|`;
-  });
-  tableString = tableString.replace(/\n/u, `\n${splitter}\n`);
-  return (`${splitter}\n${tableString}${splitter}`);
 };
 
+// eslint-disable-next-line max-lines-per-function
 const run = (interaction) => {
-  const index = interaction.options.getString("index");
-  if (index === null) {
-    chatService.simpleNote(interaction, "List sfx:", chatService.msgType.MUSIC, true);
-    chatService.send(interaction, `\`\`\`cs\n${makeTable(voiceLines)}\n\`\`\``);
-  }
-  if (index > voiceLines.sfx.length - 1) {
-    chatService.simpleNote(interaction, "Index out of bounds.", chatService.msgType.Error, true);
-    say("This is a voice line from the future. You have to add it first!", interaction);
+  let parameter = [
+    interaction.options.getInteger("kev"),
+    interaction.options.getInteger("tobi"),
+    interaction.options.getInteger("meme"),
+    interaction.options.getInteger("wc3"),
+    interaction.options.getInteger("portal")
+  ];
+  parameter = parameter.filter((item) => item !== null);
+  if (parameter.length > 1) {
+    interaction.reply("shame on you!");
+    voiceService.getVoiceConnection(interaction).
+      then((voiceConnection) => {
+        const line = "Having issues to decide? Then I will decide foor you.";
+        ttsService.announceMessage(line, voiceConnection).
+          then((player) => {
+            player.on("idle", () => {
+              const sfxCount = Object.keys(voiceLines.sfx).reduce((sum, key) => sum + voiceLines.sfx[key].length, 0);
+              const randomSfxIndex = Math.floor(Math.random() * sfxCount);
+              getSfx(randomSfxIndex).then((sfx) => playSfx(sfx, interaction));
+            });
+          });
+        // eslint-disable-next-line max-len
+        parameter = [Math.floor(Math.random() * Object.keys(voiceLines.sfx).reduce((sum, key) => sum + voiceLines.sfx[key].length, 0))];
+      }).
+      catch((err) => console.log(err));
     return;
+  } else if (parameter.length < 1) {
+    voiceService.getVoiceConnection(interaction).
+      then((voiceConnection) => {
+        const line = "Just pick one silly. Here, let me help you.";
+        ttsService.announceMessage(line, voiceConnection);
+        parameter = [Math.floor(Math.random() * 49)];
+      }).
+      catch((err) => console.log(err));
   }
-  if (index < 0) {
-    chatService.simpleNote(interaction, "Index out of bounds.", chatService.msgType.Error, true);
-    say("Oh I know, let's enter a negative number, that will show her.", interaction);
-    return;
-  }
+  const index = parameter[0];
   chatService.simpleNote(interaction, "Playing sfx.", chatService.msgType.Error, true);
   streamSourceService.rawFileService.getStream(getSfxUrl(voiceLines.sfx, index)).
     then((sfx) => {
       voiceService.getVoiceConnection(interaction).
         then((voiceConnection) => {
-          voiceConnection.play(sfx);
+          const audioPlayer = createAudioPlayer();
+          const audioResource = createAudioResource(sfx, {"inlineVolume": true});
+          audioResource.volume.setVolume(voiceService.volume / 100);
+          voiceConnection.subscribe(audioPlayer);
+          audioPlayer.play(audioResource);
         });
     }).
     catch(((err) => console.log(err)));
+
 };
 
 module.exports = {
   "data": new SlashCommandBuilder().
     setName("sfx").
     setDescription("make the bot play dumb stuff").
-    addIntegerOption((option) => option.
-      setName("index").
-      setDescription("index of the sfx to play").
-      setRequired(false)),
+    // eslint-disable-next-line max-lines-per-function
+    addIntegerOption((option) => option.setName("kev").
+      setDescription("Kevins sfx").
+      setRequired(false).
+      addChoices(
+        {"name": "SpaßSpaßSpaß", "value": 0},
+        {"name": "WTFBoom", "value": 1},
+        {"name": "Weildasjaklarist", "value": 2},
+        {"name": "Schadenfreude", "value": 3},
+        {"name": "Schuing", "value": 4},
+        {"name": "NO!", "value": 5},
+        {"name": "Wololoo", "value": 6},
+        {"name": "JibJib", "value": 7},
+        {"name": "Over9000", "value": 8},
+        {"name": "Schande", "value": 9}
+      )).
+    addIntegerOption((option) => option.setName("tobi").
+      setDescription("Tobis sfx").
+      setRequired(false).
+      addChoices(
+        {"name": "Babylaugh", "value": 10},
+        {"name": "Arrow", "value": 11},
+        {"name": "Hallelujah", "value": 12},
+        {"name": "Araara", "value": 13},
+        {"name": "Karate", "value": 14},
+        {"name": "Botlaaane", "value": 15},
+        {"name": "Ooouuuhhhh", "value": 16},
+        {"name": "Chookity", "value": 17}
+      )).
+    addIntegerOption((option) => option.setName("meme").
+      setDescription("meme sfx").
+      setRequired(false).
+      addChoices(
+        {"name": "Nice!", "value": 18},
+        {"name": "Aulos", "value": 19},
+        {"name": "MedievalCoffin", "value": 20},
+        {"name": "Nice!", "value": 21},
+        {"name": "Yasss!", "value": 22},
+        {"name": "Hello!", "value": 23},
+        {"name": "Wow!", "value": 24},
+        {"name": "Yoooo!", "value": 25},
+        {"name": "Whatthehell?", "value": 26},
+        {"name": "YeahBoy", "value": 27},
+        {"name": "Ok...", "value": 28},
+        {"name": "GreatSuccess!", "value": 29}
+      )).
+    addIntegerOption((option) => option.setName("wc3").
+      setDescription("wc3 sfx").
+      setRequired(false).
+      addChoices(
+        {"name": "ArbeitArbeit", "value": 30},
+        {"name": "MehrArbeit?", "value": 31},
+        {"name": "Ichgehdannmal", "value": 32},
+        {"name": "Hilfe", "value": 33},
+        {"name": "Daskannich", "value": 34},
+        {"name": "KeineLust", "value": 35},
+        {"name": "Richtig", "value": 36},
+        {"name": "Arbeitistvollbracht", "value": 37},
+        {"name": "Daswars", "value": 38},
+        {"name": "TazdingoMann!", "value": 39}
+      )).
+    addIntegerOption((option) => option.setName("portal").
+      setDescription("glados sfx").
+      setRequired(false).
+      addChoices(
+        {"name": "Youbrokeit", "value": 40},
+        {"name": "Didyousaysth?", "value": 41},
+        {"name": "Ihateyou", "value": 42},
+        {"name": "Quitewell", "value": 43},
+        {"name": "Exellentwork", "value": 44},
+        {"name": "Ikillyou", "value": 45},
+        {"name": "Goodbye", "value": 46},
+        {"name": "Ulistening?", "value": 47},
+        {"name": "Donereasoning", "value": 48}
+      )),
   async execute(interaction) {
     await run(interaction);
   },
