@@ -1,39 +1,39 @@
-const AddCommand = require("../cmd/Command_Add");
-const AddPLCommand = require("../cmd/Command_PL_Add");
-const AutoPLCommand = require("../cmd/Command_AutoPL");
-const AddSongToPLCommand = require("../cmd/Command_AddSongToPL");
-const AddQueueToPLCommand = require("../cmd/Command_AddQueueToPL");
-const ClearCommand = require("../cmd/Command_Clear");
-const DeletePLCommand = require("../cmd/Command_PL_Delete");
-const HelpCommand = require("../cmd/Command_Help");
-const JoinCommand = require("../cmd/Command_Join");
-const LeaveCommand = require("../cmd/Command_Leave");
-const ListPLCommand = require("../cmd/Command_PL_List");
-const LoadPLCommand = require("../cmd/Command_PL_Load");
-const LoopCommand = require("../cmd/Command_Loop");
-const MergePLCommand = require("../cmd/Command_PL_Merge");
-const ListSongsCommand = require("../cmd/Command_List_Songs");
-const NowPlayingCommand = require("../cmd/Command_NowPlaying");
-const PauseCommand = require("../cmd/Command_Pause");
-const PlayCommand = require("../cmd/Command_Play");
-const PlayNextCommand = require("../cmd/Command_PlayNext");
-const PreferredSrcCommand = require("../cmd/Command_PreferredSrc");
-const RemoveCommand = require("../cmd/Command_Remove");
-const RemovePLCommand = require("../cmd/Command_PL_Remove");
-const RenamePLCommand = require("../cmd/Command_PL_Rename");
-const RenameSongCommand = require("../cmd/Command_Rename_Song");
-const TestCommand = require("../cmd/Command_Test");
-const SearchCommand = require("../cmd/Command_Search");
-const SearchPLCommand = require("../cmd/Command_PL_Search");
-const SeekCommand = require("../cmd/Command_Seek");
-const ShowHistoryCommand = require("../cmd/Command_ShowHistory");
-const ShowQueueCommand = require("../cmd/Command_ShowQueue");
-const ShuffleCommand = require("../cmd/Command_Shuffle");
-const SkipCommand = require("../cmd/Command_Skip");
-const StartCommand = require("../cmd/Command_Start");
-const StopCommand = require("../cmd/Command_Stop");
-const UploadCommand = require("../cmd/Command_Upload");
-const VolumeCommand = require("../cmd/Command_Volume");
+const AddCommand = require("../cmd/Command_add");
+const AddPLCommand = require("../cmd/Command_pl_add");
+const AutoPLCommand = require("../cmd/Command_auto_pl");
+const AddSongToPLCommand = require("../cmd/Command_add_song_to_pl");
+const AddQueueToPLCommand = require("../cmd/Command_add_queue_to_pl");
+const ClearCommand = require("../cmd/Command_clear");
+const DeletePLCommand = require("../cmd/Command_pl_delete");
+const HelpCommand = require("../cmd/Command_help");
+const JoinCommand = require("../cmd/Command_join");
+const LeaveCommand = require("../cmd/Command_leave");
+const ListPLCommand = require("../cmd/Command_pl_list");
+const LoadPLCommand = require("../cmd/Command_pl_load");
+const LoopCommand = require("../cmd/Command_loop");
+const MergePLCommand = require("../cmd/Command_pl_merge");
+const ListSongsCommand = require("../cmd/Command_list_songs");
+const NowPlayingCommand = require("../cmd/Command_now_playing");
+const PauseCommand = require("../cmd/Command_pause");
+const PlayCommand = require("../cmd/Command_play");
+const PlayNextCommand = require("../cmd/Command_play_next");
+const PreferredSrcCommand = require("../cmd/Command_preferred_src");
+const RemoveCommand = require("../cmd/Command_remove");
+const RemovePLCommand = require("../cmd/Command_pl_remove");
+const RenamePLCommand = require("../cmd/Command_pl_rename");
+const RenameSongCommand = require("../cmd/Command_rename_song");
+const TestCommand = require("../cmd/Command_test");
+const SearchCommand = require("../cmd/Command_search");
+const SearchPLCommand = require("../cmd/Command_pl_search");
+//const SeekCommand = require("../cmd/Command_seek");
+const ShowHistoryCommand = require("../cmd/Command_show_history");
+const ShowQueueCommand = require("../cmd/Command_show_queue");
+const ShuffleCommand = require("../cmd/Command_shuffle");
+const SkipCommand = require("../cmd/Command_skip");
+const StartCommand = require("../cmd/Command_pl_start");
+const StopCommand = require("../cmd/Command_stop");
+//const UploadCommand = require("../cmd/Command_upload.js");
+const VolumeCommand = require("../cmd/Command_volume");
 
 const commands = [
   new AddCommand(),
@@ -62,7 +62,7 @@ const commands = [
   new RenameSongCommand(),
   new SearchCommand(),
   new SearchPLCommand(),
-  new SeekCommand(),
+//  new SeekCommand(),
   new ShowHistoryCommand(),
   new ShowQueueCommand(),
   new ShuffleCommand(),
@@ -70,7 +70,7 @@ const commands = [
   new StartCommand(),
   new StopCommand(),
   new TestCommand(),
-  new UploadCommand(),
+//  new UploadCommand(),
   new VolumeCommand()
 ];
 

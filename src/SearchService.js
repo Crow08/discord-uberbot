@@ -1,15 +1,15 @@
+const streamSourceService = require("./StreamSourceService");
+
 /**
  * Class representing a search service.
  */
 class SearchService {
 
   /**
-   * Constructor.
    * @param {"yt"|"sc"|"sp"} defaultSrc - default source for searching song when using queries.
    * <br>&nbsp;&nbsp;"yt" : YouTube | "sc" : SoundCloud |"sp" : Spotify
-   * @param {StreamSourceService} streamSourceService - StreamSourceService.
    */
-  constructor(defaultSrc, streamSourceService) {
+  init(defaultSrc) {
     this.youtubeService = streamSourceService.youtubeService;
     this.soundCloudService = streamSourceService.soundCloudService;
     this.spotifyService = streamSourceService.spotifyService;
@@ -66,19 +66,19 @@ class SearchService {
    */
   querySearch(payload, count = 1, preferredSrc = this.defaultSrc) {
     return new Promise((resolve, reject) => {
-      const searchString = payload.trim();
+      const searchString = payload.trim().toLocaleLowerCase();
       switch (preferredSrc) {
-      case "YT":
+      case "yt":
         this.getSongsFromYtThenSc(searchString, count).
           then(resolve).
           catch(reject);
         break;
-      case "SC":
+      case "sc":
         this.getSongsFromScThenYt(searchString, count).
           then(resolve).
           catch(reject);
         break;
-      case "SP":
+      case "sp":
         this.getSongsFromSpThenYtThenSc(searchString, count).
           then(resolve).
           catch(reject);
@@ -197,7 +197,7 @@ class SearchService {
   /**
    * Do Search from Youtube then SoundCloud.
    * @private
-   * @param {string} payload - Payload containing song query.
+   * @param {string} searchString - Payload containing song query.
    * @param {number} count - Count of desired results.
    */
   getSongsFromYtThenSc(searchString, count) {
@@ -218,7 +218,7 @@ class SearchService {
   /**
    * Do Search from SoundCloud then Youtube.
    * @private
-   * @param {string} payload - Payload containing song query.
+   * @param {string} searchString - Payload containing song query.
    * @param {number} count - Count of desired results.
    */
   getSongsFromScThenYt(searchString, count) {
@@ -240,7 +240,7 @@ class SearchService {
    * Do Search from Spotify the Youtube then SoundCloud.
    * Spotify is only for searching and to get the exact song title and artist.
    * @private
-   * @param {string} payload - Payload containing song query.
+   * @param {string} searchString - Payload containing song query.
    * @param {number} count - Count of desired results.
    */
   getSongsFromSpThenYtThenSc(searchString, count) {
@@ -296,4 +296,4 @@ class SearchService {
   }
 }
 
-module.exports = SearchService;
+module.exports = new SearchService();

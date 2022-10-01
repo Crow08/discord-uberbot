@@ -8,11 +8,7 @@ const YouTubeService = require("./YouTubeService");
  */
 class StreamSourceService {
 
-  /**
-   * Constructor
-   * @param {Object} opt - options and user settings for music sources.
-   */
-  constructor(opt) {
+  init(opt) {
     this.youtubeService = new YouTubeService(opt.youtubeApiKey);
     this.soundCloudService = new SoundCloudService(opt.scClientId);
     this.spotifyService = new SpotifyService(opt.spotifyClientId, opt.spotifyClientSecret);
@@ -20,4 +16,4 @@ class StreamSourceService {
   }
 }
 
-module.exports = StreamSourceService;
+module.exports = new StreamSourceService();

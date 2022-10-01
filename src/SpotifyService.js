@@ -23,7 +23,8 @@ class SoundCloudService {
    * @param {string} payload - Url to get song from.
    * @param {number} offset - Offset for playlist entries and paging.
    * @param {number} limit - Playlist entries(max is 100)
-   * @returns {Song[]} - Songs from playlist url.
+   * @param {Song[]} songs - optional initial song list.
+   * @returns {Promise<Song[]>} - Songs from playlist url.
    */
   getSongsViaPlaylistUrl(payload, offset = 0, limit = 100, songs = []) {
     return new Promise((resolve, reject) => {
@@ -64,8 +65,8 @@ class SoundCloudService {
 
   /**
    * Get song via url (without url).
-   * @param {string} payload - Url to get song from.
-   * @returns {Song} - Song from url.
+   * @param {string} searchString - Url to get song from.
+   * @returns {Promise<Song>} - Song from url.
    */
   getSongViaUrl(searchString) {
     return new Promise((resolve, reject) => {
@@ -89,9 +90,9 @@ class SoundCloudService {
 
   /**
    * Get songs via query (without url).
-   * @param {string} payload - Url to get song from.
+   * @param {string} searchString - Url to get song from.
    * @param {number} count - Number of songs to be fetched.
-   * @returns {Song[]} - Array of songs from url.
+   * @returns {Promise<Song[]>} - Array of songs from url.
    */
   getSongsViaSearchQuery(searchString, count = 1) {
     return new Promise((resolve, reject) => {

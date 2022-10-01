@@ -14,7 +14,8 @@ jspm_packages/
 
 # Settings and credentials
 settings.json
-.env
+fly.toml
 
 # Generated docs
 docs/
+

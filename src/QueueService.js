@@ -1,3 +1,5 @@
+const dbService = require("./DBService");
+
 /**
  * Class representing a queue service.
  * This Service is managing the queue of upcoming songs and the history of passed songs.
@@ -5,13 +7,7 @@
  */
 class QueueService {
 
-  /**
-   * Constructor.
-   * @param {Number} historyLength - Max number of songs saved in the history.
-   * @param {DBService} dbService - DBService.
-   */
-  constructor(historyLength, dbService) {
-    this.dbService = dbService;
+  init(historyLength) {
     this.queue = [];
     this.history = [];
     this.historyLength = historyLength;
@@ -34,7 +30,7 @@ class QueueService {
 
   /**
    * Get current Song which is position 0 of the history.
-   * @returns {Song} - The current song.
+   * @returns {Promise<Song>} - The current song.
    */
   getCurrentSong() {
     return new Promise((resolve, reject) => {
@@ -48,7 +44,7 @@ class QueueService {
 
   /**
    * Get next song which is position 0 of the queue.
-   * @returns {Song} - The next song.
+   * @returns {Promise<Song>} - The next song.
    */
   popNextSong() {
     return new Promise((resolve, reject) => {
@@ -69,7 +65,7 @@ class QueueService {
           resolve(null);
           return;
         }
-        this.dbService.getRandomSong(this.autoPL).
+        dbService.getRandomSong(this.autoPL).
           then((song) => {
             resolve(song);
           }).
@@ -106,14 +102,15 @@ class QueueService {
    * Songs from requester with viewer songs gets added farther ahead in queue.
    * The resulting queue from only fairly added songs should contain songs form all requesters in Round Robin fashion.
    * @param {Song} song - The song to be added.
+   * @param {ChatInputCommandInteraction} interaction
    */
-  addFairlyToQueue(song, msg) {
-    song.requester = msg.author.username;
+  addFairlyToQueue(song, interaction) {
+    song.requester = interaction.user.username;
     const songRequestBalanceHelper = {};
     songRequestBalanceHelper[song.requester] = 1;
     for (let index = 0; index < this.queue.length; index++) {
       const queuedSong = this.queue[index];
-      if (Object.prototype.hasOwnProperty.call(songRequestBalanceHelper, queuedSong.requester)) {
+      if (Object.hasOwn(songRequestBalanceHelper, queuedSong.requester)) {
         songRequestBalanceHelper[queuedSong.requester] += 1;
       } else {
         songRequestBalanceHelper[queuedSong.requester] = 1;
@@ -131,10 +128,11 @@ class QueueService {
    * Songs from requester with viewer songs gets added farther ahead in queue.
    * The resulting queue from only fairly added songs should contain songs form all requesters in Round Robin fashion.
    * @param {Song[]} songs - Array of songs to be added.
+   * @param {ChatInputCommandInteraction} interaction
    */
-  addMultipleFairlyToQueue(songs, msg) {
+  addMultipleFairlyToQueue(songs, interaction) {
     songs.forEach((newSong) => {
-      this.addFairlyToQueue(newSong, msg);
+      this.addFairlyToQueue(newSong, interaction);
     });
   }
 
@@ -163,12 +161,13 @@ class QueueService {
   /**
    * Adds the given playlist from the DB to the current queue.
    * @param {string} plName - playlist name to load.
+   *    * @param {ChatInputCommandInteraction} interaction
    */
-  loadPlaylist(plName, msg) {
+  loadPlaylist(plName, interaction) {
     return new Promise((resolve, reject) => {
-      this.dbService.getPlaylist(plName).
+      dbService.getPlaylist(plName).
         then((songs) => {
-          this.addMultipleFairlyToQueue(this.shuffle(songs), msg);
+          this.addMultipleFairlyToQueue(this.shuffle(songs), interaction);
           resolve();
         }).
         catch((error) => reject(error));
@@ -181,7 +180,7 @@ class QueueService {
    */
   setAutoPL(plName) {
     return new Promise((resolve, reject) => {
-      this.dbService.listPlaylists().then((plNames) => {
+      dbService.listPlaylists().then((plNames) => {
         if (plNames.includes(plName)) {
           this.autoPL = plName;
           resolve();
@@ -195,7 +194,7 @@ class QueueService {
 
   /**
    * Gets the current auto playlist name.
-   * @returns {string} - current auto playlist name.
+   * @returns {Promise<string>} - current auto playlist name.
    */
   getAutoPL() {
     return new Promise((resolve, reject) => {
@@ -215,42 +214,18 @@ class QueueService {
   }
 
   /**
-   * Move the given song by index to the top of the queue to play next.
-   * @param {number} songNumber - index in the queue of song to move.
-   */
-  prioritizeSong(songNumber) {
-    let message = "";
-    if (this.queue.length === 0) {
-      message = "Editing a non-existing queue, smart move!";
-    } else if (songNumber >= this.queue.length || songNumber <= 0) {
-      message = "Maybe try with a number that exists, will ya?";
-    } else if (songNumber === 0) {
-      message = `${this.queue[0].title} will already play next`;
-    } else {
-      this.queue.splice(0, 0, this.queue.splice(songNumber, 1)[0]);
-      message = `Next up: ${this.queue[0].title} - ${this.queue[0].artist}`;
-    }
-    return (message);
-  }
-
-  /**
    * Shuffles the given array and returns it.
    * @private
    * @param {Array} array - array to be shuffled
    * @returns {Array} - shuffled array.
    */
   shuffle(array) {
-    let pos1 = 0,
-      pos2 = 0,
-      tmpVal = 0;
-    for (pos1 = array.length - 1; pos1 > 0; pos1--) {
-      pos2 = Math.floor(Math.random() * (pos1 + 1));
-      tmpVal = array[pos1];
-      array[pos1] = array[pos2];
-      array[pos2] = tmpVal;
+    for (let index = array.length - 1; index > 0; index--) {
+      const randIndex = Math.floor(Math.random() * (index + 1));
+      [array[index], array[randIndex]] = [array[randIndex], array[index]];
     }
     return array;
   }
 }
 
-module.exports = QueueService;
+module.exports = new QueueService();

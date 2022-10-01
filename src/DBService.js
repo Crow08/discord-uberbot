@@ -7,17 +7,16 @@ const {MongoClient} = require("mongodb");
  */
 class DBService {
 
-  /**
-   * Constructor.
-   * @param {string} mongoUrl - Optional string representing the external mongodb url.
-   * @param {string} username - Optional string representing the external mongodb username.
-   * @param {string} password - Optional string representing the external mongodb password.
-   */
-  constructor(mongoUrl, username, password) {
+  init(mongoUrl, username, password) {
     this.url = mongoUrl ? `mongodb+srv://${username}:${password}@${mongoUrl}` : "mongodb://localhost:27017";
     this.dbName = "uberbot";
     this.client = null;
     this.db = null;
+    this.connectDB().
+      then(() => console.log("DB connected!")).
+      catch(() => {
+        throw new Error("DB connection timeout!");
+      });
   }
 
   /**
@@ -52,7 +51,7 @@ class DBService {
       });
     }
     return new Promise((resolve, reject) => {
-      MongoClient.connect(this.url, {"useNewUrlParser": true}).
+      MongoClient.connect(this.url, {"useNewUrlParser": true, "useUnifiedTopology": true}).
         then((client) => {
           this.client = client;
           this.db = client.db(this.dbName);
@@ -66,7 +65,7 @@ class DBService {
    * Check if connection to mongoDB is established.
    */
   isConnected() {
-    return this.client !== null && this.client.isConnected();
+    return this.client !== null;
   }
 
   /**
@@ -166,15 +165,16 @@ class DBService {
    * Rename the artist or title of a song in a playlist.
    * @param {string} plName - playlist name to change the name in.
    * @param {Song} song - Song to be renamed.
-   * @param {"a"|"t"} flag - "a" to rename the artist and "t" to rename the title (defaults to renaming title)
-   * @param {string} newName - new name for artist or title.
+   * @param songTitle new song title
+   * @param songArtist new song artist
    */
-  renameSong(plName, song, flag, newName) {
+  renameSong(plName, song, songTitle, songArtist) {
     return new Promise((resolve, reject) => {
 
       this.db.collection(plName).findOneAndUpdate(
         {"artist": song.artist, "title": song.title},
-        {"$set": flag === "a" ? {"artist": newName} : {"title": newName}}
+        {"$set": {"artist": songArtist === null ? song.artist : songArtist,
+          "title": songTitle === null ? song.title : songTitle}}
       ).
         then(resolve).
         catch(reject);
@@ -216,7 +216,7 @@ class DBService {
   /**
    * Get all songs of a playlist as array.
    * @param {string} plName - Playlist name to get songs from.
-   * @returns {Songs[]} - Array of all songs
+   * @returns {Promise<Song[]>} - Array of all songs
    */
   getPlaylist(plName) {
     return new Promise((resolve, reject) => {
@@ -237,7 +237,7 @@ class DBService {
   /**
    * Get a random Song from a Playlist.
    * @param {string} plName - playlist name to get the song from.
-   * @returns {Song} - A random Song from the collection.
+   * @returns {Promise<Song>} - A random Song from the collection.
    */
   getRandomSong(plName) {
     return new Promise((resolve, reject) => {
@@ -270,7 +270,7 @@ class DBService {
 
   /**
    * Gets all playlist names as string.
-   * @returns {string[]} - Array containing all playlist names.
+   * @returns {Promise<string[]>} - Array containing all playlist names.
    */
   listPlaylists() {
     return new Promise((resolve, reject) => {
@@ -299,4 +299,4 @@ class DBService {
   }
 }
 
-module.exports = DBService;
+module.exports = new DBService();
