@@ -1,5 +1,4 @@
 const voiceService = require("../VoiceService");
-const chatService = require("../ChatService");
 const streamSourceService = require("../StreamSourceService");
 const ttsService = require("../TTSService");
 const voiceLines = require("../../voiceLines.json");
@@ -43,7 +42,8 @@ const playSfx = (sfxIndex, voiceConnection) => {
 };
 
 const run = (interaction) => {
-  chatService.simpleNote(interaction, "Playing sfx.", chatService.msgType.Error, true);
+  interaction.reply("Playing sfx.");
+  setTimeout(() => interaction.deleteReply(), 5000);
   let parameter = [
     interaction.options.getInteger("kev"),
     interaction.options.getInteger("tobi"),
