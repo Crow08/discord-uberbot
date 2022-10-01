@@ -15,7 +15,7 @@ const run = (interaction) => {
       note,
       songs
     }) => {
-      chatService.simpleNote(interaction, note, chatService.msgType.MUSIC,);
+      chatService.simpleNote(interaction, note, chatService.msgType.MUSIC);
       if (songs.length > 1) {
         const enrichedSongs = songs.map((song) => {
           song.requester = interaction.user.username;
