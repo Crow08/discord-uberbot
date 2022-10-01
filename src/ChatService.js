@@ -123,7 +123,11 @@ class ChatService {
             default:
               break;
             }
-            curPage.edit(pages[page]);
+            content = {"content": pages[page]};
+            if (typeof pages[0] !== "string") {
+              content = {"embeds": [pages[page]]};
+            }
+            curPage.edit(content);
             btnInteraction.deferUpdate();
           });
           // Timeout.
