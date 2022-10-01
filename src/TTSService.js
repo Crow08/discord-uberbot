@@ -32,18 +32,18 @@ class TTSService {
           `key=${this.ttsApiKey}`
       }, (error, response, body) => {
         if (error) {
-          return reject(error);
+          reject(error);
         }
         const content = JSON.parse(body);
         if (typeof content.audioContent === "undefined") {
           const htmlError = content.error ? `${content.error.code} : ${content.error.message}` : "";
-          return reject(new Error(`Audio content not found! ${htmlError}`));
+          reject(new Error(`Audio content not found! ${htmlError}`));
         }
         const buff = Buffer.from(content.audioContent, "base64");
         const stream = new Readable();
         stream.push(buff);
         stream.push(null);
-        return resolve(createAudioResource(stream, {"inlineVolume": true}));
+        resolve(createAudioResource(stream, {"inlineVolume": true}));
       });
     });
   }
@@ -111,7 +111,6 @@ class TTSService {
 
   /**
    * Announce the given message via tts to the given connection.
-   * @private
    * @param {string} message Message to announce.
    * @param {VoiceConnection} voiceConnection Discord.js Voice connection to announce to.
    */

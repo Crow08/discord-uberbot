@@ -19,13 +19,12 @@ const commands = [];
 
 for (const cmdFile of cmdFiles) {
   const cmd = require(path.join(cmdPath, cmdFile));
-  commands.push(cmd.data.toJSON());
+  if (cmd.scope === "G" ||
+    (cmd.scope === "A" && !settings.disableAnnouncer) ||
+    (cmd.scope === "M" && !settings.disableBot)) {
+    commands.push(cmd.data.toJSON());
+  }
 }
-
-/*const id = "1017958370696765510";
-rest.delete(Routes.applicationCommand(clientId, id)).
-  then(() => console.log("Successfully deleted application command")).
-  catch(console.error);*/
 
 rest.put(Routes.applicationCommands(clientId), {"body": commands}).
   then((data) => console.log(`Successfully registered ${data.length} application commands.`)).

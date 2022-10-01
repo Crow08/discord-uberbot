@@ -6,41 +6,44 @@ const voiceLines = require("../../voiceLines.json");
 const {createAudioPlayer, createAudioResource} = require("@discordjs/voice");
 const {SlashCommandBuilder} = require("discord.js");
 
-const getSfxUrl = (json, payload) => {
+const getSfxUrl = (payload) => {
   const sfxUrls = [];
-  for (const topic in json) {
+  for (const topic in voiceLines.sfx) {
     if (topic) {
-      for (const element in json[topic]) {
+      for (const element in voiceLines.sfx[topic]) {
         if (element) {
-          sfxUrls.push(json[topic][element].url);
+          sfxUrls.push(voiceLines.sfx[topic][element].url);
         }
       }
     }
   }
-  const sfxUrl = sfxUrls[payload];
-  return (sfxUrl);
+  return sfxUrls[payload];
 };
 
-const getSfx = (index) => new Promise((resolve, reject) => {
-  streamSourceService.rawFileService.getStream(getSfxUrl(voiceLines.sfx, index)).
-    then(resolve).
+const getSfxAudioResource = (index) => new Promise((resolve, reject) => {
+  streamSourceService.rawFileService.getStream(getSfxUrl(index)).
+    then((stream) => {
+      resolve(createAudioResource(stream, {"inlineVolume": true}));
+    }).
     catch(reject);
 });
 
 
-const playSfx = (stream, interaction) => {
-  const audioPlayer = createAudioPlayer();
-  const audioResource = createAudioResource(stream, {"inlineVolume": true});
-  audioResource.volume.setVolume(voiceService.volume / 100);
-  voiceService.getVoiceConnection(interaction).
-    then((voiceConnection) => {
-      voiceConnection.subscribe(audioPlayer);
+const playSfx = (sfxIndex, voiceConnection) => {
+  getSfxAudioResource(sfxIndex).
+    then((audioResource) => {
+      const audioPlayer = createAudioPlayer();
+      const subscription = voiceConnection.subscribe(audioPlayer);
+      audioResource.volume.setVolume(voiceService.volume / 100);
       audioPlayer.play(audioResource);
+      audioPlayer.on("idle", () => {
+        subscription.unsubscribe();
+      });
     });
 };
 
-// eslint-disable-next-line max-lines-per-function
 const run = (interaction) => {
+  chatService.simpleNote(interaction, "Playing sfx.", chatService.msgType.Error, true);
   let parameter = [
     interaction.options.getInteger("kev"),
     interaction.options.getInteger("tobi"),
@@ -49,48 +52,30 @@ const run = (interaction) => {
     interaction.options.getInteger("portal")
   ];
   parameter = parameter.filter((item) => item !== null);
-  if (parameter.length > 1) {
-    interaction.reply("shame on you!");
+  if (parameter.length === 1) {
+    const index = parameter[0];
     voiceService.getVoiceConnection(interaction).
       then((voiceConnection) => {
-        const line = "Having issues to decide? Then I will decide foor you.";
+        playSfx(index, voiceConnection);
+      }).
+      catch(((err) => console.log(err)));
+  } else {
+    voiceService.getVoiceConnection(interaction).
+      then((voiceConnection) => {
+        const line = parameter.length === 0 ? "Just pick one silly. Here, let me help you."
+          : "Having issues to decide? Then I will decide <emphasis level=\"strong\">for</emphasis> you.";
         ttsService.announceMessage(line, voiceConnection).
           then((player) => {
             player.on("idle", () => {
-              const sfxCount = Object.keys(voiceLines.sfx).reduce((sum, key) => sum + voiceLines.sfx[key].length, 0);
+              const sfxCount = Object.keys(voiceLines.sfx).
+                reduce((sum, key) => sum + voiceLines.sfx[key].length, 0);
               const randomSfxIndex = Math.floor(Math.random() * sfxCount);
-              getSfx(randomSfxIndex).then((sfx) => playSfx(sfx, interaction));
+              playSfx(randomSfxIndex, voiceConnection);
             });
           });
-        // eslint-disable-next-line max-len
-        parameter = [Math.floor(Math.random() * Object.keys(voiceLines.sfx).reduce((sum, key) => sum + voiceLines.sfx[key].length, 0))];
-      }).
-      catch((err) => console.log(err));
-    return;
-  } else if (parameter.length < 1) {
-    voiceService.getVoiceConnection(interaction).
-      then((voiceConnection) => {
-        const line = "Just pick one silly. Here, let me help you.";
-        ttsService.announceMessage(line, voiceConnection);
-        parameter = [Math.floor(Math.random() * 49)];
       }).
       catch((err) => console.log(err));
   }
-  const index = parameter[0];
-  chatService.simpleNote(interaction, "Playing sfx.", chatService.msgType.Error, true);
-  streamSourceService.rawFileService.getStream(getSfxUrl(voiceLines.sfx, index)).
-    then((sfx) => {
-      voiceService.getVoiceConnection(interaction).
-        then((voiceConnection) => {
-          const audioPlayer = createAudioPlayer();
-          const audioResource = createAudioResource(sfx, {"inlineVolume": true});
-          audioResource.volume.setVolume(voiceService.volume / 100);
-          voiceConnection.subscribe(audioPlayer);
-          audioPlayer.play(audioResource);
-        });
-    }).
-    catch(((err) => console.log(err)));
-
 };
 
 module.exports = {
@@ -99,7 +84,7 @@ module.exports = {
     setDescription("make the bot play dumb stuff").
     // eslint-disable-next-line max-lines-per-function
     addIntegerOption((option) => option.setName("kev").
-      setDescription("Kevins sfx").
+      setDescription("Kevin's sfx").
       setRequired(false).
       addChoices(
         {"name": "SpaßSpaßSpaß", "value": 0},
@@ -114,7 +99,7 @@ module.exports = {
         {"name": "Schande", "value": 9}
       )).
     addIntegerOption((option) => option.setName("tobi").
-      setDescription("Tobis sfx").
+      setDescription("Tobi's sfx").
       setRequired(false).
       addChoices(
         {"name": "Babylaugh", "value": 10},
@@ -127,7 +112,7 @@ module.exports = {
         {"name": "Chookity", "value": 17}
       )).
     addIntegerOption((option) => option.setName("meme").
-      setDescription("meme sfx").
+      setDescription("Meme sfx").
       setRequired(false).
       addChoices(
         {"name": "Nice!", "value": 18},
@@ -144,7 +129,7 @@ module.exports = {
         {"name": "GreatSuccess!", "value": 29}
       )).
     addIntegerOption((option) => option.setName("wc3").
-      setDescription("wc3 sfx").
+      setDescription("WC3 sfx").
       setRequired(false).
       addChoices(
         {"name": "ArbeitArbeit", "value": 30},
@@ -159,7 +144,7 @@ module.exports = {
         {"name": "TazdingoMann!", "value": 39}
       )).
     addIntegerOption((option) => option.setName("portal").
-      setDescription("glados sfx").
+      setDescription("Glados sfx").
       setRequired(false).
       addChoices(
         {"name": "Youbrokeit", "value": 40},

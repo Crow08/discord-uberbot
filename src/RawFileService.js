@@ -1,5 +1,9 @@
 const request = require("request");
 const Song = require("./Song");
+const https = require("https");
+const {Readable} = require("stream");
+const {pipeline} = require("stream");
+const {createAudioResource} = require("@discordjs/voice");
 
 /**
  * Class representing a raw file service.
@@ -39,8 +43,10 @@ class RawFileService {
    * @param {string} url - Url to get audio stream from.
    */
   getStream(url) {
-    return new Promise((resolve) => {
-      resolve(url);
+    return new Promise((resolve, reject) => {
+      https.get(url, (response) => {
+        resolve(response);
+      });
     });
   }
 }
