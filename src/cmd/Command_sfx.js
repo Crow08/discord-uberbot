@@ -63,7 +63,7 @@ const run = (interaction) => {
     voiceService.getVoiceConnection(interaction).
       then((voiceConnection) => {
         const line = parameter.length === 0 ? "Just pick one silly. Here, let me help you."
-          : "Having issues to decide? Then I will decide <emphasis level=\"strong\">for</emphasis> you.";
+          : "Having issues to decide? Then I will decide <emphasis level='strong'>for</emphasis> you.";
         ttsService.announceMessage(line, voiceConnection).
           then((player) => {
             player.on("idle", () => {
