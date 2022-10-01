@@ -46,13 +46,15 @@ const run = (interaction) => {
       voiceService.getVoiceConnection(interaction).
         then((voiceConnection) => {
           const audioPlayer = createAudioPlayer();
-          const audioResource = createAudioResource(sfx);
+          const audioResource = createAudioResource(sfx, {"inlineVolume": true});
+          audioResource.volume.setVolume(voiceService.volume / 100);
           voiceConnection.subscribe(audioPlayer);
           audioPlayer.play(audioResource);
         });
     }).
     catch(((err) => console.log(err)));
   interaction.reply("Get ready for some walrus");
+  setTimeout(() => interaction.deleteReply(), 5000);
 };
 
 
