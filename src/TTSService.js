@@ -23,6 +23,7 @@ class TTSService {
    */
   getAudioResource(text) {
     return new Promise((resolve, reject) => {
+      text = text.replace("\"", "'");
       request.post({
         "body": `{"input":{"ssml":"<speak>${text}</speak>"},` +
           "\"voice\":{\"languageCode\":\"en-US\",\"name\":\"en-US-Wavenet-F\"}," +
