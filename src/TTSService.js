@@ -34,11 +34,13 @@ class TTSService {
       }, (error, response, body) => {
         if (error) {
           reject(error);
+          return;
         }
         const content = JSON.parse(body);
         if (typeof content.audioContent === "undefined") {
           const htmlError = content.error ? `${content.error.code} : ${content.error.message}` : "";
           reject(new Error(`Audio content not found! ${htmlError}`));
+          return;
         }
         const buff = Buffer.from(content.audioContent, "base64");
         const stream = new Readable();
@@ -82,7 +84,7 @@ class TTSService {
           // User leaves voice channel of bot
           const line = Math.floor(Math.random() * voiceLines.leave.length);
           const messageLeave = voiceLines.leave[line].replace(/#User/gu, this.phoneticNicknameFor(newUser));
-          this.announceMessage(messageLeave, voiceConnection);
+          this.announceMessage(messageLeave, voiceConnection).catch(console.error);
           if (this.defaultTextChannel) {
             this.client.guilds.cache.forEach((guild) => {
               const note = `${newUser} left the channel (${this.formattedDate()})`;
