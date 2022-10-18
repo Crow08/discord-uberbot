@@ -17,6 +17,7 @@
     "docs": "node_modules/.bin/jsdoc -r -c jsdoc.json",
     "start": "node ./src/index.js",
     "tools_cmdTable": "node ./src/tools/createCmdTable.js",
+    "tools_fly": "flyctl deploy",
     "web": "node ./src/index.js disable_announcer disable_bot"
   },
   "private": true,
