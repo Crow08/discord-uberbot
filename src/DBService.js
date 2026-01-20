@@ -14,8 +14,8 @@ class DBService {
     this.db = null;
     this.connectDB().
       then(() => console.log("DB connected!")).
-      catch(() => {
-        throw new Error("DB connection timeout!");
+      catch((err) => {
+        throw new Error("DB connection timeout!", err);
       });
   }
 

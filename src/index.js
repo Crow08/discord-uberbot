@@ -54,7 +54,7 @@ if (settingsPath === "" && typeof process.env.settings_path !== "undefined") {
 // Fill in missing settings with default values and validate settings.
 const validateSettings = (() => new Promise((resolve, reject) => {
   // Set default values if necessary.
-  settings.bitRat = typeof settings.bitRate === "undefined" ? 96000 : parseInt(settings.bitRate, 10);
+  settings.bitRate = typeof settings.bitRate === "undefined" ? 96000 : parseInt(settings.bitRate, 10);
   settings.defVolume = typeof settings.defVolume === "undefined" ? 50 : parseInt(settings.defVolume, 10);
   settings.ratingCooldown = typeof settings.ratingCooldown === "undefined" ? 86400
     : parseInt(settings.ratingCooldown, 10);
@@ -67,8 +67,9 @@ const validateSettings = (() => new Promise((resolve, reject) => {
   } else if (!disableAnnouncer && (typeof settings.ttsApiKey === "undefined" || settings.ttsApiKey === "TTS_API_KEY")) {
     reject(missingInfoError);
   }
-  settings.disableAnnouncer = disableAnnouncer;
-  settings.disableBot = disableBot;
+  settings.disableAnnouncer = typeof settings.disableAnnouncer === "undefined" ?
+    disableAnnouncer : Boolean(settings.disableAnnouncer);
+  settings.disableBot =  typeof settings.disableAnnouncer === "undefined" ? disableBot : Boolean(settings.disableBot);
   resolve(settings);
 }));
 
