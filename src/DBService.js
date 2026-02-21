@@ -51,13 +51,15 @@ class DBService {
       });
     }
     return new Promise((resolve, reject) => {
-      MongoClient.connect(this.url, {"useNewUrlParser": true, "useUnifiedTopology": true}).
+      MongoClient.connect(this.url).
         then((client) => {
           this.client = client;
           this.db = client.db(this.dbName);
           resolve();
         }).
-        catch(reject);
+        catch((err) => {
+          return reject(err);
+        });
     });
   }
 

@@ -1,4 +1,5 @@
 const Song = require("./Song");
+const {spawn} = require("child_process");
 const ytdl = require("youtube-dl-exec");
 const streamSourceService = require("./StreamSourceService");
 const {joinVoiceChannel, getVoiceConnection, demuxProbe, createAudioResource} = require("@discordjs/voice");
@@ -20,6 +21,9 @@ class VoiceService {
     this.soundCloudService = streamSourceService.soundCloudService;
     this.spotifyService = streamSourceService.spotifyService;
     this.rawFileService = streamSourceService.rawFileService;
+    this.audioProcess = null;
+    this.audioStream = null;
+    this.streamId = 0;
   }
 
   /**
@@ -129,37 +133,55 @@ class VoiceService {
    * Creates an AudioResource from Song.
    */
   createAudioResource(song) {
+    const that = this;
     return new Promise((resolve, reject) => {
       if (song.src === Song.srcType.YT) {
-        const process = ytdl.exec(
-          song.url,
-          {
-            "f": "bestaudio[ext=webm][acodec=opus][asr=48000]/bestaudio",
-            "o": "-",
-            "q": "",
-            "r": "100K"
-          },
-          {"stdio": ["ignore", "pipe", "ignore"]}
-        );
-        const stream = process.stdout;
-        const onError = (error) => {
-          if (!process.killed) {
-            process.kill();
+        that.streamId += 1;
+        if(that.audioProcess !== null && !that.audioProcess.killed) {
+          if(that.audioStream !== null) {
+            that.audioStream.destroy();
           }
-          stream.resume();
+          that.audioProcess.kill();
+        }
+        const ytdlpPath = "./node_modules/youtube-dl-exec/bin/yt-dlp.exe";
+
+        that.audioProcess = spawn(ytdlpPath, [
+          song.url,
+          "-f", "bestaudio/best",
+          "-o", "-",
+          "-q",
+          "-r", "100K"
+        ], { stdio: ["ignore", "pipe", "ignore"] });
+
+        that.audioStream = that.audioProcess.stdout;
+
+        const onError = (error) => {
+          const id = that.streamId;
+          if (id < that.streamId) {
+            return;
+          }
+          if (!that.audioProcess.killed) {
+            that.audioProcess.kill();
+          }
+          that.audioStream.resume();
           reject(error);
         };
-        process.
+        that.audioProcess.
           once("spawn", () => {
-            demuxProbe(stream).
+            demuxProbe(that.audioStream).
               then((probe) => resolve(createAudioResource(probe.stream, {
                 "inlineVolume": true,
                 "inputType": probe.type,
                 "metadata": song
               }))).
-              catch(onError);
+              catch((err) => {
+                onError(err);
+              });
           }).
-          catch(onError);
+          once("error", onError).
+          once("close", (code, signal) => {
+            console.log(`yt-dlp exited with code ${code}, signal ${signal}`);
+          });
       } else {
         const stream = this.getStream(song);
         demuxProbe(stream).
